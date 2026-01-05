@@ -1,14 +1,73 @@
-﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:LaundromatManagementSystem"
              x:Class="LaundromatManagementSystem.App">
+    
     <Application.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
-                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Light Theme (Default) -->
+            <Color x:Key="PrimaryColor">#1E3A8A</Color>
+            <Color x:Key="BackgroundColor">#FFFFFF</Color>
+            <Color x:Key="HeaderBackgroundColor">#FFFFFF</Color>
+            <Color x:Key="HeaderBorderColor">#E5E7EB</Color>
+            <Color x:Key="HeaderTextColor">#1E3A8A</Color>
+            <Color x:Key="HeaderSubtextColor">#6B7280</Color>
+            <Color x:Key="ControlBackgroundColor">#FFFFFF</Color>
+            <Color x:Key="ControlBorderColor">#E5E7EB</Color>
+            <Color x:Key="ControlLabelColor">#6B7280</Color>
+            <Color x:Key="ControlValueColor">#111827</Color>
+            <Color x:Key="TabBackgroundColor">#1E3A8A</Color>
+            <Color x:Key="TabInactiveColor">#F3F4F6</Color>
+            <Color x:Key="TabTextColor">#FFFFFF</Color>
+            <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
+            <Color x:Key="CardBorderColor">#E5E7EB</Color>
+            <Color x:Key="CardTextColor">#111827</Color>
+            <Color x:Key="CardSubtextColor">#6B7280</Color>
+            <Color x:Key="PriceColor">#1E3A8A</Color>
+            <Color x:Key="ModalBackgroundColor">#FFFFFF</Color>
+            
+            <!-- Gray Theme -->
+            <Color x:Key="GrayBackgroundColor">#F3F4F6</Color>
+            <Color x:Key="GrayHeaderBackgroundColor">#FFFFFF</Color>
+            <Color x:Key="GrayHeaderBorderColor">#D1D5DB</Color>
+            <Color x:Key="GrayHeaderTextColor">#1E3A8A</Color>
+            <Color x:Key="GrayHeaderSubtextColor">#6B7280</Color>
+            <Color x:Key="GrayControlBackgroundColor">#F3F4F6</Color>
+            <Color x:Key="GrayControlBorderColor">#D1D5DB</Color>
+            <Color x:Key="GrayControlLabelColor">#6B7280</Color>
+            <Color x:Key="GrayControlValueColor">#111827</Color>
+            <Color x:Key="GrayTabBackgroundColor">#1E3A8A</Color>
+            <Color x:Key="GrayTabInactiveColor">#E5E7EB</Color>
+            <Color x:Key="GrayTabTextColor">#FFFFFF</Color>
+            <Color x:Key="GrayCardBackgroundColor">#FFFFFF</Color>
+            <Color x:Key="GrayCardBorderColor">#D1D5DB</Color>
+            <Color x:Key="GrayCardTextColor">#111827</Color>
+            <Color x:Key="GrayCardSubtextColor">#6B7280</Color>
+            <Color x:Key="GrayPriceColor">#1E3A8A</Color>
+            <Color x:Key="GrayModalBackgroundColor">#F3F4F6</Color>
+            
+            <!-- Dark Theme -->
+            <Color x:Key="DarkBackgroundColor">#1F2937</Color>
+            <Color x:Key="DarkHeaderBackgroundColor">#1F2937</Color>
+            <Color x:Key="DarkHeaderBorderColor">#374151</Color>
+            <Color x:Key="DarkHeaderTextColor">#FFFFFF</Color>
+            <Color x:Key="DarkHeaderSubtextColor">#9CA3AF</Color>
+            <Color x:Key="DarkControlBackgroundColor">#374151</Color>
+            <Color x:Key="DarkControlBorderColor">#374151</Color>
+            <Color x:Key="DarkControlLabelColor">#9CA3AF</Color>
+            <Color x:Key="DarkControlValueColor">#FFFFFF</Color>
+            <Color x:Key="DarkTabBackgroundColor">#1E3A8A</Color>
+            <Color x:Key="DarkTabInactiveColor">#374151</Color>
+            <Color x:Key="DarkTabTextColor">#FFFFFF</Color>
+            <Color x:Key="DarkCardBackgroundColor">#374151</Color>
+            <Color x:Key="DarkCardBorderColor">#4B5563</Color>
+            <Color x:Key="DarkCardTextColor">#FFFFFF</Color>
+            <Color x:Key="DarkCardSubtextColor">#9CA3AF</Color>
+            <Color x:Key="DarkPriceColor">#60A5FA</Color>
+            <Color x:Key="DarkModalBackgroundColor">#1F2937</Color>
+            
         </ResourceDictionary>
     </Application.Resources>
+    
 </Application>

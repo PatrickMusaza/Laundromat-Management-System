@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LaundromatManagementSystem.Views.ServiceGrid">
+    
+    <Grid RowDefinitions="Auto, *">
+        
+        <!-- Category Tabs -->
+        <HorizontalStackLayout Grid.Row="0"
+                               Spacing="1"
+                               Margin="0, 0, 0, 20">
+            
+            <Border x:Name="WashingTab"
+                    BackgroundColor="{DynamicResource TabBackgroundColor}"
+                    HeightRequest="50"
+                    WidthRequest="120">
+                <Label Text="Washing"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource TabTextColor}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+            
+            <Border x:Name="DryingTab"
+                    BackgroundColor="{DynamicResource TabInactiveColor}"
+                    HeightRequest="50"
+                    WidthRequest="120">
+                <Label Text="Drying"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource TabTextColor}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+            
+            <Border x:Name="IroningTab"
+                    BackgroundColor="{DynamicResource TabInactiveColor}"
+                    HeightRequest="50"
+                    WidthRequest="120">
+                <Label Text="Ironing"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource TabTextColor}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+            
+            <Border x:Name="PackagesTab"
+                    BackgroundColor="{DynamicResource TabInactiveColor}"
+                    HeightRequest="50"
+                    WidthRequest="120">
+                <Label Text="Packages"
+                       FontSize="14"
+                       FontAttributes="Bold"
+                       TextColor="{DynamicResource TabTextColor}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+            
+        </HorizontalStackLayout>
+        
+        <!-- Services Grid -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Services}"
+                        SelectionMode="None">
+            
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="2"
+                                 HorizontalItemSpacing="15"
+                                 VerticalItemSpacing="15" />
+            </CollectionView.ItemsLayout>
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                            Stroke="{DynamicResource CardBorderColor}"
+                            StrokeThickness="1"
+                            Padding="15"
+                            HeightRequest="150">
+                        
+                        <Grid RowDefinitions="Auto, Auto, *, Auto">
+                            
+                            <!-- Service Name -->
+                            <Label Grid.Row="0"
+                                   Text="{Binding Name}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource CardTextColor}" />
+                            
+                            <!-- Price -->
+                            <HorizontalStackLayout Grid.Row="1"
+                                                   Spacing="5">
+                                <Label Text="{Binding Price, StringFormat='{0:C0}'}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PriceColor}" />
+                                <Label Text="RWF"
+                                       FontSize="12"
+                                       TextColor="{DynamicResource CardSubtextColor}"
+                                       VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                            
+                            <!-- Description -->
+                            <Label Grid.Row="2"
+                                   Text="{Binding Description}"
+                                   FontSize="12"
+                                   TextColor="{DynamicResource CardSubtextColor}"
+                                   LineBreakMode="WordWrap"
+                                   MaxLines="2" />
+                            
+                            <!-- Add Button -->
+                            <Border Grid.Row="3"
+                                    BackgroundColor="{DynamicResource PrimaryColor}"
+                                    Padding="10"
+                                    HorizontalOptions="Fill">
+                                <Label Text="Tap to add"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="White"
+                                       HorizontalOptions="Center" />
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
+                                                          Path=BindingContext.AddToCartCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                            </Border>
+                            
+                        </Grid>
+                        
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+        
+    </Grid>
+</ContentView>

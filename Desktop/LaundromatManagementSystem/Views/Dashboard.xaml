@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:LaundromatManagementSystem.ViewModels"
+             xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
+             x:Class="LaundromatManagementSystem.Views.Dashboard"
+             Title="Dashboard">
+    
+    <ContentPage.BindingContext>
+        <viewmodels:DashboardViewModel />
+    </ContentPage.BindingContext>
+    
+    <Grid RowDefinitions="Auto, *">
+        
+        <!-- Customer Header -->
+        <views:CustomerHeader Grid.Row="0"
+                             Language="{Binding Language}"
+                             Theme="{Binding Theme}"
+                             LanguageChanged="OnLanguageChanged"
+                             ThemeChanged="OnThemeChanged" />
+        
+        <!-- Main Content Area -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="7*, 3*"
+              ColumnSpacing="20"
+              Padding="20">
+            
+            <!-- Left Panel - Services (7/10 width) -->
+            <Border Grid.Column="0"
+                    BackgroundColor="{DynamicResource BackgroundColor}"
+                    StrokeThickness="0"
+                    Padding="0">
+                <views:ServiceGrid SelectedCategory="{Binding SelectedCategory}"
+                                  Language="{Binding Language}"
+                                  Theme="{Binding Theme}"
+                                  CategoryChanged="OnCategoryChanged"
+                                  AddToCartCommand="{Binding AddToCartCommand}" />
+            </Border>
+            
+            <!-- Right Panel - Shopping Cart (3/10 width) -->
+            <Border Grid.Column="1"
+                    BackgroundColor="{DynamicResource BackgroundColor}"
+                    StrokeThickness="0"
+                    Padding="0">
+                <views:ShoppingCart CartItems="{Binding Cart}"
+                                   Subtotal="{Binding Subtotal}"
+                                   Tax="{Binding Tax}"
+                                   Total="{Binding Total}"
+                                   Language="{Binding Language}"
+                                   Theme="{Binding Theme}"
+                                   RemoveItemCommand="{Binding RemoveFromCartCommand}"
+                                   UpdateQuantityCommand="{Binding UpdateQuantityCommand}"
+                                   ProcessPaymentCommand="{Binding ProcessPaymentCommand}" />
+            </Border>
+            
+        </Grid>
+        
+        <!-- Payment Modal (Conditional) -->
+        <Border Grid.RowSpan="2"
+                BackgroundColor="#80000000"
+                IsVisible="{Binding ShowPaymentModal}"
+                VerticalOptions="Fill"
+                HorizontalOptions="Fill">
+            
+            <Border VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    WidthRequest="400"
+                    BackgroundColor="{DynamicResource ModalBackgroundColor}"
+                    CornerRadius="10"
+                    Padding="20">
+                
+                <views:PaymentModal Total="{Binding Total}"
+                                   TransactionId="{Binding TransactionId}"
+                                   Language="{Binding Language}"
+                                   Theme="{Binding Theme}"
+                                   CloseCommand="{Binding ClosePaymentModalCommand}"
+                                   PaymentCompleteCommand="{Binding CompletePaymentCommand}" />
+                
+            </Border>
+            
+        </Border>
+        
+    </Grid>
+</ContentPage>

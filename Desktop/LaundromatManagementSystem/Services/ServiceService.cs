@@ -79,5 +79,12 @@ namespace LaundromatManagementSystem.Services
             var service = _services.FirstOrDefault(s => s.Id == id);
             return Task.FromResult(service);
         }
+        public Task<List<Service>> GetServicesByCategoryAsync(string category)
+        {
+            var filtered = _services
+                .Where(s => s.Type.ToString().Equals(category, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            return Task.FromResult(filtered);
+        }
     }
 }

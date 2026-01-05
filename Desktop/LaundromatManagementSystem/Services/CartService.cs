@@ -47,5 +47,15 @@ namespace LaundromatManagementSystem.Services
             
         public int GetItemCount() => 
             _cartItems.Sum(item => item.Quantity);
+
+        public void UpdateQuantity(string itemId, int quantity)
+        {
+            var item = _cartItems.FirstOrDefault(i => i.Service.Id.ToString() == itemId);
+            if (item != null)
+            {
+                item.Quantity = quantity;
+                CartUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        }
     }
 }
