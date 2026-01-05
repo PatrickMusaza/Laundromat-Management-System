@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LaundromatManagementSystem.Views.MainPage"
+             Title="Laundromat Management System">
+
+    <!--
+        <ContentPage.BindingContext>
+            <viewmodels:MainViewModel />
+        </ContentPage.BindingContext>
+        -->
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- Header -->
+        <Border BackgroundColor="{StaticResource PrimaryColor}"
+                Padding="20">
+            <VerticalStackLayout>
+                <Label Text="{Binding WelcomeMessage}"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+
+                <Label Text="{Binding CartSummary}"
+                       FontSize="16"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       Margin="0,10,0,0"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Main Content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20"
+                    Spacing="20">
+
+                <!-- Language Selection -->
+                <Frame BackgroundColor="{StaticResource LightBackground}"
+                       CornerRadius="10"
+                       Padding="15">
+                    <HorizontalStackLayout Spacing="20"
+                            HorizontalOptions="Center">
+                        <Button Text="English"
+                                BackgroundColor="{StaticResource PrimaryColor}"
+                                TextColor="White"
+                                CornerRadius="5"
+                                Padding="20,10"/>
+                        <Button Text="Kinyarwanda"
+                                BackgroundColor="{StaticResource SecondaryColor}"
+                                TextColor="White"
+                                CornerRadius="5"
+                                Padding="20,10"/>
+                    </HorizontalStackLayout>
+                </Frame>
+
+                <!-- Services Navigation -->
+                <Grid ColumnDefinitions="*, *, *, *"
+                      ColumnSpacing="10">
+
+                    <Border BackgroundColor="{StaticResource PrimaryColor}"
+                            Padding="15"
+                            Visual="Material">
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             Spacing="5">
+                            <Label Text="WASH"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Services"
+                                   FontSize="12"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
+                                                    Path=BindingContext.NavigateToServicesCommand}"
+                                CommandParameter="Wash"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                    <Border BackgroundColor="{StaticResource PrimaryColor}"
+                            Padding="15"
+                            Visual="Material"
+                            Grid.Column="1">
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             Spacing="5">
+                            <Label Text="DRY"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Services"
+                                   FontSize="12"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border BackgroundColor="{StaticResource PrimaryColor}"
+                            Padding="15"
+                            Grid.Column="2">
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             Spacing="5">
+                            <Label Text="ADD-ON"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Services"
+                                   FontSize="12"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border BackgroundColor="{StaticResource PrimaryColor}"
+                            Padding="15"
+                            Visual="Material"
+                            Grid.Column="3">
+                        <VerticalStackLayout HorizontalOptions="Center"
+                                             Spacing="5">
+                            <Label Text="PACKAGE"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Services"
+                                   FontSize="12"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                </Grid>
+
+                <!-- Quick Services -->
+                <Label Text="Popular Services"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource PrimaryColor}"/>
+
+                <Grid ColumnDefinitions="*, *"
+                      ColumnSpacing="15"
+                      RowDefinitions="Auto, Auto"
+                      RowSpacing="15">
+
+                    <!-- Hot Water -->
+                    <Frame Grid.Row="0"
+                            Grid.Column="0"
+                           BackgroundColor="White"
+                           CornerRadius="10"
+                           Padding="15"
+                           BorderColor="{StaticResource LightGray}"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="10">
+                            <HorizontalStackLayout>
+                                <Label Text="🔥"
+                                        FontSize="20"/>
+                                <Label Text="Hot Water Wash"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       Margin="10,0,0,0"/>
+                            </HorizontalStackLayout>
+                            <Label Text="RWF 5,000"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource PrimaryColor}"/>
+                            <Button Text="Tap to add"
+                                    BackgroundColor="{StaticResource PrimaryColor}"
+                                    TextColor="White"
+                                    CornerRadius="5"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
+                                                        Path=BindingContext.AddToCartCommand}"
+                                    CommandParameter="{Binding .}"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Cold Water -->
+                    <Frame Grid.Row="0"
+                            Grid.Column="1"
+                           BackgroundColor="White"
+                           CornerRadius="10"
+                           Padding="15"
+                           BorderColor="{StaticResource LightGray}"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="10">
+                            <HorizontalStackLayout>
+                                <Label Text="💧"
+                                        FontSize="20"/>
+                                <Label Text="Cold Water Wash"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       Margin="10,0,0,0"/>
+                            </HorizontalStackLayout>
+                            <Label Text="RWF 6,000"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource PrimaryColor}"/>
+                            <Button Text="Tap to add"
+                                    BackgroundColor="{StaticResource PrimaryColor}"
+                                    TextColor="White"
+                                    CornerRadius="5"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Express Wash -->
+                    <Frame Grid.Row="1"
+                            Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           BackgroundColor="White"
+                           CornerRadius="10"
+                           Padding="15"
+                           BorderColor="{StaticResource LightGray}"
+                           HasShadow="True">
+
+                        <VerticalStackLayout Spacing="10">
+                            <HorizontalStackLayout>
+                                <Label Text="⚡"
+                                        FontSize="20"/>
+                                <Label Text="Express Wash"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       Margin="10,0,0,0"/>
+                            </HorizontalStackLayout>
+                            <Label Text="RWF 8,000"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource PrimaryColor}"/>
+                            <Button Text="Tap to add"
+                                    BackgroundColor="{StaticResource PrimaryColor}"
+                                    TextColor="White"
+                                    CornerRadius="5"
+                                    WidthRequest="150"
+                                    HorizontalOptions="Start"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

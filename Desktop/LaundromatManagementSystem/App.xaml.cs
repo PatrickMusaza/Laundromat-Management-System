@@ -1,14 +1,36 @@
-﻿namespace LaundromatManagementSystem;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using LaundromatManagementSystem.Services;
+using LaundromatManagementSystem.ViewModels;
 
-public partial class App : Application
+namespace LaundromatManagementSystem
 {
-	public App()
-	{
-		InitializeComponent();
-	}
-
-	protected override Window CreateWindow(IActivationState? activationState)
-	{
-		return new Window(new AppShell());
-	}
+    public partial class App : Application
+    {
+        public App()
+        {
+            InitializeComponent();
+            
+            // Set up dependency injection
+            ConfigureServices();
+            
+            MainPage = new AppShell();
+        }
+        
+        private void ConfigureServices()
+        {
+            var services = new ServiceCollection();
+            
+            // Register services
+            services.AddSingleton<IServiceService, ServiceService>();
+            services.AddSingleton<ICartService, CartService>();
+            
+            // Register ViewModels
+            services.AddTransient<MainViewModel>();
+            services.AddTransient<ServicesViewModel>();
+            services.AddTransient<CartViewModel>();
+            
+            ServiceLocator.ServiceProvider = services.BuildServiceProvider();
+        }
+    }
 }
