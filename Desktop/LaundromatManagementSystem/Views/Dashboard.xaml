@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:LaundromatManagementSystem.ViewModels"
              xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
-             x:Class="LaundromatManagementSystem.Views.Dashboard"
-             Title="Dashboard">
+             x:Class="LaundromatManagementSystem.Views.Dashboard">
 
     <ContentPage.BindingContext>
         <viewmodels:DashboardViewModel/>

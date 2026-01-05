@@ -7,7 +7,6 @@
     Title="LaundromatManagementSystem">
 
     <ShellContent
-        Title="Home"
         ContentTemplate="{DataTemplate views:Dashboard}"
         Route="Dashboard" />
 

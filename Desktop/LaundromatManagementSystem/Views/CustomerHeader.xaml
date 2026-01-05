@@ -19,6 +19,7 @@
                        FontAttributes="Bold"
                        TextColor="{DynamicResource HeaderTextColor}"
                        Text="Welcome to Laundromat" />
+                       
                 <Label x:Name="SelectServiceLabel"
                        FontSize="16"
                        TextColor="{DynamicResource HeaderSubtextColor}"
@@ -37,6 +38,7 @@
                         StrokeThickness="2"
                         HeightRequest="60"
                         WidthRequest="160"
+                        StrokeShape="RoundRectangle 10"
                         Padding="15, 0">
                     
                     <Grid ColumnDefinitions="Auto, *"
@@ -44,9 +46,9 @@
                         
                         <!-- Language Icon -->
                         <Label Grid.Column="0"
-                               Text="🌐"
-                               FontSize="24"
-                               VerticalOptions="Center" />
+                            Text="🌐"
+                            FontSize="24"
+                            VerticalOptions="Center" />
                         
                         <!-- Language Text -->
                         <VerticalStackLayout Grid.Column="1"
@@ -75,6 +77,7 @@
                         BackgroundColor="{DynamicResource ControlBackgroundColor}"
                         Stroke="{DynamicResource ControlBorderColor}"
                         StrokeThickness="2"
+                        StrokeShape="RoundRectangle 10"
                         HeightRequest="60"
                         WidthRequest="160"
                         Padding="15, 0">
@@ -97,6 +100,47 @@
                                    TextColor="{DynamicResource ControlLabelColor}" />
                             <Label x:Name="CurrentThemeLabel"
                                    Text="Light"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource ControlValueColor}" />
+                        </VerticalStackLayout>
+                        
+                    </Grid>
+
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnThemeTappedCommand}" />
+                    </Border.GestureRecognizers>
+                    
+                </Border>
+                
+                <!-- Login Selector -->
+                <Border x:Name="LoginSelector"
+                        BackgroundColor="{DynamicResource ControlBackgroundColor}"
+                        Stroke="{DynamicResource ControlBorderColor}"
+                        StrokeThickness="2"
+                        StrokeShape="RoundRectangle 10"
+                        HeightRequest="60"
+                        WidthRequest="160"
+                        Padding="15, 0">
+                    
+                    <Grid ColumnDefinitions="Auto, *"
+                          ColumnSpacing="10">
+                        
+                        <!-- Login Icon -->
+                        <Label x:Name="LoginIconLabel"
+                               Text="👤"
+                               FontSize="24"
+                               VerticalOptions="Center" />
+                        
+                        <!-- Login Text -->
+                        <VerticalStackLayout Grid.Column="1"
+                                             VerticalOptions="Center">
+                            <Label x:Name="LoginLabel"
+                                   Text="Login"
+                                   FontSize="10"
+                                   TextColor="{DynamicResource ControlLabelColor}" />
+                            <Label x:Name="CurrentLoginLabel"
+                                   Text="User"
                                    FontSize="16"
                                    FontAttributes="Bold"
                                    TextColor="{DynamicResource ControlValueColor}" />
