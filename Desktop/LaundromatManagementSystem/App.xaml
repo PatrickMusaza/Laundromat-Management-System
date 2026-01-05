@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
              x:Class="LaundromatManagementSystem.App">
-    
+
     <Application.Resources>
         <ResourceDictionary>
-            
+
             <!-- Light Theme (Default) -->
             <Color x:Key="PrimaryColor">#1E3A8A</Color>
             <Color x:Key="BackgroundColor">#FFFFFF</Color>
@@ -26,7 +27,7 @@
             <Color x:Key="CardSubtextColor">#6B7280</Color>
             <Color x:Key="PriceColor">#1E3A8A</Color>
             <Color x:Key="ModalBackgroundColor">#FFFFFF</Color>
-            
+
             <!-- Gray Theme -->
             <Color x:Key="GrayBackgroundColor">#F3F4F6</Color>
             <Color x:Key="GrayHeaderBackgroundColor">#FFFFFF</Color>
@@ -46,7 +47,7 @@
             <Color x:Key="GrayCardSubtextColor">#6B7280</Color>
             <Color x:Key="GrayPriceColor">#1E3A8A</Color>
             <Color x:Key="GrayModalBackgroundColor">#F3F4F6</Color>
-            
+
             <!-- Dark Theme -->
             <Color x:Key="DarkBackgroundColor">#1F2937</Color>
             <Color x:Key="DarkHeaderBackgroundColor">#1F2937</Color>
@@ -66,8 +67,45 @@
             <Color x:Key="DarkCardSubtextColor">#9CA3AF</Color>
             <Color x:Key="DarkPriceColor">#60A5FA</Color>
             <Color x:Key="DarkModalBackgroundColor">#1F2937</Color>
-            
+
+            <!-- Add these converters 
+            <views:DecreaseQuantityConverter x:Key="DecreaseQuantityConverter"/>
+            <views:IncreaseQuantityConverter x:Key="IncreaseQuantityConverter"/>
+            -->
+
+            <!-- Add these to your existing color resources -->
+            <Color x:Key="CartBackgroundColor">#FFFFFF</Color>
+            <Color x:Key="CartBorderColor">#E5E7EB</Color>
+            <Color x:Key="CartTitleColor">#111827</Color>
+            <Color x:Key="CartLabelColor">#6B7280</Color>
+            <Color x:Key="CartValueColor">#111827</Color>
+            <Color x:Key="CartTotalLabelColor">#111827</Color>
+            <Color x:Key="CartTotalValueColor">#1E3A8A</Color>
+            <Color x:Key="CartDividerColor">#E5E7EB</Color>
+            <Color x:Key="CartItemBackgroundColor">#F9FAFB</Color>
+            <Color x:Key="CartItemBorderColor">#E5E7EB</Color>
+            <Color x:Key="CartItemTextColor">#111827</Color>
+            <Color x:Key="CartItemPriceColor">#6B7280</Color>
+            <Color x:Key="CartItemAddonColor">#9CA3AF</Color>
+            <Color x:Key="CartItemTotalColor">#1E3A8A</Color>
+            <Color x:Key="RemoveButtonColor">#EF4444</Color>
+            <Color x:Key="QuantityButtonColor">#E5E7EB</Color>
+            <Color x:Key="QuantityButtonTextColor">#374151</Color>
+            <Color x:Key="EmptyCartTextColor">#6B7280</Color>
+            <Color x:Key="EmptyCartSubtextColor">#9CA3AF</Color>
+            <Color x:Key="CheckoutButtonColor">#1E3A8A</Color>
+
+            <!-- Add Gray theme variants -->
+            <Color x:Key="GrayCartBackgroundColor">#F3F4F6</Color>
+            <Color x:Key="GrayCartBorderColor">#D1D5DB</Color>
+            <!-- ... etc for all gray variants -->
+
+            <!-- Add Dark theme variants -->
+            <Color x:Key="DarkCartBackgroundColor">#1F2937</Color>
+            <Color x:Key="DarkCartBorderColor">#374151</Color>
+            <!-- ... etc for all dark variants -->
+
         </ResourceDictionary>
     </Application.Resources>
-    
+
 </Application>

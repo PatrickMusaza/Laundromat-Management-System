@@ -1,4 +1,3 @@
-using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 
 namespace LaundromatManagementSystem.Views
@@ -9,7 +8,7 @@ namespace LaundromatManagementSystem.Views
             BindableProperty.Create(nameof(Language), typeof(string), typeof(CustomerHeader), "EN");
         
         public static readonly BindableProperty ThemeProperty =
-            BindableProperty.Create(nameof(Theme), typeof(string), typeof(CustomerHeader), "light");
+            BindableProperty.Create(nameof(Theme), typeof(string), typeof(CustomerHeader), "dark");
         
         public static readonly BindableProperty LanguageChangedProperty =
             BindableProperty.Create(nameof(LanguageChanged), typeof(ICommand), typeof(CustomerHeader));
@@ -133,7 +132,7 @@ namespace LaundromatManagementSystem.Views
             // based on the selected theme
         }
         
-        private async void OnLanguageTapped(object sender, System.EventArgs e)
+        public async void OnLanguageTapped(object sender, System.EventArgs e)
         {
             var languages = new[] { "EN", "RW", "FR" };
             var languageNames = new[] { "English", "Kinyarwanda", "Français" };
@@ -156,7 +155,7 @@ namespace LaundromatManagementSystem.Views
             }
         }
         
-        private async void OnThemeTapped(object sender, System.EventArgs e)
+        public async void OnThemeTapped(object sender, System.EventArgs e)
         {
             var t = _translations[Language];
             var themes = new[] { "light", "gray", "dark" };

@@ -19,7 +19,6 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private string _selectedCategory = "washing";
 
-        [ObservableProperty]
         public List<CartItem> Cart { get; set; } = new();
 
         [ObservableProperty]
