@@ -7,6 +7,6 @@ namespace LaundromatManagementSystem.Services
         Task<List<Service>> GetServicesAsync();
         Task<List<Service>> GetServicesByTypeAsync(ServiceType type);
         Task<Service?> GetServiceByIdAsync(int id);
-        Task<List<Service>> GetServicesByCategoryAsync(string category);
+        Task<List<Service>> GetPopularServicesAsync();
     }
 }

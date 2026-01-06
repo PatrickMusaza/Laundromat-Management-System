@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LaundromatManagementSystem.Views.ServiceGrid">
+             xmlns:models="clr-namespace:LaundromatManagementSystem.Models"
+             x:Class="LaundromatManagementSystem.Views.ServiceGrid"
+             x:Name="ServiceGridView"
+             x:DataType="models:Service">
     
     <Grid RowDefinitions="Auto, *">
         
         <!-- Category Tabs -->
         <HorizontalStackLayout Grid.Row="0"
                                Spacing="1"
-                               Margin="0, 0, 0, 20">
+                               Margin="0,0,0,20">
             
             <Border x:Name="WashingTab"
                     BackgroundColor="{DynamicResource TabBackgroundColor}"
@@ -62,7 +65,7 @@
         
         <!-- Services Grid -->
         <CollectionView Grid.Row="1"
-                        ItemsSource="{Binding Services}"
+                        ItemsSource="{Binding Source={x:Reference ServiceGridView}, Path=Services}"
                         SelectionMode="None">
             
             <CollectionView.ItemsLayout>
@@ -73,10 +76,11 @@
             </CollectionView.ItemsLayout>
             
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:Service">
                     <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
                             Stroke="{DynamicResource CardBorderColor}"
                             StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10"
                             Padding="15"
                             HeightRequest="150">
                         
@@ -92,7 +96,7 @@
                             <!-- Price -->
                             <HorizontalStackLayout Grid.Row="1"
                                                    Spacing="5">
-                                <Label Text="{Binding Price, StringFormat='{0:C0}'}"
+                                <Label Text="{Binding Price, StringFormat='{0:N0}'}"
                                        FontSize="18"
                                        FontAttributes="Bold"
                                        TextColor="{DynamicResource PriceColor}" />
@@ -113,6 +117,7 @@
                             <!-- Add Button -->
                             <Border Grid.Row="3"
                                     BackgroundColor="{DynamicResource PrimaryColor}"
+                                    StrokeShape="RoundRectangle 5"
                                     Padding="10"
                                     HorizontalOptions="Fill">
                                 <Label Text="Tap to add"
@@ -121,9 +126,9 @@
                                        TextColor="White"
                                        HorizontalOptions="Center" />
                                 <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
-                                                          Path=BindingContext.AddToCartCommand}"
-                                                          CommandParameter="{Binding .}" />
+                                    <TapGestureRecognizer 
+                                        Command="{Binding Source={x:Reference ServiceGridView}, Path=AddToCartCommand}"
+                                        CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
                             </Border>
                             

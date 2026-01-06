@@ -1,14 +1,15 @@
 using LaundromatManagementSystem.Models;
+using System.Collections.ObjectModel;
 
 namespace LaundromatManagementSystem.Services
 {
     public class CartService : ICartService
     {
-        private List<CartItem> _cartItems = new();
+        private ObservableCollection<CartItem> _cartItems = new();
         
-        public event EventHandler CartUpdated;
+        public event EventHandler? CartUpdated;
         
-        public List<CartItem> GetCartItems() => _cartItems;
+        public ObservableCollection<CartItem> GetCartItems() => _cartItems;
         
         public void AddToCart(Service service)
         {
@@ -26,13 +27,27 @@ namespace LaundromatManagementSystem.Services
             CartUpdated?.Invoke(this, EventArgs.Empty);
         }
         
-        public void RemoveFromCart(int serviceId)
+        public void RemoveFromCart(string itemId)
         {
-            var item = _cartItems.FirstOrDefault(item => item.Service.Id == serviceId);
+            var item = _cartItems.FirstOrDefault(item => item.Id == itemId);
             if (item != null)
             {
                 _cartItems.Remove(item);
                 CartUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        }
+        
+        public void UpdateQuantity(string itemId, int quantity)
+        {
+            var item = _cartItems.FirstOrDefault(item => item.Id == itemId);
+            if (item != null && quantity > 0)
+            {
+                item.Quantity = quantity;
+                CartUpdated?.Invoke(this, EventArgs.Empty);
+            }
+            else if (item != null && quantity <= 0)
+            {
+                RemoveFromCart(itemId);
             }
         }
         
@@ -47,15 +62,5 @@ namespace LaundromatManagementSystem.Services
             
         public int GetItemCount() => 
             _cartItems.Sum(item => item.Quantity);
-
-        public void UpdateQuantity(string itemId, int quantity)
-        {
-            var item = _cartItems.FirstOrDefault(i => i.Service.Id.ToString() == itemId);
-            if (item != null)
-            {
-                item.Quantity = quantity;
-                CartUpdated?.Invoke(this, EventArgs.Empty);
-            }
-        }
     }
 }

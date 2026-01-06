@@ -1,32 +1,39 @@
-using CommunityToolkit.Mvvm.Input;
-using LaundromatManagementSystem.Models;
 using LaundromatManagementSystem.ViewModels;
+using LaundromatManagementSystem.Services;
 
 namespace LaundromatManagementSystem.Views
 {
     public partial class Dashboard : ContentPage
     {
-        private DashboardViewModel _viewModel;
-        
         public Dashboard()
         {
             InitializeComponent();
-            _viewModel = BindingContext as DashboardViewModel;
+            
+            // Create ViewModel with dependencies
+            var cartService = new CartService();
+            var serviceService = new ServiceService();
+            var viewModel = new DashboardViewModel(cartService, serviceService);
+            
+            // Add debug output to see if commands work
+            viewModel.ChangeLanguageCommand.CanExecuteChanged += (s, e) => 
+                Console.WriteLine($"ChangeLanguageCommand CanExecute changed");
+            
+            viewModel.ChangeThemeCommand.CanExecuteChanged += (s, e) => 
+                Console.WriteLine($"ChangeThemeCommand CanExecute changed");
+            
+            BindingContext = viewModel;
         }
         
-        private void OnLanguageChanged(string language)
+        // Optional: Override OnAppearing to debug
+        protected override void OnAppearing()
         {
-            _viewModel?.ChangeLanguage(language);
-        }
-        
-        private void OnThemeChanged(string theme)
-        {
-            _viewModel?.ChangeTheme(theme);
-        }
-        
-        private void OnCategoryChanged(string category)
-        {
-            _viewModel?.ChangeCategory(category);
+            base.OnAppearing();
+            Console.WriteLine("Dashboard appeared");
+            
+            if (BindingContext is DashboardViewModel vm)
+            {
+                Console.WriteLine($"Current Language: {vm.Language}, Theme: {vm.Theme}");
+            }
         }
     }
 }

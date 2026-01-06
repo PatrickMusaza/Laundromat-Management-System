@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using LaundromatManagementSystem.Services;
 using LaundromatManagementSystem.ViewModels;
+using LaundromatManagementSystem.Views;
 
 namespace LaundromatManagementSystem
 {
     public partial class App : Application
     {
+        public static IServiceProvider? Services { get; private set; }
+        
         public App()
         {
             InitializeComponent();
@@ -14,6 +16,7 @@ namespace LaundromatManagementSystem
             // Set up dependency injection
             ConfigureServices();
             
+            // Create main window
             MainPage = new AppShell();
         }
         
@@ -26,11 +29,9 @@ namespace LaundromatManagementSystem
             services.AddSingleton<ICartService, CartService>();
             
             // Register ViewModels
-            services.AddTransient<MainViewModel>();
-            services.AddTransient<ServicesViewModel>();
-            services.AddTransient<CartViewModel>();
+            services.AddSingleton<DashboardViewModel>();
             
-            ServiceLocator.ServiceProvider = services.BuildServiceProvider();
+            Services = services.BuildServiceProvider();
         }
     }
 }

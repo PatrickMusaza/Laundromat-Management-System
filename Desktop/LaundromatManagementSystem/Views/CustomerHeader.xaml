@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LaundromatManagementSystem.Views.CustomerHeader">
-    
+             xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
+             x:Class="LaundromatManagementSystem.Views.CustomerHeader"
+             x:Name="CustomerHeaderView">
+
     <Border StrokeThickness="2"
             BackgroundColor="{DynamicResource HeaderBackgroundColor}"
             Stroke="{DynamicResource HeaderBorderColor}"
             Padding="0">
-        
+
         <Grid ColumnDefinitions="*, Auto"
               Padding="30, 20">
-            
+
             <!-- Left Side: Logo and Titles -->
             <VerticalStackLayout Grid.Column="0"
                                  VerticalOptions="Center">
@@ -18,145 +20,128 @@
                        FontSize="24"
                        FontAttributes="Bold"
                        TextColor="{DynamicResource HeaderTextColor}"
-                       Text="Welcome to Laundromat" />
-                       
+                       Text="{Binding WelcomeText}"/>
                 <Label x:Name="SelectServiceLabel"
                        FontSize="16"
                        TextColor="{DynamicResource HeaderSubtextColor}"
-                       Text="Select Your Services" />
+                       Text="{Binding SelectServiceText}"/>
             </VerticalStackLayout>
-            
+
             <!-- Right Side: Controls -->
             <HorizontalStackLayout Grid.Column="1"
                                    Spacing="15"
                                    VerticalOptions="Center">
-                
+
                 <!-- Language Selector -->
-                <Border x:Name="LanguageSelector"
-                        BackgroundColor="{DynamicResource ControlBackgroundColor}"
-                        Stroke="{DynamicResource ControlBorderColor}"
-                        StrokeThickness="2"
-                        HeightRequest="60"
-                        WidthRequest="160"
-                        StrokeShape="RoundRectangle 10"
-                        Padding="15, 0">
-                    
+                <Frame BackgroundColor="{DynamicResource ControlBackgroundColor}"
+                       BorderColor="{DynamicResource ControlBorderColor}"
+                       CornerRadius="10"
+                       HeightRequest="60"
+                       WidthRequest="160"
+                       Padding="15, 0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnLanguageTappedCommand}"/>
+                    </Frame.GestureRecognizers>
+
                     <Grid ColumnDefinitions="Auto, *"
                           ColumnSpacing="10">
-                        
                         <!-- Language Icon -->
                         <Label Grid.Column="0"
-                            Text="🌐"
-                            FontSize="24"
-                            VerticalOptions="Center" />
-                        
+                               Text="🌐"
+                               FontSize="24"
+                               VerticalOptions="Center"/>
+
                         <!-- Language Text -->
                         <VerticalStackLayout Grid.Column="1"
                                              VerticalOptions="Center">
                             <Label x:Name="LanguageLabel"
-                                   Text="Language"
+                                   Text="{Binding LanguageLabelText}"
                                    FontSize="10"
-                                   TextColor="{DynamicResource ControlLabelColor}" />
+                                   TextColor="{DynamicResource ControlLabelColor}"/>
                             <Label x:Name="CurrentLanguageLabel"
-                                   Text="EN"
+                                   Text="{Binding Language}"
                                    FontSize="16"
                                    FontAttributes="Bold"
-                                   TextColor="{DynamicResource ControlValueColor}" />
+                                   TextColor="{DynamicResource ControlValueColor}"/>
                         </VerticalStackLayout>
-                        
                     </Grid>
+                </Frame>
 
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnLanguageTappedCommand}" />
-                    </Border.GestureRecognizers>
-                    
-                </Border>
-                
                 <!-- Theme Selector -->
-                <Border x:Name="ThemeSelector"
-                        BackgroundColor="{DynamicResource ControlBackgroundColor}"
-                        Stroke="{DynamicResource ControlBorderColor}"
-                        StrokeThickness="2"
-                        StrokeShape="RoundRectangle 10"
-                        HeightRequest="60"
-                        WidthRequest="160"
-                        Padding="15, 0">
-                    
+                <Frame BackgroundColor="{DynamicResource ControlBackgroundColor}"
+                       BorderColor="{DynamicResource ControlBorderColor}"
+                       CornerRadius="10"
+                       HeightRequest="60"
+                       WidthRequest="160"
+                       Padding="15, 0">
+
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnLanguageTappedCommand}"/>
+                    </Frame.GestureRecognizers>
+
                     <Grid ColumnDefinitions="Auto, *"
                           ColumnSpacing="10">
-                        
                         <!-- Theme Icon -->
-                        <Label x:Name="ThemeIconLabel"
-                               Text="☀️"
+                        <Label Grid.Column="0"
+                               Text="{Binding ThemeIcon}"
                                FontSize="24"
-                               VerticalOptions="Center" />
-                        
+                               VerticalOptions="Center"/>
+
                         <!-- Theme Text -->
                         <VerticalStackLayout Grid.Column="1"
                                              VerticalOptions="Center">
                             <Label x:Name="ThemeLabel"
-                                   Text="Appearance"
+                                   Text="{Binding ThemeLabelText}"
                                    FontSize="10"
-                                   TextColor="{DynamicResource ControlLabelColor}" />
+                                   TextColor="{DynamicResource ControlLabelColor}"/>
                             <Label x:Name="CurrentThemeLabel"
-                                   Text="Light"
+                                   Text="{Binding CurrentThemeText}"
                                    FontSize="16"
                                    FontAttributes="Bold"
-                                   TextColor="{DynamicResource ControlValueColor}" />
+                                   TextColor="{DynamicResource ControlValueColor}"/>
                         </VerticalStackLayout>
-                        
                     </Grid>
+                </Frame>
 
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnThemeTappedCommand}" />
-                    </Border.GestureRecognizers>
-                    
-                </Border>
-                
                 <!-- Login Selector -->
-                <Border x:Name="LoginSelector"
-                        BackgroundColor="{DynamicResource ControlBackgroundColor}"
-                        Stroke="{DynamicResource ControlBorderColor}"
-                        StrokeThickness="2"
-                        StrokeShape="RoundRectangle 10"
-                        HeightRequest="60"
-                        WidthRequest="160"
-                        Padding="15, 0">
-                    
+                <Frame BackgroundColor="{DynamicResource ControlBackgroundColor}"
+                       BorderColor="{DynamicResource ControlBorderColor}"
+                       CornerRadius="10"
+                       HeightRequest="60"
+                       WidthRequest="160"
+                       Padding="15, 0">
+
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OnLanguageTappedCommand}"/>
+                    </Frame.GestureRecognizers>
+
                     <Grid ColumnDefinitions="Auto, *"
                           ColumnSpacing="10">
-                        
                         <!-- Login Icon -->
-                        <Label x:Name="LoginIconLabel"
-                               Text="👤"
+                        <Label Grid.Column="0"
+                               Text="🔒"
                                FontSize="24"
-                               VerticalOptions="Center" />
-                        
+                               VerticalOptions="Center"/>
+
                         <!-- Login Text -->
                         <VerticalStackLayout Grid.Column="1"
                                              VerticalOptions="Center">
                             <Label x:Name="LoginLabel"
-                                   Text="Login"
+                                   Text="{Binding LoginLabelText}"
                                    FontSize="10"
-                                   TextColor="{DynamicResource ControlLabelColor}" />
+                                   TextColor="{DynamicResource ControlLabelColor}"/>
                             <Label x:Name="CurrentLoginLabel"
-                                   Text="User"
+                                   Text="{Binding CurrentLoginText}"
                                    FontSize="16"
                                    FontAttributes="Bold"
-                                   TextColor="{DynamicResource ControlValueColor}" />
+                                   TextColor="{DynamicResource ControlValueColor}"/>
                         </VerticalStackLayout>
-                        
                     </Grid>
+                </Frame>
 
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OnThemeTappedCommand}" />
-                    </Border.GestureRecognizers>
-                    
-                </Border>
-                
             </HorizontalStackLayout>
-            
+
         </Grid>
-        
+
     </Border>
 </ContentView>

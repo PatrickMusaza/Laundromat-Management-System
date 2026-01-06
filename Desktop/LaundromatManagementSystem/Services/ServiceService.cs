@@ -1,5 +1,4 @@
 using LaundromatManagementSystem.Models;
-using System.Linq;
 
 namespace LaundromatManagementSystem.Services
 {
@@ -79,12 +78,11 @@ namespace LaundromatManagementSystem.Services
             var service = _services.FirstOrDefault(s => s.Id == id);
             return Task.FromResult(service);
         }
-        public Task<List<Service>> GetServicesByCategoryAsync(string category)
+        
+        public Task<List<Service>> GetPopularServicesAsync()
         {
-            var filtered = _services
-                .Where(s => s.Type.ToString().Equals(category, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-            return Task.FromResult(filtered);
+            var popular = _services.Take(3).ToList(); // First 3 as popular
+            return Task.FromResult(popular);
         }
     }
 }

@@ -14,7 +14,9 @@
         <!-- Customer Header -->
         <views:CustomerHeader Grid.Row="0"
                               Language="{Binding Language}"
-                              Theme="{Binding Theme}" />
+                              Theme="{Binding Theme}"
+                              LanguageChangedCommand="{Binding ChangeLanguageCommand}"
+                              ThemeChangedCommand="{Binding ChangeThemeCommand}" />
 
         <!-- Main Content Area -->
         <Grid Grid.Row="1"

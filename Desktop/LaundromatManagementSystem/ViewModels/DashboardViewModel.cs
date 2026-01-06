@@ -1,124 +1,238 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 using LaundromatManagementSystem.Models;
 using LaundromatManagementSystem.Services;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace LaundromatManagementSystem.ViewModels
 {
-    public partial class DashboardViewModel : ObservableObject
+    public class DashboardViewModel : INotifyPropertyChanged
     {
         private readonly ICartService _cartService;
         private readonly IServiceService _serviceService;
-
-        [ObservableProperty]
+        
         private string _language = "EN";
-
-        [ObservableProperty]
         private string _theme = "light";
-
-        [ObservableProperty]
         private string _selectedCategory = "washing";
-
-        public List<CartItem> Cart { get; set; } = new();
-
-        [ObservableProperty]
+        private ObservableCollection<CartItem> _cart = new();
         private decimal _subtotal;
-
-        [ObservableProperty]
         private decimal _tax;
-
-        [ObservableProperty]
         private decimal _total;
-
-        [ObservableProperty]
         private bool _showPaymentModal;
-
-        [ObservableProperty]
-        private string _transactionId;
-
+        private string _transactionId = string.Empty;
+        
+        public event PropertyChangedEventHandler? PropertyChanged;
+        
+        public string Language
+        {
+            get => _language;
+            set
+            {
+                if (_language != value)
+                {
+                    _language = value;
+                    OnPropertyChanged();
+                    
+                    // Also update any other components that need language changes
+                    UpdateLanguageDependentProperties();
+                }
+            }
+        }
+        
+        public string Theme
+        {
+            get => _theme;
+            set
+            {
+                if (_theme != value)
+                {
+                    _theme = value;
+                    OnPropertyChanged();
+                    
+                    // Update theme resources
+                    UpdateThemeResources();
+                }
+            }
+        }
+        
+        public string SelectedCategory
+        {
+            get => _selectedCategory;
+            set
+            {
+                if (_selectedCategory != value)
+                {
+                    _selectedCategory = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public ObservableCollection<CartItem> Cart
+        {
+            get => _cart;
+            set
+            {
+                if (_cart != value)
+                {
+                    _cart = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public decimal Subtotal
+        {
+            get => _subtotal;
+            set
+            {
+                if (_subtotal != value)
+                {
+                    _subtotal = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public decimal Tax
+        {
+            get => _tax;
+            set
+            {
+                if (_tax != value)
+                {
+                    _tax = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public decimal Total
+        {
+            get => _total;
+            set
+            {
+                if (_total != value)
+                {
+                    _total = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public bool ShowPaymentModal
+        {
+            get => _showPaymentModal;
+            set
+            {
+                if (_showPaymentModal != value)
+                {
+                    _showPaymentModal = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public string TransactionId
+        {
+            get => _transactionId;
+            set
+            {
+                if (_transactionId != value)
+                {
+                    _transactionId = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        // Commands
+        public ICommand ChangeLanguageCommand { get; }
+        public ICommand ChangeThemeCommand { get; }
+        public ICommand ChangeCategoryCommand { get; }
+        public ICommand AddToCartCommand { get; }
+        public ICommand RemoveFromCartCommand { get; }
+        public ICommand UpdateQuantityCommand { get; }
+        public ICommand ProcessPaymentCommand { get; }
+        public ICommand ClosePaymentModalCommand { get; }
+        public ICommand CompletePaymentCommand { get; }
+        
         public DashboardViewModel()
         {
-            // default implementations
-            _cartService = new CartService();
-            _serviceService = new ServiceService();
-
-            _transactionId = string.Empty;
-
-            _cartService.CartUpdated += OnCartUpdated;
-
-            LoadInitialData();
-            CalculateTotals();
         }
 
         public DashboardViewModel(ICartService cartService, IServiceService serviceService)
         {
             _cartService = cartService;
             _serviceService = serviceService;
-
+            
+            // Initialize commands
+            ChangeLanguageCommand = new Command<string>(ChangeLanguage);
+            ChangeThemeCommand = new Command<string>(ChangeTheme);
+            ChangeCategoryCommand = new Command<string>(ChangeCategory);
+            AddToCartCommand = new Command<Service>(AddToCart);
+            RemoveFromCartCommand = new Command<string>(RemoveFromCart);
+            UpdateQuantityCommand = new Command<(string, int)>(UpdateQuantity);
+            ProcessPaymentCommand = new Command(ProcessPayment);
+            ClosePaymentModalCommand = new Command(ClosePaymentModal);
+            CompletePaymentCommand = new Command<(string, string)>(CompletePayment);
+            
+            // Subscribe to cart updates
             _cartService.CartUpdated += OnCartUpdated;
-
-            LoadInitialData();
+            
+            // Initialize cart from service
+            Cart = new ObservableCollection<CartItem>(_cartService.GetCartItems());
+            
             CalculateTotals();
         }
-
-        #region Commands
-
-        [RelayCommand]
-        public void ChangeLanguage(string language)
+        
+        private void ChangeLanguage(string language)
         {
             Language = language;
         }
-
-        [RelayCommand]
-        public void ChangeTheme(string theme)
+        
+        private void ChangeTheme(string theme)
         {
             Theme = theme;
-            UpdateThemeResources();
         }
-
-        [RelayCommand]
-        public void ChangeCategory(string category)
+        
+        private void ChangeCategory(string category)
         {
             SelectedCategory = category;
-            _ = LoadServicesForCategory(category);
         }
-
-        [RelayCommand]
+        
         private void AddToCart(Service service)
         {
             _cartService.AddToCart(service);
         }
-
-        [RelayCommand]
-        private void RemoveFromCart(int itemId)
+        
+        private void RemoveFromCart(string itemId)
         {
             _cartService.RemoveFromCart(itemId);
         }
-
-        [RelayCommand]
+        
         private void UpdateQuantity((string itemId, int quantity) parameters)
         {
-            _cartService.UpdateQuantity(parameters.itemId, parameters.quantity);
+            _cartService.UpdateQuantity(parameters.Item1, parameters.Item2);
         }
-
-        [RelayCommand]
+        
         private void ProcessPayment()
         {
             if (Cart.Count == 0) return;
-
+            
             ShowPaymentModal = true;
-            TransactionId = $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString().Substring(6)}";
+            TransactionId = $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
         }
-
-        [RelayCommand]
+        
         private void ClosePaymentModal()
         {
             ShowPaymentModal = false;
         }
-
-        [RelayCommand]
+        
         private void CompletePayment((string paymentMethod, string customer) parameters)
         {
+            // Create transaction
             var transaction = new Transaction
             {
                 Id = TransactionId,
@@ -129,60 +243,51 @@ namespace LaundromatManagementSystem.ViewModels
                 Items = new List<CartItem>(Cart),
                 Customer = parameters.customer
             };
-
-            // Save transaction (implement your service)
+            
+            // TODO: Add to transaction history
             // _transactionService.AddTransaction(transaction);
-
+            
+            // Clear cart
             _cartService.ClearCart();
+            
+            // Close modal
             ShowPaymentModal = false;
         }
-
-        #endregion
-
-        #region Private Methods
-
-        private void OnCartUpdated(object sender, EventArgs e)
+        
+        private void OnCartUpdated(object? sender, EventArgs e)
         {
-            Cart = _cartService.GetCartItems();
-            CalculateTotals();
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Cart = new ObservableCollection<CartItem>(_cartService.GetCartItems());
+                CalculateTotals();
+            });
         }
-
+        
         private void CalculateTotals()
         {
             Subtotal = Cart.Sum(item => item.TotalPrice);
             Tax = Math.Round(Subtotal * 0.1m, 2);
             Total = Subtotal + Tax;
         }
-
-        private void LoadInitialData()
+        
+        private void UpdateLanguageDependentProperties()
         {
-            _ = LoadServicesForCategory(SelectedCategory);
+            // Update any properties that depend on language
+            // This will trigger UI updates through bindings
         }
-
-        private async Task LoadServicesForCategory(string category)
-        {
-            var services = await _serviceService.GetServicesByCategoryAsync(category);
-            // TODO: bind services to UI (if needed)
-        }
-
+        
         private void UpdateThemeResources()
         {
-            var app = Application.Current;
-
-            if (Theme == "dark")
-            {
-                // Set dark theme resources
-            }
-            else if (Theme == "gray")
-            {
-                // Set gray theme resources
-            }
-            else
-            {
-                // Set light theme resources
-            }
+            // Update application resources based on theme
+            // Implementation depends on how you handle themes
+            
+            // For now, we'll just trigger property change
+            OnPropertyChanged(nameof(Theme));
         }
-
-        #endregion
+        
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
