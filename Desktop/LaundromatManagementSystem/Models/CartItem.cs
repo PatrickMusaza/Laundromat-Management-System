@@ -1,12 +1,21 @@
+using System.Collections.ObjectModel;
+
 namespace LaundromatManagementSystem.Models
 {
     public class CartItem
     {
-        public Service Service { get; set; } = new();
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public ObservableCollection<ServiceAddon> Addons { get; set; } = new();
         public int Quantity { get; set; } = 1;
-        public decimal TotalPrice => Service.Price * Quantity;
         
-        // Use a simpler ID approach
-        public string Id => $"{Service.Id}-{Quantity}";
+        public decimal TotalPrice => (Price + Addons.Sum(a => a.Price)) * Quantity;
+    }
+    
+    public class ServiceAddon
+    {
+        public string Name { get; set; } = string.Empty;
+        public decimal Price { get; set; }
     }
 }

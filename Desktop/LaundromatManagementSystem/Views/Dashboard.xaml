@@ -1,47 +1,56 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:viewmodels="clr-namespace:LaundromatManagementSystem.ViewModels"
              xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
-             x:Class="LaundromatManagementSystem.Views.Dashboard">
-
-    <ContentPage.BindingContext>
-        <viewmodels:DashboardViewModel/>
-    </ContentPage.BindingContext>
+             xmlns:vm="clr-namespace:LaundromatManagementSystem.ViewModels"
+             x:Class="LaundromatManagementSystem.Views.Dashboard"
+             x:DataType="vm:DashboardViewModel"
+             Title="Dashboard">
 
     <Grid RowDefinitions="Auto, *">
 
         <!-- Customer Header -->
         <views:CustomerHeader Grid.Row="0"
-                              Language="{Binding Language}"
-                              Theme="{Binding Theme}"
-                              LanguageChangedCommand="{Binding ChangeLanguageCommand}"
-                              ThemeChangedCommand="{Binding ChangeThemeCommand}" />
+                             Language="{Binding Language}"
+                             Theme="{Binding Theme}"
+                             LanguageChangedCommand="{Binding ChangeLanguageCommand}"
+                             ThemeChangedCommand="{Binding ChangeThemeCommand}" />
 
-        <!-- Main Content Area -->
+        <!-- Main Content -->
         <Grid Grid.Row="1"
               ColumnDefinitions="7*, 3*"
-              ColumnSpacing="20"
-              Padding="20">
+              ColumnSpacing="24"
+              Padding="24">
 
-            <!-- Left Panel - Services (7/10 width) -->
+            <!-- Left Panel - Services -->
             <Border Grid.Column="0"
-                    BackgroundColor="{DynamicResource BackgroundColor}"
                     StrokeThickness="0"
                     Padding="0">
+                <views:ServiceGrid SelectedCategory="{Binding SelectedCategory}"
+                                  Language="{Binding Language}"
+                                  Theme="{Binding Theme}"
+                                  CategoryChangedCommand="{Binding ChangeCategoryCommand}"
+                                  AddToCartCommand="{Binding AddToCartCommand}" />
             </Border>
 
-            <!-- Right Panel - Shopping Cart (3/10 width) -->
+            <!-- Right Panel - Shopping Cart -->
             <Border Grid.Column="1"
-                    BackgroundColor="{DynamicResource BackgroundColor}"
                     StrokeThickness="0"
                     Padding="0">
-
+                <views:ShoppingCart Cart="{Binding Cart}"
+                                   Subtotal="{Binding Subtotal}"
+                                   Tax="{Binding Tax}"
+                                   Total="{Binding Total}"
+                                   Language="{Binding Language}"
+                                   Theme="{Binding Theme}"
+                                   RemoveItemCommand="{Binding RemoveFromCartCommand}"
+                                   UpdateQuantityCommand="{Binding UpdateQuantityCommand}"
+                                   ProcessPaymentCommand="{Binding ProcessPaymentCommand}" />
             </Border>
 
         </Grid>
 
-        <!-- Payment Modal (Conditional) -->
+        <!-- Payment Modal -->
         <Border Grid.RowSpan="2"
                 BackgroundColor="#80000000"
                 IsVisible="{Binding ShowPaymentModal}"
@@ -49,11 +58,13 @@
                 HorizontalOptions="Fill">
 
             <Border VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    WidthRequest="400"
-                    BackgroundColor="{DynamicResource ModalBackgroundColor}"
-                    Padding="20">
-
+                    HorizontalOptions="Center">
+                <views:PaymentModal Total="{Binding Total}"
+                                   TransactionId="{Binding TransactionId}"
+                                   Language="{Binding Language}"
+                                   Theme="{Binding Theme}"
+                                   CloseCommand="{Binding ClosePaymentModalCommand}"
+                                   PaymentCompleteCommand="{Binding CompletePaymentCommand}" />
             </Border>
 
         </Border>

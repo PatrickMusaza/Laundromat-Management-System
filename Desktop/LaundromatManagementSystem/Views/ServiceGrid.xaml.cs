@@ -1,27 +1,28 @@
 using System.Windows.Input;
-using System.Collections.ObjectModel;
-using LaundromatManagementSystem.Models;
-using CommunityToolkit.Mvvm.ComponentModel;
+using LaundromatManagementSystem.Services;
+using LaundromatManagementSystem.ViewModels;
 
 namespace LaundromatManagementSystem.Views
 {
     public partial class ServiceGrid : ContentView
     {
         public static readonly BindableProperty SelectedCategoryProperty =
-            BindableProperty.Create(nameof(SelectedCategory), typeof(string), typeof(ServiceGrid), "washing");
+            BindableProperty.Create(nameof(SelectedCategory), typeof(string), typeof(ServiceGrid), "washing",
+                propertyChanged: OnSelectedCategoryChanged);
         
         public static readonly BindableProperty LanguageProperty =
-            BindableProperty.Create(nameof(Language), typeof(string), typeof(ServiceGrid), "EN");
+            BindableProperty.Create(nameof(Language), typeof(Language), typeof(ServiceGrid), Language.EN,
+                propertyChanged: OnLanguageChanged);
         
         public static readonly BindableProperty ThemeProperty =
-            BindableProperty.Create(nameof(Theme), typeof(string), typeof(ServiceGrid), "light");
+            BindableProperty.Create(nameof(Theme), typeof(Theme), typeof(ServiceGrid), Theme.Light,
+                propertyChanged: OnThemeChanged);
+        
+        public static readonly BindableProperty CategoryChangedCommandProperty =
+            BindableProperty.Create(nameof(CategoryChangedCommand), typeof(ICommand), typeof(ServiceGrid));
         
         public static readonly BindableProperty AddToCartCommandProperty =
             BindableProperty.Create(nameof(AddToCartCommand), typeof(ICommand), typeof(ServiceGrid));
-        
-        public static readonly BindableProperty ServicesProperty =
-            BindableProperty.Create(nameof(Services), typeof(ObservableCollection<Service>), 
-                typeof(ServiceGrid), new ObservableCollection<Service>());
         
         public string SelectedCategory
         {
@@ -29,16 +30,22 @@ namespace LaundromatManagementSystem.Views
             set => SetValue(SelectedCategoryProperty, value);
         }
         
-        public string Language
+        public Language Language
         {
-            get => (string)GetValue(LanguageProperty);
+            get => (Language)GetValue(LanguageProperty);
             set => SetValue(LanguageProperty, value);
         }
         
-        public string Theme
+        public Theme Theme
         {
-            get => (string)GetValue(ThemeProperty);
+            get => (Theme)GetValue(ThemeProperty);
             set => SetValue(ThemeProperty, value);
+        }
+        
+        public ICommand CategoryChangedCommand
+        {
+            get => (ICommand)GetValue(CategoryChangedCommandProperty);
+            set => SetValue(CategoryChangedCommandProperty, value);
         }
         
         public ICommand AddToCartCommand
@@ -47,77 +54,50 @@ namespace LaundromatManagementSystem.Views
             set => SetValue(AddToCartCommandProperty, value);
         }
         
-        public ObservableCollection<Service> Services
-        {
-            get => (ObservableCollection<Service>)GetValue(ServicesProperty);
-            set => SetValue(ServicesProperty, value);
-        }
+        public ServiceGridViewModel ViewModel { get; private set; }
         
         public ServiceGrid()
         {
             InitializeComponent();
-            BindingContext = this;
-            LoadSampleServices();
+            
+            // Create ViewModel with dependencies
+            var serviceService = ServiceLocator.GetService<IServiceService>();
+            ViewModel = new ServiceGridViewModel(
+                serviceService,
+                CategoryChangedCommand,
+                AddToCartCommand
+            );
+            
+            BindingContext = ViewModel;
+            
+            // Set initial values
+            ViewModel.SelectedCategory = SelectedCategory;
+            ViewModel.Language = Language;
+            ViewModel.Theme = Theme;
         }
         
-        private void LoadSampleServices()
+        private static void OnSelectedCategoryChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            Services.Clear();
-            
-            // Sample services
-            Services.Add(new Service
+            if (bindable is ServiceGrid serviceGrid && newValue is string category)
             {
-                Id = 1,
-                Name = "Hot Water Wash",
-                Description = "Hot water wash with detergent",
-                Price = 5000,
-                Type = ServiceType.Wash
-            });
-            
-            Services.Add(new Service
+                serviceGrid.ViewModel.SelectedCategory = category;
+            }
+        }
+        
+        private static void OnLanguageChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            if (bindable is ServiceGrid serviceGrid && newValue is Language language)
             {
-                Id = 2,
-                Name = "Cold Water Wash",
-                Description = "Cold water wash with detergent",
-                Price = 6000,
-                Type = ServiceType.Wash
-            });
-            
-            Services.Add(new Service
+                serviceGrid.ViewModel.Language = language;
+            }
+        }
+        
+        private static void OnThemeChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            if (bindable is ServiceGrid serviceGrid && newValue is Theme theme)
             {
-                Id = 3,
-                Name = "Express Wash",
-                Description = "Fast wash service (30 minutes)",
-                Price = 8000,
-                Type = ServiceType.Wash
-            });
-            
-            Services.Add(new Service
-            {
-                Id = 4,
-                Name = "Dry Cleaning",
-                Description = "Professional dry cleaning",
-                Price = 10000,
-                Type = ServiceType.Dry
-            });
-            
-            Services.Add(new Service
-            {
-                Id = 5,
-                Name = "Ironing",
-                Description = "Clothes ironing service",
-                Price = 3000,
-                Type = ServiceType.AddOn
-            });
-            
-            Services.Add(new Service
-            {
-                Id = 6,
-                Name = "Premium Package",
-                Description = "Wash + Dry + Ironing package",
-                Price = 15000,
-                Type = ServiceType.Package
-            });
+                serviceGrid.ViewModel.Theme = theme;
+            }
         }
     }
 }

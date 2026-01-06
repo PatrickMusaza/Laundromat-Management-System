@@ -1,140 +1,178 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:LaundromatManagementSystem.Models"
+             xmlns:vm="clr-namespace:LaundromatManagementSystem.ViewModels"
              x:Class="LaundromatManagementSystem.Views.ServiceGrid"
-             x:Name="ServiceGridView"
-             x:DataType="models:Service">
+             x:DataType="vm:ServiceGridViewModel">
     
     <Grid RowDefinitions="Auto, *">
         
         <!-- Category Tabs -->
-        <HorizontalStackLayout Grid.Row="0"
-                               Spacing="1"
-                               Margin="0,0,0,20">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*, *, *, *"
+              ColumnSpacing="12"
+              Margin="0,0,0,24">
             
-            <Border x:Name="WashingTab"
-                    BackgroundColor="{DynamicResource TabBackgroundColor}"
-                    HeightRequest="50"
-                    WidthRequest="120">
-                <Label Text="Washing"
+            <!-- WASH Button -->
+            <Border Grid.Column="0"
+                    BackgroundColor="{Binding WashButtonBackground}"
+                    Stroke="{Binding WashButtonBorder}"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 8,8,8,8"
+                    HeightRequest="64">
+                <Label Text="{Binding WashText}"
                        FontSize="14"
                        FontAttributes="Bold"
-                       TextColor="{DynamicResource TabTextColor}"
+                       TextColor="{Binding WashButtonTextColor}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SelectWashCommand}" />
+                </Border.GestureRecognizers>
             </Border>
             
-            <Border x:Name="DryingTab"
-                    BackgroundColor="{DynamicResource TabInactiveColor}"
-                    HeightRequest="50"
-                    WidthRequest="120">
-                <Label Text="Drying"
+            <!-- DRY Button -->
+            <Border Grid.Column="1"
+                    BackgroundColor="{Binding DryButtonBackground}"
+                    Stroke="{Binding DryButtonBorder}"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 8,8,8,8"
+                    HeightRequest="64">
+                <Label Text="{Binding DryText}"
                        FontSize="14"
                        FontAttributes="Bold"
-                       TextColor="{DynamicResource TabTextColor}"
+                       TextColor="{Binding DryButtonTextColor}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SelectDryCommand}" />
+                </Border.GestureRecognizers>
             </Border>
             
-            <Border x:Name="IroningTab"
-                    BackgroundColor="{DynamicResource TabInactiveColor}"
-                    HeightRequest="50"
-                    WidthRequest="120">
-                <Label Text="Ironing"
+            <!-- ADD-ON Button -->
+            <Border Grid.Column="2"
+                    BackgroundColor="{Binding AddonButtonBackground}"
+                    Stroke="{Binding AddonButtonBorder}"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 8,8,8,8"
+                    HeightRequest="64">
+                <Label Text="{Binding AddonText}"
                        FontSize="14"
                        FontAttributes="Bold"
-                       TextColor="{DynamicResource TabTextColor}"
+                       TextColor="{Binding AddonButtonTextColor}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SelectAddonCommand}" />
+                </Border.GestureRecognizers>
             </Border>
             
-            <Border x:Name="PackagesTab"
-                    BackgroundColor="{DynamicResource TabInactiveColor}"
-                    HeightRequest="50"
-                    WidthRequest="120">
-                <Label Text="Packages"
+            <!-- PACKAGE Button -->
+            <Border Grid.Column="3"
+                    BackgroundColor="{Binding PackageButtonBackground}"
+                    Stroke="{Binding PackageButtonBorder}"
+                    StrokeThickness="2"
+                    StrokeShape="RoundRectangle 8,8,8,8"
+                    HeightRequest="64">
+                <Label Text="{Binding PackageText}"
                        FontSize="14"
                        FontAttributes="Bold"
-                       TextColor="{DynamicResource TabTextColor}"
+                       TextColor="{Binding PackageButtonTextColor}"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" />
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SelectPackageCommand}" />
+                </Border.GestureRecognizers>
             </Border>
             
-        </HorizontalStackLayout>
+        </Grid>
         
         <!-- Services Grid -->
         <CollectionView Grid.Row="1"
-                        ItemsSource="{Binding Source={x:Reference ServiceGridView}, Path=Services}"
+                        ItemsSource="{Binding Services}"
                         SelectionMode="None">
             
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical"
-                                 Span="2"
-                                 HorizontalItemSpacing="15"
-                                 VerticalItemSpacing="15" />
+                                 Span="3"
+                                 HorizontalItemSpacing="24"
+                                 VerticalItemSpacing="24" />
             </CollectionView.ItemsLayout>
             
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Service">
-                    <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
-                            Stroke="{DynamicResource CardBorderColor}"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 10"
-                            Padding="15"
-                            HeightRequest="150">
+                <DataTemplate x:DataType="vm:ServiceViewModel">
+                    
+                    <Border Stroke="{Binding ServiceBorderColor}"
+                            StrokeThickness="2"
+                            StrokeShape="RoundRectangle 16,16,16,16"
+                            BackgroundColor="{Binding ServiceBackgroundColor}"
+                            HeightRequest="280"
+                            Padding="24">
                         
-                        <Grid RowDefinitions="Auto, Auto, *, Auto">
+                        <VerticalStackLayout Spacing="16">
                             
-                            <!-- Service Name -->
-                            <Label Grid.Row="0"
-                                   Text="{Binding Name}"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   TextColor="{DynamicResource CardTextColor}" />
-                            
-                            <!-- Price -->
-                            <HorizontalStackLayout Grid.Row="1"
-                                                   Spacing="5">
-                                <Label Text="{Binding Price, StringFormat='{0:N0}'}"
-                                       FontSize="18"
-                                       FontAttributes="Bold"
-                                       TextColor="{DynamicResource PriceColor}" />
-                                <Label Text="RWF"
-                                       FontSize="12"
-                                       TextColor="{DynamicResource CardSubtextColor}"
+                            <!-- Icon -->
+                            <Border BackgroundColor="{Binding IconBackgroundColor}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 100,100,100,100"
+                                    WidthRequest="88"
+                                    HeightRequest="88"
+                                    HorizontalOptions="Center">
+                                <Label Text="{Binding Icon}"
+                                       FontSize="48"
+                                       TextColor="{Binding IconColor}"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                            
-                            <!-- Description -->
-                            <Label Grid.Row="2"
-                                   Text="{Binding Description}"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource CardSubtextColor}"
-                                   LineBreakMode="WordWrap"
-                                   MaxLines="2" />
-                            
-                            <!-- Add Button -->
-                            <Border Grid.Row="3"
-                                    BackgroundColor="{DynamicResource PrimaryColor}"
-                                    StrokeShape="RoundRectangle 5"
-                                    Padding="10"
-                                    HorizontalOptions="Fill">
-                                <Label Text="Tap to add"
-                                       FontSize="14"
-                                       FontAttributes="Bold"
-                                       TextColor="White"
-                                       HorizontalOptions="Center" />
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer 
-                                        Command="{Binding Source={x:Reference ServiceGridView}, Path=AddToCartCommand}"
-                                        CommandParameter="{Binding .}" />
-                                </Border.GestureRecognizers>
                             </Border>
                             
-                        </Grid>
+                            <!-- Service Name -->
+                            <Label Text="{Binding Name}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{Binding TextColor}"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center" />
+                            
+                            <!-- Description (for packages) -->
+                            <Label Text="{Binding Description}"
+                                   FontSize="12"
+                                   TextColor="{Binding DescriptionColor}"
+                                   HorizontalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   IsVisible="{Binding HasDescription}" />
+                            
+                            <!-- Price -->
+                            <Border BackgroundColor="{Binding PriceBackgroundColor}"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 8,8,8,8"
+                                    Padding="16,12">
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="{Binding Price, StringFormat='{0:N0}'}"
+                                           FontSize="24"
+                                           FontAttributes="Bold"
+                                           TextColor="White"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="RWF"
+                                           FontSize="12"
+                                           TextColor="White"
+                                           HorizontalOptions="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                            
+                            <!-- Tap to add -->
+                            <Label Text="{Binding TapToAddText}"
+                                   FontSize="12"
+                                   TextColor="{Binding TapToAddColor}"
+                                   HorizontalOptions="Center" />
+                            
+                        </VerticalStackLayout>
+                        
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding AddToCartCommand}" />
+                        </Border.GestureRecognizers>
                         
                     </Border>
+                    
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             

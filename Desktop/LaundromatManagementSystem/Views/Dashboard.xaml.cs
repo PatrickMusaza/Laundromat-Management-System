@@ -14,26 +14,16 @@ namespace LaundromatManagementSystem.Views
             var serviceService = new ServiceService();
             var viewModel = new DashboardViewModel(cartService, serviceService);
             
-            // Add debug output to see if commands work
-            viewModel.ChangeLanguageCommand.CanExecuteChanged += (s, e) => 
-                Console.WriteLine($"ChangeLanguageCommand CanExecute changed");
-            
-            viewModel.ChangeThemeCommand.CanExecuteChanged += (s, e) => 
-                Console.WriteLine($"ChangeThemeCommand CanExecute changed");
-            
             BindingContext = viewModel;
-        }
-        
-        // Optional: Override OnAppearing to debug
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            Console.WriteLine("Dashboard appeared");
             
-            if (BindingContext is DashboardViewModel vm)
+            // Subscribe to cart updates to refresh the shopping cart
+            cartService.CartUpdated += (sender, e) =>
             {
-                Console.WriteLine($"Current Language: {vm.Language}, Theme: {vm.Theme}");
-            }
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    viewModel.Cart = new System.Collections.ObjectModel.ObservableCollection<Models.CartItem>(cartService.GetCartItems());
+                });
+            };
         }
     }
 }

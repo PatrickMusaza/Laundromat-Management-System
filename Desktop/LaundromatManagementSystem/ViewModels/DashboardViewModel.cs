@@ -1,293 +1,180 @@
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LaundromatManagementSystem.Models;
 using LaundromatManagementSystem.Services;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace LaundromatManagementSystem.ViewModels
 {
-    public class DashboardViewModel : INotifyPropertyChanged
+    public partial class DashboardViewModel : ObservableObject
     {
+        [ObservableProperty]
+        private Language _language = Language.EN;
+
+        [ObservableProperty]
+        private Theme _theme = Theme.Light;
+
+        [ObservableProperty]
+        private string _selectedCategory = "washing";
+
+        [ObservableProperty]
+        private ObservableCollection<CartItem> _cart = new();
+
+        [ObservableProperty]
+        private decimal _subtotal;
+
+        [ObservableProperty]
+        private decimal _tax;
+
+        [ObservableProperty]
+        private decimal _total;
+
+        [ObservableProperty]
+        private bool _showPaymentModal;
+
+        [ObservableProperty]
+        private string _transactionId = string.Empty;
+
         private readonly ICartService _cartService;
         private readonly IServiceService _serviceService;
-        
-        private string _language = "EN";
-        private string _theme = "light";
-        private string _selectedCategory = "washing";
-        private ObservableCollection<CartItem> _cart = new();
-        private decimal _subtotal;
-        private decimal _tax;
-        private decimal _total;
-        private bool _showPaymentModal;
-        private string _transactionId = string.Empty;
-        
-        public event PropertyChangedEventHandler? PropertyChanged;
-        
-        public string Language
-        {
-            get => _language;
-            set
-            {
-                if (_language != value)
-                {
-                    _language = value;
-                    OnPropertyChanged();
-                    
-                    // Also update any other components that need language changes
-                    UpdateLanguageDependentProperties();
-                }
-            }
-        }
-        
-        public string Theme
-        {
-            get => _theme;
-            set
-            {
-                if (_theme != value)
-                {
-                    _theme = value;
-                    OnPropertyChanged();
-                    
-                    // Update theme resources
-                    UpdateThemeResources();
-                }
-            }
-        }
-        
-        public string SelectedCategory
-        {
-            get => _selectedCategory;
-            set
-            {
-                if (_selectedCategory != value)
-                {
-                    _selectedCategory = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        
-        public ObservableCollection<CartItem> Cart
-        {
-            get => _cart;
-            set
-            {
-                if (_cart != value)
-                {
-                    _cart = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        
-        public decimal Subtotal
-        {
-            get => _subtotal;
-            set
-            {
-                if (_subtotal != value)
-                {
-                    _subtotal = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        
-        public decimal Tax
-        {
-            get => _tax;
-            set
-            {
-                if (_tax != value)
-                {
-                    _tax = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        
-        public decimal Total
-        {
-            get => _total;
-            set
-            {
-                if (_total != value)
-                {
-                    _total = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        
-        public bool ShowPaymentModal
-        {
-            get => _showPaymentModal;
-            set
-            {
-                if (_showPaymentModal != value)
-                {
-                    _showPaymentModal = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        
-        public string TransactionId
-        {
-            get => _transactionId;
-            set
-            {
-                if (_transactionId != value)
-                {
-                    _transactionId = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        
-        // Commands
-        public ICommand ChangeLanguageCommand { get; }
-        public ICommand ChangeThemeCommand { get; }
-        public ICommand ChangeCategoryCommand { get; }
-        public ICommand AddToCartCommand { get; }
-        public ICommand RemoveFromCartCommand { get; }
-        public ICommand UpdateQuantityCommand { get; }
-        public ICommand ProcessPaymentCommand { get; }
-        public ICommand ClosePaymentModalCommand { get; }
-        public ICommand CompletePaymentCommand { get; }
-        
-        public DashboardViewModel()
-        {
-        }
 
         public DashboardViewModel(ICartService cartService, IServiceService serviceService)
         {
             _cartService = cartService;
             _serviceService = serviceService;
-            
-            // Initialize commands
-            ChangeLanguageCommand = new Command<string>(ChangeLanguage);
-            ChangeThemeCommand = new Command<string>(ChangeTheme);
-            ChangeCategoryCommand = new Command<string>(ChangeCategory);
-            AddToCartCommand = new Command<Service>(AddToCart);
-            RemoveFromCartCommand = new Command<string>(RemoveFromCart);
-            UpdateQuantityCommand = new Command<(string, int)>(UpdateQuantity);
-            ProcessPaymentCommand = new Command(ProcessPayment);
-            ClosePaymentModalCommand = new Command(ClosePaymentModal);
-            CompletePaymentCommand = new Command<(string, string)>(CompletePayment);
-            
-            // Subscribe to cart updates
+
             _cartService.CartUpdated += OnCartUpdated;
-            
-            // Initialize cart from service
             Cart = new ObservableCollection<CartItem>(_cartService.GetCartItems());
-            
             CalculateTotals();
         }
-        
-        private void ChangeLanguage(string language)
+
+        [RelayCommand]
+        private void ChangeLanguage(Language language) => Language = language;
+
+        [RelayCommand]
+        private void ChangeTheme(Theme theme) => Theme = theme;
+
+        [RelayCommand]
+        private void ChangeCategory(string category) => SelectedCategory = category;
+
+        [RelayCommand]
+        private void AddToCart(CartItem item)
         {
-            Language = language;
+            var existing = Cart.FirstOrDefault(i =>
+                i.Name == item.Name &&
+                i.Addons.SequenceEqual(item.Addons, new AddonComparer()));
+
+            if (existing != null)
+            {
+                existing.Quantity++;
+            }
+            else
+            {
+                Cart.Add(new CartItem
+                {
+                    Id = $"{item.Name}-{Guid.NewGuid():N}",
+                    Name = item.Name,
+                    Price = item.Price,
+                    Addons = new ObservableCollection<ServiceAddon>(item.Addons),
+                    Quantity = 1
+                });
+            }
+
+            CalculateTotals();
+            _cartService.CartUpdated += OnCartUpdated;
         }
-        
-        private void ChangeTheme(string theme)
-        {
-            Theme = theme;
-        }
-        
-        private void ChangeCategory(string category)
-        {
-            SelectedCategory = category;
-        }
-        
-        private void AddToCart(Service service)
-        {
-            _cartService.AddToCart(service);
-        }
-        
+
+        [RelayCommand]
         private void RemoveFromCart(string itemId)
         {
-            _cartService.RemoveFromCart(itemId);
+            var item = Cart.FirstOrDefault(i => i.Id == itemId);
+            if (item != null)
+            {
+                Cart.Remove(item);
+                CalculateTotals();
+                _cartService.CartUpdated += OnCartUpdated;
+            }
         }
-        
+
+        [RelayCommand]
         private void UpdateQuantity((string itemId, int quantity) parameters)
         {
-            _cartService.UpdateQuantity(parameters.Item1, parameters.Item2);
+            if (parameters.quantity <= 0)
+            {
+                RemoveFromCart(parameters.itemId);
+                return;
+            }
+
+            var item = Cart.FirstOrDefault(i => i.Id == parameters.itemId);
+            if (item != null)
+            {
+                item.Quantity = parameters.quantity;
+                CalculateTotals();
+                _cartService.CartUpdated += OnCartUpdated;
+            }
         }
-        
+
+        [RelayCommand]
         private void ProcessPayment()
         {
             if (Cart.Count == 0) return;
-            
+
             ShowPaymentModal = true;
             TransactionId = $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
         }
-        
-        private void ClosePaymentModal()
+
+        [RelayCommand]
+        private void ClosePaymentModal() => ShowPaymentModal = false;
+
+        [RelayCommand]
+        private void CompletePayment((PaymentMethod paymentMethod, string customer) parameters)
         {
-            ShowPaymentModal = false;
-        }
-        
-        private void CompletePayment((string paymentMethod, string customer) parameters)
-        {
-            // Create transaction
             var transaction = new Transaction
             {
                 Id = TransactionId,
                 Timestamp = DateTime.UtcNow,
                 Amount = Total,
                 PaymentMethod = parameters.paymentMethod,
-                Status = "completed",
-                Items = new List<CartItem>(Cart),
+                Items = new ObservableCollection<CartItem>(Cart),
                 Customer = parameters.customer
             };
-            
-            // TODO: Add to transaction history
-            // _transactionService.AddTransaction(transaction);
-            
-            // Clear cart
-            _cartService.ClearCart();
-            
-            // Close modal
+
+            // TODO: Add transaction to history
+
+            Cart.Clear();
+            CalculateTotals();
             ShowPaymentModal = false;
+            _cartService.CartUpdated += OnCartUpdated;
         }
-        
+
         private void OnCartUpdated(object? sender, EventArgs e)
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Cart = new ObservableCollection<CartItem>(_cartService.GetCartItems());
                 CalculateTotals();
             });
         }
-        
+
         private void CalculateTotals()
         {
             Subtotal = Cart.Sum(item => item.TotalPrice);
             Tax = Math.Round(Subtotal * 0.1m, 2);
             Total = Subtotal + Tax;
         }
-        
-        private void UpdateLanguageDependentProperties()
+
+        private class AddonComparer : IEqualityComparer<ServiceAddon>
         {
-            // Update any properties that depend on language
-            // This will trigger UI updates through bindings
-        }
-        
-        private void UpdateThemeResources()
-        {
-            // Update application resources based on theme
-            // Implementation depends on how you handle themes
-            
-            // For now, we'll just trigger property change
-            OnPropertyChanged(nameof(Theme));
-        }
-        
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            public bool Equals(ServiceAddon? x, ServiceAddon? y)
+            {
+                if (x == null && y == null) return true;
+                if (x == null || y == null) return false;
+                return x.Name == y.Name && x.Price == y.Price;
+            }
+
+            public int GetHashCode(ServiceAddon obj)
+            {
+                return HashCode.Combine(obj.Name, obj.Price);
+            }
         }
     }
 }

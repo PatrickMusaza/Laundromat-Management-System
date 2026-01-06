@@ -1,111 +1,41 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
+             xmlns:converters="clr-namespace:LaundromatManagementSystem.Converters"
              x:Class="LaundromatManagementSystem.App">
-
+    
     <Application.Resources>
         <ResourceDictionary>
-
-            <!-- Light Theme (Default) -->
-            <Color x:Key="PrimaryColor">#1E3A8A</Color>
-            <Color x:Key="BackgroundColor">#FFFFFF</Color>
-            <Color x:Key="HeaderBackgroundColor">#FFFFFF</Color>
-            <Color x:Key="HeaderBorderColor">#E5E7EB</Color>
-            <Color x:Key="HeaderTextColor">#1E3A8A</Color>
-            <Color x:Key="HeaderSubtextColor">#6B7280</Color>
-            <Color x:Key="ControlBackgroundColor">#FFFFFF</Color>
-            <Color x:Key="ControlBorderColor">#E5E7EB</Color>
-            <Color x:Key="ControlLabelColor">#6B7280</Color>
-            <Color x:Key="ControlValueColor">#111827</Color>
-            <Color x:Key="TabBackgroundColor">#1E3A8A</Color>
-            <Color x:Key="TabInactiveColor">#F3F4F6</Color>
-            <Color x:Key="TabTextColor">#FFFFFF</Color>
-            <Color x:Key="CardBackgroundColor">#FFFFFF</Color>
-            <Color x:Key="CardBorderColor">#E5E7EB</Color>
-            <Color x:Key="CardTextColor">#111827</Color>
-            <Color x:Key="CardSubtextColor">#6B7280</Color>
-            <Color x:Key="PriceColor">#1E3A8A</Color>
-            <Color x:Key="ModalBackgroundColor">#FFFFFF</Color>
-
-            <!-- Gray Theme -->
-            <Color x:Key="GrayBackgroundColor">#F3F4F6</Color>
-            <Color x:Key="GrayHeaderBackgroundColor">#FFFFFF</Color>
-            <Color x:Key="GrayHeaderBorderColor">#D1D5DB</Color>
-            <Color x:Key="GrayHeaderTextColor">#1E3A8A</Color>
-            <Color x:Key="GrayHeaderSubtextColor">#6B7280</Color>
-            <Color x:Key="GrayControlBackgroundColor">#F3F4F6</Color>
-            <Color x:Key="GrayControlBorderColor">#D1D5DB</Color>
-            <Color x:Key="GrayControlLabelColor">#6B7280</Color>
-            <Color x:Key="GrayControlValueColor">#111827</Color>
-            <Color x:Key="GrayTabBackgroundColor">#1E3A8A</Color>
-            <Color x:Key="GrayTabInactiveColor">#E5E7EB</Color>
-            <Color x:Key="GrayTabTextColor">#FFFFFF</Color>
-            <Color x:Key="GrayCardBackgroundColor">#FFFFFF</Color>
-            <Color x:Key="GrayCardBorderColor">#D1D5DB</Color>
-            <Color x:Key="GrayCardTextColor">#111827</Color>
-            <Color x:Key="GrayCardSubtextColor">#6B7280</Color>
-            <Color x:Key="GrayPriceColor">#1E3A8A</Color>
-            <Color x:Key="GrayModalBackgroundColor">#F3F4F6</Color>
-
-            <!-- Dark Theme -->
-            <Color x:Key="DarkBackgroundColor">#1F2937</Color>
-            <Color x:Key="DarkHeaderBackgroundColor">#1F2937</Color>
-            <Color x:Key="DarkHeaderBorderColor">#374151</Color>
-            <Color x:Key="DarkHeaderTextColor">#FFFFFF</Color>
-            <Color x:Key="DarkHeaderSubtextColor">#9CA3AF</Color>
-            <Color x:Key="DarkControlBackgroundColor">#374151</Color>
-            <Color x:Key="DarkControlBorderColor">#374151</Color>
-            <Color x:Key="DarkControlLabelColor">#9CA3AF</Color>
-            <Color x:Key="DarkControlValueColor">#FFFFFF</Color>
-            <Color x:Key="DarkTabBackgroundColor">#1E3A8A</Color>
-            <Color x:Key="DarkTabInactiveColor">#374151</Color>
-            <Color x:Key="DarkTabTextColor">#FFFFFF</Color>
-            <Color x:Key="DarkCardBackgroundColor">#374151</Color>
-            <Color x:Key="DarkCardBorderColor">#4B5563</Color>
-            <Color x:Key="DarkCardTextColor">#FFFFFF</Color>
-            <Color x:Key="DarkCardSubtextColor">#9CA3AF</Color>
-            <Color x:Key="DarkPriceColor">#60A5FA</Color>
-            <Color x:Key="DarkModalBackgroundColor">#1F2937</Color>
-
-            <!-- Add these converters 
-            <views:DecreaseQuantityConverter x:Key="DecreaseQuantityConverter"/>
-            <views:IncreaseQuantityConverter x:Key="IncreaseQuantityConverter"/>
-            -->
-
-            <!-- Add these to your existing color resources -->
-            <Color x:Key="CartBackgroundColor">#FFFFFF</Color>
-            <Color x:Key="CartBorderColor">#E5E7EB</Color>
-            <Color x:Key="CartTitleColor">#111827</Color>
-            <Color x:Key="CartLabelColor">#6B7280</Color>
-            <Color x:Key="CartValueColor">#111827</Color>
-            <Color x:Key="CartTotalLabelColor">#111827</Color>
-            <Color x:Key="CartTotalValueColor">#1E3A8A</Color>
-            <Color x:Key="CartDividerColor">#E5E7EB</Color>
-            <Color x:Key="CartItemBackgroundColor">#F9FAFB</Color>
-            <Color x:Key="CartItemBorderColor">#E5E7EB</Color>
-            <Color x:Key="CartItemTextColor">#111827</Color>
-            <Color x:Key="CartItemPriceColor">#6B7280</Color>
-            <Color x:Key="CartItemAddonColor">#9CA3AF</Color>
-            <Color x:Key="CartItemTotalColor">#1E3A8A</Color>
-            <Color x:Key="RemoveButtonColor">#EF4444</Color>
-            <Color x:Key="QuantityButtonColor">#E5E7EB</Color>
-            <Color x:Key="QuantityButtonTextColor">#374151</Color>
-            <Color x:Key="EmptyCartTextColor">#6B7280</Color>
-            <Color x:Key="EmptyCartSubtextColor">#9CA3AF</Color>
-            <Color x:Key="CheckoutButtonColor">#1E3A8A</Color>
-
-            <!-- Add Gray theme variants -->
-            <Color x:Key="GrayCartBackgroundColor">#F3F4F6</Color>
-            <Color x:Key="GrayCartBorderColor">#D1D5DB</Color>
-            <!-- ... etc for all gray variants -->
-
-            <!-- Add Dark theme variants -->
-            <Color x:Key="DarkCartBackgroundColor">#1F2937</Color>
-            <Color x:Key="DarkCartBorderColor">#374151</Color>
-            <!-- ... etc for all dark variants -->
-
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Converters -->
+            <converters:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
+            <converters:EqualToZeroConverter x:Key="EqualToZeroConverter" />
+            <converters:DecreaseQuantityConverter x:Key="DecreaseQuantityConverter" />
+            <converters:IncreaseQuantityConverter x:Key="IncreaseQuantityConverter" />
+            <converters:IsNullConverter x:Key="IsNullConverter" />
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:EqualsConverter x:Key="EqualsConverter" />
+            
+            <!-- Global Styles -->
+            <Style TargetType="Label">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+            </Style>
+            
+            <Style TargetType="Button">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HeightRequest" Value="48" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+            
+            <Style TargetType="Entry">
+                <Setter Property="FontFamily" Value="Segoe UI" />
+            </Style>
+            
         </ResourceDictionary>
     </Application.Resources>
-
+    
 </Application>

@@ -1,66 +1,89 @@
 using LaundromatManagementSystem.Models;
-using System.Collections.ObjectModel;
 
 namespace LaundromatManagementSystem.Services
 {
     public class CartService : ICartService
     {
-        private ObservableCollection<CartItem> _cartItems = new();
-        
+        private List<CartItem> _cartItems = new();
+
         public event EventHandler? CartUpdated;
-        
-        public ObservableCollection<CartItem> GetCartItems() => _cartItems;
-        
-        public void AddToCart(Service service)
+
+        public IReadOnlyList<CartItem> GetCartItems() => _cartItems;
+
+        public void AddToCart(CartItem item)
         {
-            var existingItem = _cartItems.FirstOrDefault(item => item.Service.Id == service.Id);
-            
-            if (existingItem != null)
+            var existing = _cartItems.FirstOrDefault(i =>
+                i.Name == item.Name &&
+                i.Addons.SequenceEqual(item.Addons, new AddonComparer()));
+
+            if (existing != null)
             {
-                existingItem.Quantity++;
+                existing.Quantity++;
             }
             else
             {
-                _cartItems.Add(new CartItem { Service = service, Quantity = 1 });
+                _cartItems.Add(new CartItem
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Price = item.Price,
+                    Addons = new System.Collections.ObjectModel.ObservableCollection<ServiceAddon>(item.Addons),
+                    Quantity = 1
+                });
             }
-            
+
             CartUpdated?.Invoke(this, EventArgs.Empty);
         }
-        
+
         public void RemoveFromCart(string itemId)
         {
-            var item = _cartItems.FirstOrDefault(item => item.Id == itemId);
+            var item = _cartItems.FirstOrDefault(i => i.Id == itemId);
             if (item != null)
             {
                 _cartItems.Remove(item);
                 CartUpdated?.Invoke(this, EventArgs.Empty);
             }
         }
-        
+
         public void UpdateQuantity(string itemId, int quantity)
         {
-            var item = _cartItems.FirstOrDefault(item => item.Id == itemId);
-            if (item != null && quantity > 0)
+            if (quantity <= 0)
+            {
+                RemoveFromCart(itemId);
+                return;
+            }
+
+            var item = _cartItems.FirstOrDefault(i => i.Id == itemId);
+            if (item != null)
             {
                 item.Quantity = quantity;
                 CartUpdated?.Invoke(this, EventArgs.Empty);
             }
-            else if (item != null && quantity <= 0)
-            {
-                RemoveFromCart(itemId);
-            }
         }
-        
+
         public void ClearCart()
         {
             _cartItems.Clear();
             CartUpdated?.Invoke(this, EventArgs.Empty);
         }
-        
-        public decimal GetTotalAmount() => 
+
+        public decimal GetTotalAmount() =>
             _cartItems.Sum(item => item.TotalPrice);
-            
-        public int GetItemCount() => 
+
+        public int GetItemCount() =>
             _cartItems.Sum(item => item.Quantity);
+
+        private class AddonComparer : IEqualityComparer<ServiceAddon>
+        {
+            public bool Equals(ServiceAddon x, ServiceAddon y)
+            {
+                if (x == null && y == null) return true;
+                if (x == null || y == null) return false;
+                return x.Name == y.Name && x.Price == y.Price;
+            }
+
+            public int GetHashCode(ServiceAddon obj) =>
+                HashCode.Combine(obj.Name, obj.Price);
+        }
     }
 }

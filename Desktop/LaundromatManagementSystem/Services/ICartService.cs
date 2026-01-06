@@ -1,13 +1,12 @@
 using LaundromatManagementSystem.Models;
-using System.Collections.ObjectModel;
 
 namespace LaundromatManagementSystem.Services
 {
     public interface ICartService
     {
-        event EventHandler? CartUpdated;
-        ObservableCollection<CartItem> GetCartItems();
-        void AddToCart(Service service);
+        event EventHandler CartUpdated;
+        IReadOnlyList<CartItem> GetCartItems();
+        void AddToCart(CartItem item);
         void RemoveFromCart(string itemId);
         void UpdateQuantity(string itemId, int quantity);
         void ClearCart();

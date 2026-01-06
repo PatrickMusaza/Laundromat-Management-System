@@ -1,0 +1,18 @@
+# Visual Studio temp files
+.vs/
+*.user
+*.suo
+
+# Build output
+bin/
+obj/
+
+# MAUI / Android / iOS artifacts
+*.apk
+*.aab
+*.xib
+*.storyboardc
+
+# Rider / JetBrains files
+.idea/
+*.iml

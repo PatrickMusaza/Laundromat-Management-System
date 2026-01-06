@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using LaundromatManagementSystem.Services;
 using LaundromatManagementSystem.ViewModels;
-using LaundromatManagementSystem.Views;
 
 namespace LaundromatManagementSystem
 {
     public partial class App : Application
     {
-        public static IServiceProvider? Services { get; private set; }
+        public static IServiceProvider Services { get; private set; }
         
         public App()
         {
@@ -16,7 +15,6 @@ namespace LaundromatManagementSystem
             // Set up dependency injection
             ConfigureServices();
             
-            // Create main window
             MainPage = new AppShell();
         }
         
@@ -34,4 +32,14 @@ namespace LaundromatManagementSystem
             Services = services.BuildServiceProvider();
         }
     }
+    
+    public static class ServiceLocator
+    {
+        public static T GetService<T>() where T : class => App.Services.GetService<T>();
+    }
+    
+    // Enums matching TypeScript
+    public enum Theme { Light, Gray, Dark }
+    public enum Language { EN, RW, FR }
+    public enum PaymentMethod { Cash, MoMo, Card }
 }
