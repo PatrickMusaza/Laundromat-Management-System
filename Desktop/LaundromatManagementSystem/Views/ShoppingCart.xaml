@@ -44,7 +44,7 @@
                     </Border>
                     
                     <!-- Bottom Line -->
-                    <BoxView HeightRequest="1"
+                    <BoxView HeightRequest="5"
                              Color="{Binding CartBorderColor}"
                              HorizontalOptions="Fill"
                              VerticalOptions="End" />

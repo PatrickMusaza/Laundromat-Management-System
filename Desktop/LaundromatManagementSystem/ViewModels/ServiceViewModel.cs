@@ -25,6 +25,8 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private Theme _theme;
 
+        private readonly Action<CartItem> _addToCart;
+
         public bool HasDescription => !string.IsNullOrEmpty(Description);
         public string PriceFormatted => Price == 0 ? "FREE" : Price.ToString("N0");
 
@@ -41,7 +43,7 @@ namespace LaundromatManagementSystem.ViewModels
 
         private CartItem _cartItem;
 
-        public ServiceViewModel(ServiceItem item, ICommand addToCartCommand, Theme theme)
+        public ServiceViewModel(ServiceItem item, Action<CartItem> addToCart, Theme theme)
         {
             Id = item.Id;
             Name = item.Name;
@@ -49,6 +51,8 @@ namespace LaundromatManagementSystem.ViewModels
             Price = item.Price;
             Icon = item.Icon;
             Theme = theme;
+
+            _addToCart = addToCart;
 
             _cartItem = new CartItem
             {
@@ -62,7 +66,10 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void AddToCart()
         {
-            AddToCartCommand?.Execute(_cartItem);
+            if (_cartItem != null)
+            {
+                _addToCart?.Invoke(_cartItem);
+            }
         }
 
         partial void OnThemeChanged(Theme value)
