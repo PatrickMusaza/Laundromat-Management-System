@@ -4,8 +4,7 @@
        xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
        x:Class="LaundromatManagementSystem.AppShell">
     
-    <ShellContent Title="Dashboard"
-                  ContentTemplate="{DataTemplate views:Dashboard}"
+    <ShellContent ContentTemplate="{DataTemplate views:Dashboard}"
                   Route="Dashboard" />
     
 </Shell>

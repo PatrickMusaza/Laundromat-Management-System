@@ -106,8 +106,8 @@
                             StrokeThickness="2"
                             StrokeShape="RoundRectangle 16,16,16,16"
                             BackgroundColor="{Binding ServiceBackgroundColor}"
-                            HeightRequest="280"
-                            Padding="24">
+                            HeightRequest="330"
+                            Padding="20">
                         
                         <VerticalStackLayout Spacing="16">
                             

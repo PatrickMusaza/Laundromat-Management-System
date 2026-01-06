@@ -16,7 +16,6 @@
             <!-- Header -->
             <Border Grid.Row="0"
                     Stroke="{Binding CartBorderColor}"
-                    StrokeThickness="0,0,0,2"
                     Padding="0,0,0,12"
                     Margin="0,0,0,16">
                 

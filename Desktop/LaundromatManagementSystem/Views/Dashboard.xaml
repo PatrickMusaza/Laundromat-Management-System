@@ -4,8 +4,7 @@
              xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
              xmlns:vm="clr-namespace:LaundromatManagementSystem.ViewModels"
              x:Class="LaundromatManagementSystem.Views.Dashboard"
-             x:DataType="vm:DashboardViewModel"
-             Title="Dashboard">
+             x:DataType="vm:DashboardViewModel">
 
     <Grid RowDefinitions="Auto, *">
 
@@ -20,7 +19,8 @@
         <Grid Grid.Row="1"
               ColumnDefinitions="7*, 3*"
               ColumnSpacing="24"
-              Padding="24">
+              Padding="24"
+              BackgroundColor="White">
 
             <!-- Left Panel - Services -->
             <Border Grid.Column="0"
