@@ -4,15 +4,15 @@
              xmlns:vm="clr-namespace:LaundromatManagementSystem.ViewModels"
              x:Class="LaundromatManagementSystem.Views.ServiceGrid"
              x:DataType="vm:ServiceGridViewModel">
-    
+
     <Grid RowDefinitions="Auto, *">
-        
+
         <!-- Category Tabs -->
         <Grid Grid.Row="0"
               ColumnDefinitions="*, *, *, *"
               ColumnSpacing="12"
               Margin="0,0,0,24">
-            
+
             <!-- WASH Button -->
             <Border Grid.Column="0"
                     BackgroundColor="{Binding WashButtonBackground}"
@@ -25,12 +25,12 @@
                        FontAttributes="Bold"
                        TextColor="{Binding WashButtonTextColor}"
                        HorizontalOptions="Center"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center"/>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectWashCommand}" />
+                    <TapGestureRecognizer Command="{Binding SelectWashCommand}"/>
                 </Border.GestureRecognizers>
             </Border>
-            
+
             <!-- DRY Button -->
             <Border Grid.Column="1"
                     BackgroundColor="{Binding DryButtonBackground}"
@@ -43,12 +43,12 @@
                        FontAttributes="Bold"
                        TextColor="{Binding DryButtonTextColor}"
                        HorizontalOptions="Center"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center"/>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectDryCommand}" />
+                    <TapGestureRecognizer Command="{Binding SelectDryCommand}"/>
                 </Border.GestureRecognizers>
             </Border>
-            
+
             <!-- ADD-ON Button -->
             <Border Grid.Column="2"
                     BackgroundColor="{Binding AddonButtonBackground}"
@@ -61,12 +61,12 @@
                        FontAttributes="Bold"
                        TextColor="{Binding AddonButtonTextColor}"
                        HorizontalOptions="Center"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center"/>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectAddonCommand}" />
+                    <TapGestureRecognizer Command="{Binding SelectAddonCommand}"/>
                 </Border.GestureRecognizers>
             </Border>
-            
+
             <!-- PACKAGE Button -->
             <Border Grid.Column="3"
                     BackgroundColor="{Binding PackageButtonBackground}"
@@ -79,38 +79,38 @@
                        FontAttributes="Bold"
                        TextColor="{Binding PackageButtonTextColor}"
                        HorizontalOptions="Center"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center"/>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding SelectPackageCommand}" />
+                    <TapGestureRecognizer Command="{Binding SelectPackageCommand}"/>
                 </Border.GestureRecognizers>
             </Border>
-            
+
         </Grid>
-        
+
         <!-- Services Grid -->
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Services}"
                         SelectionMode="None">
-            
+
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical"
                                  Span="3"
                                  HorizontalItemSpacing="24"
-                                 VerticalItemSpacing="24" />
+                                 VerticalItemSpacing="24"/>
             </CollectionView.ItemsLayout>
-            
+
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="vm:ServiceViewModel">
-                    
+
                     <Border Stroke="{Binding ServiceBorderColor}"
                             StrokeThickness="2"
                             StrokeShape="RoundRectangle 16,16,16,16"
                             BackgroundColor="{Binding ServiceBackgroundColor}"
                             HeightRequest="330"
                             Padding="20">
-                        
+
                         <VerticalStackLayout Spacing="16">
-                            
+
                             <!-- Icon -->
                             <Border BackgroundColor="{Binding IconBackgroundColor}"
                                     StrokeThickness="0"
@@ -122,25 +122,25 @@
                                        FontSize="48"
                                        TextColor="{Binding IconColor}"
                                        HorizontalOptions="Center"
-                                       VerticalOptions="Center" />
+                                       VerticalOptions="Center"/>
                             </Border>
-                            
+
                             <!-- Service Name -->
                             <Label Text="{Binding Name}"
                                    FontSize="16"
                                    FontAttributes="Bold"
                                    TextColor="{Binding TextColor}"
                                    HorizontalOptions="Center"
-                                   HorizontalTextAlignment="Center" />
-                            
+                                   HorizontalTextAlignment="Center"/>
+
                             <!-- Description (for packages) -->
                             <Label Text="{Binding Description}"
                                    FontSize="12"
                                    TextColor="{Binding DescriptionColor}"
                                    HorizontalOptions="Center"
                                    HorizontalTextAlignment="Center"
-                                   IsVisible="{Binding HasDescription}" />
-                            
+                                   IsVisible="{Binding HasDescription}"/>
+
                             <!-- Price -->
                             <Border BackgroundColor="{Binding PriceBackgroundColor}"
                                     StrokeThickness="0"
@@ -151,32 +151,58 @@
                                            FontSize="24"
                                            FontAttributes="Bold"
                                            TextColor="White"
-                                           HorizontalOptions="Center" />
+                                           HorizontalOptions="Center">
+
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding Price}"
+                                                         Value="0">
+                                                <Setter Property="Text"
+                                                        Value="Free"/>
+                                                <Setter Property="TextColor"
+                                                        Value="#10B981"/>
+                                                <Setter Property="FontAttributes"
+                                                        Value="Bold"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
                                     <Label Text="RWF"
                                            FontSize="12"
                                            TextColor="White"
-                                           HorizontalOptions="Center" />
+                                           HorizontalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding Price}"
+                                                         Value="0">
+                                                <Setter Property="Text"
+                                                        Value="Complimentary"/>
+                                                <Setter Property="TextColor"
+                                                        Value="#10B981"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
                                 </VerticalStackLayout>
                             </Border>
-                            
+
                             <!-- Tap to add -->
                             <Label Text="{Binding TapToAddText}"
                                    FontSize="12"
                                    TextColor="{Binding TapToAddColor}"
-                                   HorizontalOptions="Center" />
-                            
+                                   HorizontalOptions="Center"/>
+
                         </VerticalStackLayout>
-                        
+
                         <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding AddToCartCommand}" />
+                            <TapGestureRecognizer Command="{Binding AddToCartCommand}"/>
                         </Border.GestureRecognizers>
-                        
+
                     </Border>
-                    
+
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-            
+
         </CollectionView>
-        
+
     </Grid>
 </ContentView>

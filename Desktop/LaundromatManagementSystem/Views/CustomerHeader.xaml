@@ -6,8 +6,8 @@
              x:DataType="vm:CustomerHeaderViewModel">
     
     <Border Stroke="{DynamicResource HeaderBorderColor}"
-            StrokeThickness="2"
-            StrokeShape="RoundRectangle 0,0,0,0">
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 0,0,0,0 ">
         
         <Grid ColumnDefinitions="*, Auto"
               Padding="32,24"

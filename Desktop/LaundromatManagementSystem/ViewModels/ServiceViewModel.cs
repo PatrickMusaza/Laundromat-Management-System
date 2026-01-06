@@ -9,25 +9,25 @@ namespace LaundromatManagementSystem.ViewModels
     {
         [ObservableProperty]
         private string _id;
-        
+
         [ObservableProperty]
         private string _name;
-        
+
         [ObservableProperty]
         private string _description;
-        
+
         [ObservableProperty]
         private decimal _price;
-        
+
         [ObservableProperty]
         private string _icon;
-        
+
         [ObservableProperty]
         private Theme _theme;
-        
+
         public bool HasDescription => !string.IsNullOrEmpty(Description);
         public string PriceFormatted => Price == 0 ? "FREE" : Price.ToString("N0");
-        
+
         // Colors based on service type and theme
         public Color IconBackgroundColor => GetIconBackgroundColor();
         public Color IconColor => GetIconColor();
@@ -38,9 +38,9 @@ namespace LaundromatManagementSystem.ViewModels
         public Color PriceBackgroundColor => GetPriceBackgroundColor();
         public Color TapToAddColor => GetTapToAddColor();
         public string TapToAddText => GetTapToAddText();
-        
+
         private CartItem _cartItem;
-        
+
         public ServiceViewModel(ServiceItem item, ICommand addToCartCommand, Theme theme)
         {
             Id = item.Id;
@@ -49,7 +49,7 @@ namespace LaundromatManagementSystem.ViewModels
             Price = item.Price;
             Icon = item.Icon;
             Theme = theme;
-            
+
             _cartItem = new CartItem
             {
                 Id = $"{Id}-{Guid.NewGuid():N}",
@@ -64,7 +64,7 @@ namespace LaundromatManagementSystem.ViewModels
         {
             AddToCartCommand?.Execute(_cartItem);
         }
-        
+
         partial void OnThemeChanged(Theme value)
         {
             OnPropertyChanged(nameof(IconBackgroundColor));
@@ -76,7 +76,7 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(PriceBackgroundColor));
             OnPropertyChanged(nameof(TapToAddColor));
         }
-        
+
         private Color GetIconBackgroundColor()
         {
             return Icon switch
@@ -90,7 +90,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Colors.White
             };
         }
-        
+
         private Color GetIconColor()
         {
             return Icon switch
@@ -104,7 +104,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Colors.Black
             };
         }
-        
+
         private Color GetServiceBackgroundColor()
         {
             return Theme switch
@@ -114,7 +114,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Colors.White
             };
         }
-        
+
         private Color GetServiceBorderColor()
         {
             return Theme switch
@@ -124,7 +124,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#E5E7EB")
             };
         }
-        
+
         private Color GetTextColor()
         {
             return Theme switch
@@ -133,7 +133,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#111827")
             };
         }
-        
+
         private Color GetDescriptionColor()
         {
             return Theme switch
@@ -142,13 +142,13 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#6B7280")
             };
         }
-        
+
         private Color GetPriceBackgroundColor()
         {
-            return Price == 0 ? Color.FromArgb("#D1FAE5") : 
-                   Color.FromArgb("linear-gradient(90deg, #F59E0B, #D97706)");
+            return Price == 0 ? Color.FromArgb("#D1FAE5") :
+                   Color.FromArgb("#F59E0B");
         }
-        
+
         private Color GetTapToAddColor()
         {
             return Theme switch
@@ -157,7 +157,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#6B7280")
             };
         }
-        
+
         private string GetTapToAddText()
         {
             return Language switch
@@ -168,11 +168,11 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => "Tap to add"
             };
         }
-        
+
         // Helper property to access current language (would need to be passed or accessed via service)
         private Language Language => Language.EN; // This should be injected or accessed via a service
     }
-    
+
     public class ServiceItem
     {
         public string Id { get; set; } = string.Empty;

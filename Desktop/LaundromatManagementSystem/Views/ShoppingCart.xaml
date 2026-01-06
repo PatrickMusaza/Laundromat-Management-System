@@ -15,7 +15,6 @@
             
             <!-- Header -->
             <Border Grid.Row="0"
-                    Stroke="{Binding CartBorderColor}"
                     Padding="0,0,0,12"
                     Margin="0,0,0,16">
                 
@@ -44,6 +43,12 @@
                                VerticalOptions="Center" />
                     </Border>
                     
+                    <!-- Bottom Line -->
+                    <BoxView HeightRequest="1"
+                             Color="{Binding CartBorderColor}"
+                             HorizontalOptions="Fill"
+                             VerticalOptions="End" />
+
                 </HorizontalStackLayout>
                 
             </Border>

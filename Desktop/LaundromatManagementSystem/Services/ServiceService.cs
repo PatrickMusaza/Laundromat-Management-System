@@ -10,16 +10,16 @@ namespace LaundromatManagementSystem.Services
             var filtered = services.Where(s => s.Category == category).ToList();
             return Task.FromResult(filtered);
         }
-        
+
         public Task<List<ServiceItem>> GetAllServicesAsync(Language language)
         {
             return Task.FromResult(GetAllServices(language));
         }
-        
+
         private List<ServiceItem> GetAllServices(Language language)
         {
             var services = new List<ServiceItem>();
-            
+
             // Washing services (exact from TypeScript)
             services.AddRange(new[]
             {
@@ -51,7 +51,7 @@ namespace LaundromatManagementSystem.Services
                     Category = "washing"
                 }
             });
-            
+
             // Drying services
             services.AddRange(new[]
             {
@@ -74,7 +74,7 @@ namespace LaundromatManagementSystem.Services
                     Category = "drying"
                 }
             });
-            
+
             // Addon services
             services.AddRange(new[]
             {
@@ -97,7 +97,7 @@ namespace LaundromatManagementSystem.Services
                     Category = "addon"
                 }
             });
-            
+
             // Package services
             services.Add(new ServiceItem
             {
@@ -108,10 +108,10 @@ namespace LaundromatManagementSystem.Services
                 Icon = "📦",
                 Category = "package"
             });
-            
+
             return services;
         }
-        
+
         private string GetServiceName(string englishName, Language language)
         {
             var translations = new Dictionary<string, Dictionary<Language, string>>
@@ -165,10 +165,10 @@ namespace LaundromatManagementSystem.Services
                     [Language.FR] = "Forfait Complet"
                 }
             };
-            
+
             return translations[englishName][language];
         }
-        
+
         private string GetPackageDescription(Language language)
         {
             return language switch
