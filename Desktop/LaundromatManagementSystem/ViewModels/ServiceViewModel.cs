@@ -43,14 +43,16 @@ namespace LaundromatManagementSystem.ViewModels
 
         private CartItem _cartItem;
 
-        public ServiceViewModel(ServiceItem item, Action<CartItem> addToCart, Theme theme)
+        public ServiceViewModel(ServiceItem item, Action<CartItem> addToCart, Theme theme, Language language)
         {
             Id = item.Id;
             Name = item.Name;
             Description = item.Description;
             Price = item.Price;
             Icon = item.Icon;
+
             Theme = theme;
+            Language = language;
 
             _addToCart = addToCart;
 

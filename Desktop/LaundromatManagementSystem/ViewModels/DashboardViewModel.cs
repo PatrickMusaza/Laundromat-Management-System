@@ -49,12 +49,6 @@ namespace LaundromatManagementSystem.ViewModels
         }
 
         [RelayCommand]
-        private void ChangeLanguage(Language language) => Language = language;
-
-        [RelayCommand]
-        private void ChangeTheme(Theme theme) => Theme = theme;
-
-        [RelayCommand]
         private void ChangeCategory(string category) => SelectedCategory = category;
 
         [RelayCommand]

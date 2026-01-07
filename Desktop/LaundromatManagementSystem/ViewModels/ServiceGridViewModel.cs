@@ -82,7 +82,12 @@ namespace LaundromatManagementSystem.ViewModels
 
         partial void OnLanguageChanged(Language value)
         {
-            LoadServices();
+
+            foreach (var service in Services)
+            {
+                service.Language = value;
+            }
+
             OnPropertyChanged(nameof(WashText));
             OnPropertyChanged(nameof(DryText));
             OnPropertyChanged(nameof(AddonText));
@@ -90,6 +95,16 @@ namespace LaundromatManagementSystem.ViewModels
         }
 
         partial void OnThemeChanged(Theme value)
+        {
+            foreach (var service in Services)
+            {
+                service.Theme = value;
+            }
+
+            RaiseCategoryButtonColors();
+        }
+
+        private void RaiseCategoryButtonColors()
         {
             OnPropertyChanged(nameof(WashButtonBackground));
             OnPropertyChanged(nameof(WashButtonBorder));
@@ -104,6 +119,7 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(PackageButtonBorder));
             OnPropertyChanged(nameof(PackageButtonTextColor));
         }
+
 
         [RelayCommand]
         private void SelectWash() => SelectedCategory = "washing";
@@ -124,7 +140,7 @@ namespace LaundromatManagementSystem.ViewModels
 
             foreach (var item in serviceItems)
             {
-                Services.Add(new ServiceViewModel(item, _addToCart, Theme));
+                Services.Add(new ServiceViewModel(item, _addToCart, Theme, Language));
             }
         }
 

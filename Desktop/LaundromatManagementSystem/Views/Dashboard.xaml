@@ -10,10 +10,8 @@
 
         <!-- Customer Header -->
         <views:CustomerHeader Grid.Row="0"
-                             Language="{Binding Language}"
-                             Theme="{Binding Theme}"
-                             LanguageChangedCommand="{Binding ChangeLanguageCommand}"
-                             ThemeChangedCommand="{Binding ChangeThemeCommand}" />
+                             Language="{Binding Language, Mode=TwoWay}"
+                             Theme="{Binding Theme, Mode=TwoWay}" />
 
         <!-- Main Content -->
         <Grid Grid.Row="1"

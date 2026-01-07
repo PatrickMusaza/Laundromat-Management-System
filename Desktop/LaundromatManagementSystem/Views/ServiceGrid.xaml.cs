@@ -59,27 +59,31 @@ namespace LaundromatManagementSystem.Views
         public ServiceGrid()
         {
             InitializeComponent();
+        }
 
-            // Create ViewModel with dependencies
+        protected override void OnBindingContextChanged()
+        {
+            base.OnBindingContextChanged();
+
+            if (ViewModel != null)
+                return;
+
             var serviceService = ServiceLocator.GetService<IServiceService>();
+
             ViewModel = new ServiceGridViewModel(
                 serviceService,
                 CategoryChangedCommand,
                 cartItem =>
                 {
                     if (AddToCartCommand?.CanExecute(cartItem) == true)
-                    {
                         AddToCartCommand.Execute(cartItem);
-                    }
-                }
-            );
+                });
 
-            BindingContext = ViewModel;
-
-            // Set initial values
             ViewModel.SelectedCategory = SelectedCategory;
             ViewModel.Language = Language;
             ViewModel.Theme = Theme;
+
+            BindingContext = ViewModel;
         }
 
         private static void OnSelectedCategoryChanged(BindableObject bindable, object oldValue, object newValue)

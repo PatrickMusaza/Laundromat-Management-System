@@ -33,9 +33,6 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private string _themeIcon = "☀️";
 
-        public ICommand LanguageChangedCommand { get; }
-        public ICommand ThemeChangedCommand { get; }
-
         private readonly Dictionary<Language, Dictionary<string, string>> _translations = new()
         {
             [Language.EN] = new()
@@ -77,10 +74,8 @@ namespace LaundromatManagementSystem.ViewModels
             [Theme.Dark] = "🌙"
         };
 
-        public CustomerHeaderViewModel(ICommand languageChangedCommand, ICommand themeChangedCommand)
+        public CustomerHeaderViewModel()
         {
-            LanguageChangedCommand = languageChangedCommand;
-            ThemeChangedCommand = themeChangedCommand;
             UpdateTranslations();
         }
 
@@ -88,7 +83,6 @@ namespace LaundromatManagementSystem.ViewModels
         {
             UpdateTranslations();
             CurrentLanguage = value.ToString();
-            LanguageChangedCommand?.Execute(value);
         }
 
         partial void OnThemeChanged(Theme value)
@@ -96,7 +90,6 @@ namespace LaundromatManagementSystem.ViewModels
             UpdateTranslations();
             CurrentThemeText = _translations[Language][value.ToString().ToLower()];
             ThemeIcon = _themeIcons[value];
-            ThemeChangedCommand?.Execute(value);
         }
 
         private void UpdateTranslations()
