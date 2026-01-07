@@ -2,48 +2,32 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
-             xmlns:vm="clr-namespace:LaundromatManagementSystem.ViewModels"
              x:Class="LaundromatManagementSystem.Views.Dashboard"
-             x:DataType="vm:DashboardViewModel">
+             Title="Dashboard">
 
     <Grid RowDefinitions="Auto, *">
 
         <!-- Customer Header -->
-        <views:CustomerHeader Grid.Row="0"
-                             Language="{Binding Language, Mode=TwoWay}"
-                             Theme="{Binding Theme, Mode=TwoWay}" />
+        <views:CustomerHeader Grid.Row="0" />
 
         <!-- Main Content -->
         <Grid Grid.Row="1"
               ColumnDefinitions="7*, 3*"
               ColumnSpacing="24"
-              Padding="24"
-              BackgroundColor="White">
+              Padding="24">
 
             <!-- Left Panel - Services -->
             <Border Grid.Column="0"
                     StrokeThickness="0"
                     Padding="0">
-                <views:ServiceGrid SelectedCategory="{Binding SelectedCategory}"
-                                  Language="{Binding Language}"
-                                  Theme="{Binding Theme}"
-                                  CategoryChangedCommand="{Binding ChangeCategoryCommand}"
-                                  AddToCartCommand="{Binding AddToCartCommand}" />
+                <views:ServiceGrid x:Name="ServiceGridView" />
             </Border>
 
             <!-- Right Panel - Shopping Cart -->
             <Border Grid.Column="1"
                     StrokeThickness="0"
                     Padding="0">
-                <views:ShoppingCart Cart="{Binding Cart}"
-                                   Subtotal="{Binding Subtotal}"
-                                   Tax="{Binding Tax}"
-                                   Total="{Binding Total}"
-                                   Language="{Binding Language}"
-                                   Theme="{Binding Theme}"
-                                   RemoveItemCommand="{Binding RemoveFromCartCommand}"
-                                   UpdateQuantityCommand="{Binding UpdateQuantityCommand}"
-                                   ProcessPaymentCommand="{Binding ProcessPaymentCommand}" />
+                <views:ShoppingCart x:Name="ShoppingCart" />
             </Border>
 
         </Grid>
@@ -51,18 +35,14 @@
         <!-- Payment Modal -->
         <Border Grid.RowSpan="2"
                 BackgroundColor="#80000000"
-                IsVisible="{Binding ShowPaymentModal}"
+                IsVisible="False"
                 VerticalOptions="Fill"
-                HorizontalOptions="Fill">
+                HorizontalOptions="Fill"
+                x:Name="PaymentModalOverlay">
 
             <Border VerticalOptions="Center"
                     HorizontalOptions="Center">
-                <views:PaymentModal Total="{Binding Total}"
-                                   TransactionId="{Binding TransactionId}"
-                                   Language="{Binding Language}"
-                                   Theme="{Binding Theme}"
-                                   CloseCommand="{Binding ClosePaymentModalCommand}"
-                                   PaymentCompleteCommand="{Binding CompletePaymentCommand}" />
+                <views:PaymentModal x:Name="PaymentModalView" />
             </Border>
 
         </Border>

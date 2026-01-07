@@ -5,25 +5,39 @@ namespace LaundromatManagementSystem.Views
 {
     public partial class Dashboard : ContentPage
     {
+        private ShoppingCart _shoppingCart;
+        
         public Dashboard()
         {
             InitializeComponent();
             
-            // Create ViewModel with dependencies
+            // Create ViewModel
             var cartService = new CartService();
             var serviceService = new ServiceService();
             var viewModel = new DashboardViewModel(cartService, serviceService);
             
             BindingContext = viewModel;
             
-            // Subscribe to cart updates to refresh the shopping cart
-            cartService.CartUpdated += (sender, e) =>
+            // Find ShoppingCart view
+            Loaded += OnDashboardLoaded;
+        }
+        
+        private void OnDashboardLoaded(object sender, EventArgs e)
+        {
+            // Find the ShoppingCart view
+            _shoppingCart = this.FindByName<ShoppingCart>("ShoppingCart");
+        }
+        
+        // This method is called from ServiceGrid when a service is tapped
+        public void OnServiceTapped(Models.CartItem cartItem)
+        {
+            _shoppingCart?.AddItem(cartItem);
+            
+            // Also update the ViewModel
+            if (BindingContext is DashboardViewModel vm)
             {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    viewModel.Cart = new System.Collections.ObjectModel.ObservableCollection<Models.CartItem>(cartService.GetCartItems());
-                });
-            };
+                vm.AddToCartCommand.Execute(cartItem);
+            }
         }
     }
 }
