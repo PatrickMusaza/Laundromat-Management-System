@@ -14,9 +14,9 @@
         <Grid RowDefinitions="Auto, *, Auto, Auto">
 
             <!-- Header -->
-            <Border Grid.Row="0"
-                    Padding="0,0,0,12"
-                    Margin="0,0,0,16">
+            <VerticalStackLayout Grid.Row="0"
+                                 Padding="0,0,0,12"
+                                 Margin="0,0,0,16">
 
                 <HorizontalStackLayout Spacing="8"
                                        VerticalOptions="Center">
@@ -51,7 +51,12 @@
 
                 </HorizontalStackLayout>
 
-            </Border>
+                <BoxView Color="{DynamicResource HeaderBorderColor}"
+                         HeightRequest="1"
+                         HorizontalOptions="Fill"
+                         Margin="10"/>
+
+            </VerticalStackLayout>
 
             <!-- Cart Items -->
             <CollectionView Grid.Row="1"

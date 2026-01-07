@@ -23,11 +23,11 @@ namespace LaundromatManagementSystem
             var services = new ServiceCollection();
             
             // Register services
-            services.AddSingleton<IServiceService, ServiceService>();
-            services.AddSingleton<ICartService, CartService>();
+            services.AddTransient<IServiceService, ServiceService>();
+            services.AddTransient<ICartService, CartService>();
             
             // Register ViewModels
-            services.AddSingleton<DashboardViewModel>();
+            services.AddTransient<DashboardViewModel>();
             
             Services = services.BuildServiceProvider();
         }

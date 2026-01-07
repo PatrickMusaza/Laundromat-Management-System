@@ -17,6 +17,7 @@ public static class MauiProgram
 				fonts.AddFont("segoeuithisi.ttf", "SegoeUIItalic");
 				fonts.AddFont("segoeuithisz.ttf", "SegoeUIBoldItalic");
 			});
+		//builder.UseMauiCommunityToolkit();
 
 #if DEBUG
 		builder.Logging.AddDebug();

@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LaundromatManagementSystem.Models;
-using System.Windows.Input;
 
 namespace LaundromatManagementSystem.ViewModels
 {
@@ -32,6 +31,7 @@ namespace LaundromatManagementSystem.ViewModels
 
         // Colors based on service type and theme
         public Color IconBackgroundColor => GetIconBackgroundColor();
+        public Color ShadowColor => GetShadowColor();
         public Color IconColor => GetIconColor();
         public Color ServiceBackgroundColor => GetServiceBackgroundColor();
         public Color ServiceBorderColor => GetServiceBorderColor();
@@ -84,6 +84,11 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(TapToAddColor));
         }
 
+        partial void OnLanguageChanged(Language value)
+        {
+            OnPropertyChanged(nameof(TapToAddText));
+        }
+
         private Color GetIconBackgroundColor()
         {
             return Icon switch
@@ -95,6 +100,16 @@ namespace LaundromatManagementSystem.ViewModels
                 "👔" => Color.FromArgb("#E0E7FF"),  // Ironing
                 "⭐" => Color.FromArgb("#DCFCE7"),  // Package
                 _ => Colors.White
+            };
+        }
+
+        private Color GetShadowColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#000000").WithAlpha(1f),
+                Theme.Gray => Color.FromArgb("#9CA3AF").WithAlpha(1f),
+                _ => Color.FromArgb("#000000").WithAlpha(1f)
             };
         }
 
@@ -176,8 +191,8 @@ namespace LaundromatManagementSystem.ViewModels
             };
         }
 
-        // Helper property to access current language (would need to be passed or accessed via service)
-        private Language Language => Language.EN; // This should be injected or accessed via a service
+        [ObservableProperty]
+        private Language language;
     }
 
     public class ServiceItem

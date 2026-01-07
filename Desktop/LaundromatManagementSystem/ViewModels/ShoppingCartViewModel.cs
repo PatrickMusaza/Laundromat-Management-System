@@ -10,22 +10,22 @@ namespace LaundromatManagementSystem.ViewModels
     {
         [ObservableProperty]
         private ObservableCollection<CartItem> _cart = new();
-        
+
         [ObservableProperty]
         private decimal _subtotal;
-        
+
         [ObservableProperty]
         private decimal _tax;
-        
+
         [ObservableProperty]
         private decimal _total;
-        
+
         [ObservableProperty]
         private Language _language = Language.EN;
-        
+
         [ObservableProperty]
         private Theme _theme = Theme.Light;
-        
+
         // Text properties
         public string CartTitle => GetTranslation("cart");
         public string EmptyCartText => GetTranslation("empty");
@@ -35,7 +35,7 @@ namespace LaundromatManagementSystem.ViewModels
         public string TaxText => GetTranslation("tax");
         public string TotalText => GetTranslation("total");
         public string ProcessPaymentText => GetTranslation("process");
-        
+
         // Theme colors
         public Color CartBackgroundColor => GetCartBackgroundColor();
         public Color CartBorderColor => GetCartBorderColor();
@@ -47,27 +47,27 @@ namespace LaundromatManagementSystem.ViewModels
         public Color ItemTextColor => GetItemTextColor();
         public Color TotalBackgroundColor => GetTotalBackgroundColor();
         public Color TotalBorderColor => GetTotalBorderColor();
-        
+
         public ICommand RemoveItemCommand { get; }
         public ICommand UpdateQuantityCommand { get; }
         public ICommand ProcessPaymentCommand { get; }
-        
-        public ShoppingCartViewModel(ICommand removeItemCommand, 
-                                    ICommand updateQuantityCommand, 
+
+        public ShoppingCartViewModel(ICommand removeItemCommand,
+                                    ICommand updateQuantityCommand,
                                     ICommand processPaymentCommand)
         {
             RemoveItemCommand = removeItemCommand;
             UpdateQuantityCommand = updateQuantityCommand;
             ProcessPaymentCommand = processPaymentCommand;
         }
-        
+
         partial void OnCartChanged(ObservableCollection<CartItem> value)
         {
             CalculateTotals();
             OnPropertyChanged(nameof(CartTitle));
             OnPropertyChanged(nameof(EmptyCartText));
         }
-        
+
         partial void OnLanguageChanged(Language value)
         {
             OnPropertyChanged(nameof(CartTitle));
@@ -79,7 +79,7 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(TotalText));
             OnPropertyChanged(nameof(ProcessPaymentText));
         }
-        
+
         partial void OnThemeChanged(Theme value)
         {
             OnPropertyChanged(nameof(CartBackgroundColor));
@@ -93,14 +93,14 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(TotalBackgroundColor));
             OnPropertyChanged(nameof(TotalBorderColor));
         }
-        
+
         private void CalculateTotals()
         {
             Subtotal = Cart.Sum(item => item.TotalPrice);
             Tax = Math.Round(Subtotal * 0.1m, 2);
             Total = Subtotal + Tax;
         }
-        
+
         private string GetTranslation(string key)
         {
             var translations = new Dictionary<string, Dictionary<Language, string>>
@@ -154,10 +154,10 @@ namespace LaundromatManagementSystem.ViewModels
                     [Language.FR] = "TRAITER LE PAIEMENT"
                 }
             };
-            
+
             return translations[key][Language];
         }
-        
+
         private Color GetCartBackgroundColor()
         {
             return Theme switch
@@ -167,7 +167,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Colors.White
             };
         }
-        
+
         private Color GetCartBorderColor()
         {
             return Theme switch
@@ -177,7 +177,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#E5E7EB")
             };
         }
-        
+
         private Color GetCartTitleColor()
         {
             return Theme switch
@@ -186,7 +186,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#1E3A8A")
             };
         }
-        
+
         private Color GetEmptyTextColor()
         {
             return Theme switch
@@ -195,7 +195,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#6B7280")
             };
         }
-        
+
         private Color GetEmptyMessageColor()
         {
             return Theme switch
@@ -204,7 +204,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#9CA3AF")
             };
         }
-        
+
         private Color GetItemBackgroundColor()
         {
             return Theme switch
@@ -214,7 +214,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#F9FAFB")
             };
         }
-        
+
         private Color GetItemBorderColor()
         {
             return Theme switch
@@ -224,7 +224,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#E5E7EB")
             };
         }
-        
+
         private Color GetItemTextColor()
         {
             return Theme switch
@@ -233,7 +233,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#111827")
             };
         }
-        
+
         private Color GetTotalBackgroundColor()
         {
             return Theme switch
@@ -243,7 +243,7 @@ namespace LaundromatManagementSystem.ViewModels
                 _ => Color.FromArgb("#F9FAFB")
             };
         }
-        
+
         private Color GetTotalBorderColor()
         {
             return Theme switch
