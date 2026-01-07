@@ -8,7 +8,7 @@
              HeightRequest="800">
 
     <Border Stroke="{DynamicResource HeaderBorderColor}"
-            StrokeThickness="2"
+            StrokeThickness="1"
             StrokeShape="RoundRectangle 16,16,16,16"
             BackgroundColor="{DynamicResource CardBackgroundColor}">
 
@@ -77,7 +77,7 @@
                        TextColor="{DynamicResource CardTextColor}"/>
 
                 <Border Stroke="{DynamicResource CardBorderColor}"
-                        StrokeThickness="2"
+                        StrokeThickness="1"
                         StrokeShape="RoundRectangle 8,8,8,8"
                         HeightRequest="48">
                     <Entry Text="{Binding Customer}"
@@ -108,7 +108,7 @@
 
                     <!-- Cash -->
                     <Border Stroke="#10B981"
-                            StrokeThickness="2"
+                            StrokeThickness="1"
                             StrokeShape="RoundRectangle 16,16,16,16"
                             BackgroundColor="#D1FAE5"
                             HeightRequest="192">
@@ -132,7 +132,7 @@
                     <!-- Mobile Money -->
                     <Border Grid.Column="1"
                             Stroke="#3B82F6"
-                            StrokeThickness="2"
+                            StrokeThickness="1"
                             StrokeShape="RoundRectangle 16,16,16,16"
                             BackgroundColor="#DBEAFE"
                             HeightRequest="192">
@@ -156,7 +156,7 @@
                     <!-- Card -->
                     <Border Grid.Column="2"
                             Stroke="#F59E0B"
-                            StrokeThickness="2"
+                            StrokeThickness="1"
                             StrokeShape="RoundRectangle 16,16,16,16"
                             BackgroundColor="#FEF3C7"
                             HeightRequest="192">
@@ -189,7 +189,7 @@
 
                         <!-- Total Display -->
                         <Border Stroke="{DynamicResource CardBorderColor}"
-                                StrokeThickness="2"
+                                StrokeThickness="1"
                                 StrokeShape="RoundRectangle 8,8,8,8"
                                 BackgroundColor="{DynamicResource TotalBackgroundColor}"
                                 Padding="16">
@@ -215,7 +215,7 @@
                                    TextColor="{DynamicResource CardTextColor}"/>
 
                             <Border Stroke="{DynamicResource CardBorderColor}"
-                                    StrokeThickness="2"
+                                    StrokeThickness="1"
                                     StrokeShape="RoundRectangle 8,8,8,8"
                                     HeightRequest="64">
                                 <Label Text="{Binding CashReceived, StringFormat='{0:N0}'}"
@@ -229,7 +229,7 @@
 
                         <!-- Change Due -->
                         <Border Stroke="#10B981"
-                                StrokeThickness="2"
+                                StrokeThickness="1"
                                 StrokeShape="RoundRectangle 8,8,8,8"
                                 BackgroundColor="#D1FAE5"
                                 Padding="16">

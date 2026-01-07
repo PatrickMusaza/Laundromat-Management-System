@@ -4,15 +4,13 @@
              xmlns:vm="clr-namespace:LaundromatManagementSystem.ViewModels"
              x:Class="LaundromatManagementSystem.Views.CustomerHeader"
              x:DataType="vm:CustomerHeaderViewModel">
-    
-    <Border Stroke="{DynamicResource HeaderBorderColor}"
-            StrokeThickness="0"
-            StrokeShape="RoundRectangle 0,0,0,0 ">
-        
+
+    <VerticalStackLayout>
+
         <Grid ColumnDefinitions="*, Auto"
               Padding="32,24"
               BackgroundColor="{DynamicResource HeaderBackgroundColor}">
-            
+
             <!-- Logo and Title -->
             <VerticalStackLayout Grid.Column="0"
                                  VerticalOptions="Center">
@@ -20,96 +18,100 @@
                        FontSize="24"
                        FontAttributes="Bold"
                        TextColor="{DynamicResource HeaderTextColor}"
-                       Margin="0,0,0,4" />
+                       Margin="0,0,0,4"/>
                 <Label Text="{Binding SelectServiceText}"
                        FontSize="16"
-                       TextColor="{DynamicResource HeaderSubtextColor}" />
+                       TextColor="{DynamicResource HeaderSubtextColor}"/>
             </VerticalStackLayout>
-            
+
             <!-- Controls -->
             <HorizontalStackLayout Grid.Column="1"
                                    Spacing="16"
                                    VerticalOptions="Center">
-                
+
                 <!-- Language Selector -->
                 <Border BackgroundColor="{DynamicResource LanguageButtonBackground}"
                         Stroke="{DynamicResource LanguageButtonBorder}"
-                        StrokeThickness="2"
+                        StrokeThickness="1"
                         StrokeShape="RoundRectangle 8,8,8,8"
                         HeightRequest="56"
                         WidthRequest="160"
                         Padding="16,0">
-                    
+
                     <Grid ColumnDefinitions="Auto, *"
                           ColumnSpacing="12">
-                        
+
                         <!-- Icon -->
                         <Label Grid.Column="0"
                                Text="🌐"
                                FontSize="24"
-                               VerticalOptions="Center" />
-                        
+                               VerticalOptions="Center"/>
+
                         <!-- Text -->
                         <VerticalStackLayout Grid.Column="1"
                                              VerticalOptions="Center">
                             <Label Text="{Binding LanguageLabelText}"
                                    FontSize="10"
-                                   TextColor="{DynamicResource LanguageLabelColor}" />
+                                   TextColor="{DynamicResource LanguageLabelColor}"/>
                             <Label Text="{Binding CurrentLanguage}"
                                    FontSize="16"
                                    FontAttributes="Bold"
-                                   TextColor="{DynamicResource LanguageValueColor}" />
+                                   TextColor="{DynamicResource LanguageValueColor}"/>
                         </VerticalStackLayout>
-                        
+
                     </Grid>
-                    
+
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ShowLanguagePopupCommand}" />
+                        <TapGestureRecognizer Command="{Binding ShowLanguagePopupCommand}"/>
                     </Border.GestureRecognizers>
-                    
+
                 </Border>
-                
+
                 <!-- Theme Selector -->
                 <Border BackgroundColor="{DynamicResource ThemeButtonBackground}"
                         Stroke="{DynamicResource ThemeButtonBorder}"
-                        StrokeThickness="2"
+                        StrokeThickness="1"
                         StrokeShape="RoundRectangle 8,8,8,8"
                         HeightRequest="56"
                         WidthRequest="160"
                         Padding="16,0">
-                    
+
                     <Grid ColumnDefinitions="Auto, *"
                           ColumnSpacing="12">
-                        
+
                         <!-- Icon -->
                         <Label Grid.Column="0"
                                Text="{Binding ThemeIcon}"
                                FontSize="24"
-                               VerticalOptions="Center" />
-                        
+                               VerticalOptions="Center"/>
+
                         <!-- Text -->
                         <VerticalStackLayout Grid.Column="1"
                                              VerticalOptions="Center">
                             <Label Text="{Binding ThemeLabelText}"
                                    FontSize="10"
-                                   TextColor="{DynamicResource ThemeLabelColor}" />
+                                   TextColor="{DynamicResource ThemeLabelColor}"/>
                             <Label Text="{Binding CurrentThemeText}"
                                    FontSize="16"
                                    FontAttributes="Bold"
-                                   TextColor="{DynamicResource ThemeValueColor}" />
+                                   TextColor="{DynamicResource ThemeValueColor}"/>
                         </VerticalStackLayout>
-                        
+
                     </Grid>
-                    
+
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ShowThemePopupCommand}" />
+                        <TapGestureRecognizer Command="{Binding ShowThemePopupCommand}"/>
                     </Border.GestureRecognizers>
-                    
+
                 </Border>
-                
+
             </HorizontalStackLayout>
-            
+
         </Grid>
-        
-    </Border>
+
+        <BoxView Color="{DynamicResource HeaderBorderColor}"
+                 HeightRequest="1"
+                 HorizontalOptions="Fill"/>
+
+    </VerticalStackLayout>
 </ContentView>

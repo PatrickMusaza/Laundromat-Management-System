@@ -4,29 +4,29 @@
              xmlns:vm="clr-namespace:LaundromatManagementSystem.ViewModels"
              x:Class="LaundromatManagementSystem.Views.ShoppingCart"
              x:DataType="vm:ShoppingCartViewModel">
-    
+
     <Border Stroke="{Binding CartBorderColor}"
-            StrokeThickness="2"
+            StrokeThickness="1"
             StrokeShape="RoundRectangle 12,12,12,12"
             BackgroundColor="{Binding CartBackgroundColor}"
             Padding="16">
-        
+
         <Grid RowDefinitions="Auto, *, Auto, Auto">
-            
+
             <!-- Header -->
             <Border Grid.Row="0"
                     Padding="0,0,0,12"
                     Margin="0,0,0,16">
-                
+
                 <HorizontalStackLayout Spacing="8"
                                        VerticalOptions="Center">
                     <Label Text="🛒"
-                           FontSize="24" />
+                           FontSize="24"/>
                     <Label Text="{Binding CartTitle}"
                            FontSize="20"
                            FontAttributes="Bold"
-                           TextColor="{Binding CartTitleColor}" />
-                    
+                           TextColor="{Binding CartTitleColor}"/>
+
                     <!-- Cart Count Badge -->
                     <Border IsVisible="{Binding Cart.Count, Converter={StaticResource GreaterThanZeroConverter}}"
                             BackgroundColor="#F59E0B"
@@ -40,26 +40,26 @@
                                FontAttributes="Bold"
                                TextColor="White"
                                HorizontalOptions="Center"
-                               VerticalOptions="Center" />
+                               VerticalOptions="Center"/>
                     </Border>
-                    
+
                     <!-- Bottom Line -->
                     <BoxView HeightRequest="5"
                              Color="{Binding CartBorderColor}"
                              HorizontalOptions="Fill"
-                             VerticalOptions="End" />
+                             VerticalOptions="End"/>
 
                 </HorizontalStackLayout>
-                
+
             </Border>
-            
+
             <!-- Cart Items -->
             <CollectionView Grid.Row="1"
                             ItemsSource="{Binding Cart}"
                             SelectionMode="None"
                             VerticalScrollBarVisibility="Always"
                             EmptyView="{Binding EmptyView}">
-                
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border Stroke="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
@@ -70,10 +70,10 @@
                                                          Path=BindingContext.ItemBackgroundColor}"
                                 Padding="12"
                                 Margin="0,0,0,8">
-                            
+
                             <Grid RowDefinitions="Auto, Auto, Auto"
                                   ColumnDefinitions="*, Auto">
-                                
+
                                 <!-- Item Name and Price -->
                                 <VerticalStackLayout Grid.Row="0"
                                                      Grid.Column="0"
@@ -82,12 +82,12 @@
                                            FontSize="14"
                                            FontAttributes="Bold"
                                            TextColor="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
-                                                               Path=BindingContext.ItemTextColor}" />
+                                                               Path=BindingContext.ItemTextColor}"/>
                                     <Label Text="{Binding Price, StringFormat='{0:N0} RWF'}"
                                            FontSize="12"
                                            TextColor="#F59E0B"
-                                           Margin="0,4,0,0" />
-                                    
+                                           Margin="0,4,0,0"/>
+
                                     <!-- Addons -->
                                     <VerticalStackLayout IsVisible="{Binding Addons.Count, Converter={StaticResource GreaterThanZeroConverter}}"
                                                          Margin="12,8,0,0"
@@ -95,8 +95,8 @@
                                         <BoxView HeightRequest="1"
                                                  BackgroundColor="#F59E0B"
                                                  HorizontalOptions="Start"
-                                                 WidthRequest="24" />
-                                        
+                                                 WidthRequest="24"/>
+
                                         <CollectionView ItemsSource="{Binding Addons}"
                                                         SelectionMode="None"
                                                         VerticalScrollBarVisibility="Never">
@@ -105,13 +105,13 @@
                                                     <Label Text="{Binding Name, StringFormat='+ {0}'}"
                                                            FontSize="11"
                                                            TextColor="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
-                                                                               Path=BindingContext.ItemTextColor}" />
+                                                                               Path=BindingContext.ItemTextColor}"/>
                                                 </DataTemplate>
                                             </CollectionView.ItemTemplate>
                                         </CollectionView>
                                     </VerticalStackLayout>
                                 </VerticalStackLayout>
-                                
+
                                 <!-- Remove Button -->
                                 <Border Grid.Row="0"
                                         Grid.Column="1"
@@ -125,23 +125,23 @@
                                            FontAttributes="Bold"
                                            TextColor="White"
                                            HorizontalOptions="Center"
-                                           VerticalOptions="Center" />
-                                    
+                                           VerticalOptions="Center"/>
+
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer 
+                                        <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                               Path=BindingContext.RemoveItemCommand}"
-                                            CommandParameter="{Binding Id}" />
+                                            CommandParameter="{Binding Id}"/>
                                     </Border.GestureRecognizers>
                                 </Border>
-                                
+
                                 <!-- Quantity Controls -->
                                 <Grid Grid.Row="1"
                                       Grid.Column="1"
                                       ColumnDefinitions="Auto, Auto, Auto"
                                       ColumnSpacing="8"
                                       VerticalOptions="Center">
-                                    
+
                                     <Border BackgroundColor="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                                       Path=BindingContext.ItemBorderColor}"
                                             StrokeThickness="0"
@@ -154,16 +154,16 @@
                                                TextColor="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                                    Path=BindingContext.ItemTextColor}"
                                                HorizontalOptions="Center"
-                                               VerticalOptions="Center" />
-                                        
+                                               VerticalOptions="Center"/>
+
                                         <Border.GestureRecognizers>
-                                            <TapGestureRecognizer 
+                                            <TapGestureRecognizer
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                                   Path=BindingContext.UpdateQuantityCommand}"
-                                                CommandParameter="{Binding ., Converter={StaticResource DecreaseQuantityConverter}}" />
+                                                CommandParameter="{Binding ., Converter={StaticResource DecreaseQuantityConverter}}"/>
                                         </Border.GestureRecognizers>
                                     </Border>
-                                    
+
                                     <Label Grid.Column="1"
                                            Text="{Binding Quantity}"
                                            FontSize="14"
@@ -172,8 +172,8 @@
                                                                Path=BindingContext.ItemTextColor}"
                                            WidthRequest="30"
                                            HorizontalTextAlignment="Center"
-                                           VerticalOptions="Center" />
-                                    
+                                           VerticalOptions="Center"/>
+
                                     <Border Grid.Column="2"
                                             BackgroundColor="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                                       Path=BindingContext.ItemBorderColor}"
@@ -187,18 +187,18 @@
                                                TextColor="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                                    Path=BindingContext.ItemTextColor}"
                                                HorizontalOptions="Center"
-                                               VerticalOptions="Center" />
-                                        
+                                               VerticalOptions="Center"/>
+
                                         <Border.GestureRecognizers>
-                                            <TapGestureRecognizer 
+                                            <TapGestureRecognizer
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                                   Path=BindingContext.UpdateQuantityCommand}"
-                                                CommandParameter="{Binding ., Converter={StaticResource IncreaseQuantityConverter}}" />
+                                                CommandParameter="{Binding ., Converter={StaticResource IncreaseQuantityConverter}}"/>
                                         </Border.GestureRecognizers>
                                     </Border>
-                                    
+
                                 </Grid>
-                                
+
                                 <!-- Item Total -->
                                 <Label Grid.Row="2"
                                        Grid.Column="1"
@@ -208,14 +208,14 @@
                                        TextColor="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                            Path=BindingContext.ItemTextColor}"
                                        HorizontalOptions="End"
-                                       Margin="0,8,0,0" />
-                                
+                                       Margin="0,8,0,0"/>
+
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            
+
             <!-- Empty Cart View -->
             <ContentView Grid.Row="1"
                          x:Name="EmptyCartView"
@@ -225,19 +225,19 @@
                                      Spacing="16">
                     <Label Text="🛒"
                            FontSize="48"
-                           HorizontalOptions="Center" />
+                           HorizontalOptions="Center"/>
                     <Label Text="{Binding EmptyCartText}"
                            FontSize="18"
                            FontAttributes="Bold"
                            TextColor="{Binding EmptyTextColor}"
-                           HorizontalOptions="Center" />
+                           HorizontalOptions="Center"/>
                     <Label Text="{Binding EmptyMessageText}"
                            FontSize="14"
                            TextColor="{Binding EmptyMessageColor}"
-                           HorizontalOptions="Center" />
+                           HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </ContentView>
-            
+
             <!-- Totals Section -->
             <Border Grid.Row="2"
                     Stroke="{Binding TotalBorderColor}"
@@ -247,54 +247,54 @@
                     Padding="16"
                     Margin="0,16,0,16"
                     IsVisible="{Binding Cart.Count, Converter={StaticResource GreaterThanZeroConverter}}">
-                
+
                 <VerticalStackLayout Spacing="8">
-                    
+
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Grid.Column="0"
                                Text="{Binding SubtotalText}"
                                FontSize="14"
-                               TextColor="{Binding ItemTextColor}" />
+                               TextColor="{Binding ItemTextColor}"/>
                         <Label Grid.Column="1"
                                Text="{Binding Subtotal, StringFormat='{0:N0} RWF'}"
                                FontSize="14"
                                FontAttributes="Bold"
-                               TextColor="{Binding ItemTextColor}" />
+                               TextColor="{Binding ItemTextColor}"/>
                     </Grid>
-                    
+
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Grid.Column="0"
                                Text="{Binding TaxText}"
                                FontSize="14"
-                               TextColor="{Binding ItemTextColor}" />
+                               TextColor="{Binding ItemTextColor}"/>
                         <Label Grid.Column="1"
                                Text="{Binding Tax, StringFormat='{0:N0} RWF'}"
                                FontSize="14"
                                FontAttributes="Bold"
-                               TextColor="{Binding ItemTextColor}" />
+                               TextColor="{Binding ItemTextColor}"/>
                     </Grid>
-                    
+
                     <BoxView HeightRequest="1"
                              BackgroundColor="{Binding TotalBorderColor}"
-                             Margin="0,8" />
-                    
+                             Margin="0,8"/>
+
                     <Grid ColumnDefinitions="*, Auto">
                         <Label Grid.Column="0"
                                Text="{Binding TotalText}"
                                FontSize="16"
                                FontAttributes="Bold"
-                               TextColor="{Binding CartTitleColor}" />
+                               TextColor="{Binding CartTitleColor}"/>
                         <Label Grid.Column="1"
                                Text="{Binding Total, StringFormat='{0:N0} RWF'}"
                                FontSize="16"
                                FontAttributes="Bold"
-                               TextColor="{Binding CartTitleColor}" />
+                               TextColor="{Binding CartTitleColor}"/>
                     </Grid>
-                    
+
                 </VerticalStackLayout>
-                
+
             </Border>
-            
+
             <!-- Process Payment Button -->
             <Button Grid.Row="3"
                     Text="{Binding ProcessPaymentText}"
@@ -305,10 +305,10 @@
                     HeightRequest="64"
                     CornerRadius="8"
                     Command="{Binding ProcessPaymentCommand}"
-                    IsVisible="{Binding Cart.Count, Converter={StaticResource GreaterThanZeroConverter}}" />
-            
+                    IsVisible="{Binding Cart.Count, Converter={StaticResource GreaterThanZeroConverter}}"/>
+
         </Grid>
-        
+
     </Border>
-    
+
 </ContentView>
