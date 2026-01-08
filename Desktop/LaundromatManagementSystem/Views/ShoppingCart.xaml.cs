@@ -50,7 +50,7 @@ namespace LaundromatManagementSystem.Views
         {
             // Calculate totals
             _subtotal = CartItems.Sum(item => item.TotalPrice);
-            _tax = Math.Round(_subtotal * 0.1m, 2);
+            _tax = Math.Round(_subtotal * 0.18m, 2);
             _total = _subtotal + _tax;
             
             // Update labels

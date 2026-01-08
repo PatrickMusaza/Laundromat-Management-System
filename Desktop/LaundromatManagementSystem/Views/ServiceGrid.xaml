@@ -106,7 +106,7 @@
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 16,16,16,16"
                             BackgroundColor="White"
-                            HeightRequest="280"
+                            HeightRequest="330"
                             Padding="24">
                         
                         <VerticalStackLayout Spacing="16">
