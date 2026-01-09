@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LaundromatManagementSystem.Models
 {
-    public class ServiceAddon : BaseEntity
+    public class ServiceAddons : BaseEntity
     {
         [Required]
         [StringLength(100)]
