@@ -46,9 +46,13 @@
                                     ProcessPaymentCommand="{Binding ProcessPaymentCommand}"/>
             </Border>
 
-            <views:Footer Grid.RowSpan="2"/>
-
         </Grid>
+
+        <VerticalStackLayout Grid.Row="1"
+                             VerticalOptions="End"
+                             HorizontalOptions="FillAndExpand">
+            <views:Footer/>
+        </VerticalStackLayout>
 
         <!-- Payment Modal -->
         <Border Grid.RowSpan="2"

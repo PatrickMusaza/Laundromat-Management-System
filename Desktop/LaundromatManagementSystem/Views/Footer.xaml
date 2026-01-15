@@ -1,176 +1,99 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="LaundromatManagementSystem.Views.Footer">
+<ContentView
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="LaundromatManagementSystem.Views.Footer">
 
-    <ContentView.Resources>
-        <ResourceDictionary>
-            <Color x:Key="PageBackgroundColor">#F5F5F5</Color>
-            <Color x:Key="CardBackgroundColor">White</Color>
-            <Color x:Key="OnlineColor">#4CAF50</Color>
-            <Color x:Key="OfflineColor">#F44336</Color>
-            <Color x:Key="ConnectedColor">#2196F3</Color>
-            <Color x:Key="DisconnectedColor">#FF9800</Color>
-            <Color x:Key="PrimaryTextColor">#212121</Color>
-            <Color x:Key="SecondaryTextColor">#757575</Color>
-            <Color x:Key="BorderColor">#E0E0E0</Color>
-        </ResourceDictionary>
-    </ContentView.Resources>
+    <Border Stroke="#E5E7EB"
+            StrokeThickness="1"
+            BackgroundColor="White">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="20"
-                Padding="20">
+        <Grid Padding="24,12"
+              ColumnDefinitions="*,Auto">
 
-            <!-- Header -->
-            <Frame BackgroundColor="{DynamicResource CardBackgroundColor}"
-                   CornerRadius="10"
-                   BorderColor="{DynamicResource BorderColor}"
-                   HasShadow="True"
-                   Padding="20">
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="System Status Dashboard"
-                           FontSize="24"
-                           FontAttributes="Bold"
-                           TextColor="{DynamicResource PrimaryTextColor}"
-                           HorizontalOptions="Center"/>
+            <!-- LEFT SECTION -->
+            <HorizontalStackLayout Spacing="24">
 
-                    <Label Text="Branch: remera • User: admin (Staff) • 12:28"
-                           FontSize="14"
-                           TextColor="{DynamicResource SecondaryTextColor}"
-                           HorizontalOptions="Center"/>
-                </VerticalStackLayout>
-            </Frame>
+                <!-- Branch -->
+                <HorizontalStackLayout Spacing="4">
+                    <Label Text="Branch:"
+                           TextColor="#6B7280" />
+                    <Label Text="{Binding Branch}"
+                           TextColor="#111827" />
+                </HorizontalStackLayout>
 
-            <!-- Status Indicators -->
-            <Frame BackgroundColor="{DynamicResource CardBackgroundColor}"
-                   CornerRadius="10"
-                   BorderColor="{DynamicResource BorderColor}"
-                   HasShadow="True"
-                   Padding="20">
-                <VerticalStackLayout Spacing="16">
+                <BoxView WidthRequest="1"
+                         HeightRequest="24"
+                         BackgroundColor="#E5E7EB" />
 
-                    <!-- Status Row -->
-                    <HorizontalStackLayout Spacing="15">
-                        <VerticalStackLayout Spacing="4"
-                                HorizontalOptions="Start">
-                            <Label Text="Status"
-                                   FontSize="14"
-                                   TextColor="{DynamicResource SecondaryTextColor}"/>
-                            <Label Text="Online"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="{DynamicResource OnlineColor}"/>
-                        </VerticalStackLayout>
+                <!-- User -->
+                <HorizontalStackLayout Spacing="4">
+                    <Label Text="User:"
+                           TextColor="#6B7280" />
+                    <Label Text="{Binding UserDisplay}"
+                           TextColor="#111827" />
+                </HorizontalStackLayout>
 
-                        <BoxView Color="{DynamicResource BorderColor}"
-                                 WidthRequest="1"
-                                 VerticalOptions="Fill"/>
+                <BoxView WidthRequest="1"
+                         HeightRequest="24"
+                         BackgroundColor="#E5E7EB" />
 
-                        <!-- Status Indicator -->
-                        <VerticalStackLayout Spacing="4"
-                                HorizontalOptions="CenterAndExpand">
-                            <Ellipse WidthRequest="20"
-                                     HeightRequest="20"
-                                     Fill="{DynamicResource OnlineColor}"
-                                     HorizontalOptions="Center"/>
-                            <Label Text="Online"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource OnlineColor}"
-                                   HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
+                <!-- Time -->
+                <HorizontalStackLayout Spacing="6">
+                    <Label Text="⏰"
+                           TextColor="#6B7280" />
+                    <Label Text="{Binding CurrentTime}"
+                           TextColor="#111827" />
+                </HorizontalStackLayout>
 
-                    <!-- Separator -->
-                    <BoxView HeightRequest="1"
-                             Color="{DynamicResource BorderColor}"
-                             HorizontalOptions="Fill"/>
+            </HorizontalStackLayout>
 
-                    <!-- RRA Connection -->
-                    <HorizontalStackLayout Spacing="15">
-                        <VerticalStackLayout Spacing="4"
-                                HorizontalOptions="Start">
-                            <Label Text="RRA Connection"
-                                   FontSize="14"
-                                   TextColor="{DynamicResource SecondaryTextColor}"/>
-                            <Label Text="Connected"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="{DynamicResource ConnectedColor}"/>
-                        </VerticalStackLayout>
+            <!-- RIGHT SECTION -->
+            <HorizontalStackLayout Grid.Column="1"
+                                   Spacing="24">
 
-                        <BoxView Color="{DynamicResource BorderColor}"
-                                 WidthRequest="1"
-                                 VerticalOptions="Fill"/>
+                <!-- Status -->
+                <HorizontalStackLayout Spacing="6">
+                    <Label Text="Status:"
+                           TextColor="#6B7280" />
+                    <BoxView WidthRequest="8"
+                             HeightRequest="8"
+                             CornerRadius="4"
+                             BackgroundColor="#10B981"
+                             VerticalOptions="Center" />
+                    <Label Text="Online"
+                           TextColor="#10B981" />
+                </HorizontalStackLayout>
 
-                        <!-- Connection Indicator -->
-                        <VerticalStackLayout Spacing="4"
-                                HorizontalOptions="CenterAndExpand">
-                            <Label Text="🔗"
-                                   FontSize="24"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="Connected"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource ConnectedColor}"
-                                   HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
+                <BoxView WidthRequest="1"
+                         HeightRequest="24"
+                         BackgroundColor="#E5E7EB" />
 
-                    <!-- Separator -->
-                    <BoxView HeightRequest="1"
-                             Color="{DynamicResource BorderColor}"
-                             HorizontalOptions="Fill"/>
+                <!-- RRA -->
+                <HorizontalStackLayout Spacing="6">
+                    <Label Text="RRA:"
+                           TextColor="#6B7280" />
+                    <Label Text="📶"
+                           TextColor="#10B981" />
+                    <Label Text="Connected"
+                           TextColor="#10B981" />
+                </HorizontalStackLayout>
 
-                    <!-- Sync Status -->
-                    <HorizontalStackLayout Spacing="15">
-                        <VerticalStackLayout Spacing="4"
-                                HorizontalOptions="Start">
-                            <Label Text="Data Sync"
-                                   FontSize="14"
-                                   TextColor="{DynamicResource SecondaryTextColor}"/>
-                            <Label Text="Up to date"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="{DynamicResource OnlineColor}"/>
-                        </VerticalStackLayout>
+                <BoxView WidthRequest="1"
+                         HeightRequest="24"
+                         BackgroundColor="#E5E7EB" />
 
-                        <BoxView Color="{DynamicResource BorderColor}"
-                                 WidthRequest="1"
-                                 VerticalOptions="Fill"/>
+                <!-- Sync -->
+                <HorizontalStackLayout Spacing="6">
+                    <Label Text="Sync:"
+                           TextColor="#6B7280" />
+                    <Label Text="✔"
+                           TextColor="#10B981" />
+                    <Label Text="Up to date"
+                           TextColor="#10B981" />
+                </HorizontalStackLayout>
 
-                        <!-- Sync Indicator -->
-                        <VerticalStackLayout Spacing="4"
-                                HorizontalOptions="CenterAndExpand">
-                            <Label Text="✓"
-                                   FontSize="24"
-                                   TextColor="{DynamicResource OnlineColor}"
-                                   HorizontalOptions="Center"/>
-                            <Label Text="Synced"
-                                   FontSize="12"
-                                   TextColor="{DynamicResource OnlineColor}"
-                                   HorizontalOptions="Center"/>
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
-
-                </VerticalStackLayout>
-            </Frame>
-
-            <!-- Last Updated -->
-            <Label Text="Last updated: 12:28"
-                   FontSize="12"
-                   TextColor="{DynamicResource SecondaryTextColor}"
-                   HorizontalOptions="Center"/>
-
-            <!-- Refresh Button -->
-            <Button Text="Refresh Status"
-                    BackgroundColor="{DynamicResource ConnectedColor}"
-                    TextColor="White"
-                    CornerRadius="8"
-                    HeightRequest="50"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    HorizontalOptions="Fill"
-                    Clicked="OnRefreshClicked"/>
-
-        </VerticalStackLayout>
-    </ScrollView>
+            </HorizontalStackLayout>
+        </Grid>
+    </Border>
 </ContentView>
