@@ -31,6 +31,12 @@
                                    AddToCartCommand="{Binding AddToCartCommand}"/>
             </Border>
 
+            <VerticalStackLayout Grid.Row="1"
+                                 VerticalOptions="End"
+                                 HorizontalOptions="FillAndExpand">
+                <views:Footer/>
+            </VerticalStackLayout>
+
             <!-- Right Panel - Shopping Cart -->
             <Border Grid.Column="1"
                     StrokeThickness="0"
@@ -48,11 +54,6 @@
 
         </Grid>
 
-        <VerticalStackLayout Grid.Row="1"
-                             VerticalOptions="End"
-                             HorizontalOptions="FillAndExpand">
-            <views:Footer/>
-        </VerticalStackLayout>
 
         <!-- Payment Modal -->
         <Border Grid.RowSpan="2"

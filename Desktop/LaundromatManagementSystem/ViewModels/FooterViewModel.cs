@@ -8,10 +8,10 @@ public class FooterViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public string Branch { get; set; } = "Main Branch";
-    public string Username { get; set; } = "admin";
+    public string Username { get; set; } = "user";
     public string Role { get; set; } = "Manager";
 
-    public string UserDisplay => $"{Username} ({Role})";
+    public string UserDisplay => $"{Username}"; //userDisplay format  => $"{Username ({Role})}"
 
     private string _currentTime;
     public string CurrentTime

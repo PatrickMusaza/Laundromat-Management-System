@@ -1,99 +1,100 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="LaundromatManagementSystem.Views.Footer">
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       x:Class="LaundromatManagementSystem.Views.Footer">
 
-    <Border Stroke="#E5E7EB"
-            StrokeThickness="1"
-            BackgroundColor="White">
+       <Border Stroke="#E5E7EB"
+               StrokeThickness="1"
+               BackgroundColor="White"
+               StrokeShape="RoundRectangle 8">
 
-        <Grid Padding="24,12"
-              ColumnDefinitions="*,Auto">
+              <Grid Padding="24,12"
+                    ColumnDefinitions="*,Auto">
 
-            <!-- LEFT SECTION -->
-            <HorizontalStackLayout Spacing="24">
+                     <!-- LEFT SECTION -->
+                     <HorizontalStackLayout Spacing="4">
 
-                <!-- Branch -->
-                <HorizontalStackLayout Spacing="4">
-                    <Label Text="Branch:"
-                           TextColor="#6B7280" />
-                    <Label Text="{Binding Branch}"
-                           TextColor="#111827" />
-                </HorizontalStackLayout>
+                            <!-- Branch -->
+                            <HorizontalStackLayout Spacing="4">
+                                   <Label Text="Branch:"
+                                          TextColor="#6B7280"/>
+                                   <Label Text="{Binding Branch}"
+                                          TextColor="#111827"/>
+                            </HorizontalStackLayout>
 
-                <BoxView WidthRequest="1"
-                         HeightRequest="24"
-                         BackgroundColor="#E5E7EB" />
+                            <BoxView WidthRequest="1"
+                                     HeightRequest="24"
+                                     BackgroundColor="#E5E7EB"/>
 
-                <!-- User -->
-                <HorizontalStackLayout Spacing="4">
-                    <Label Text="User:"
-                           TextColor="#6B7280" />
-                    <Label Text="{Binding UserDisplay}"
-                           TextColor="#111827" />
-                </HorizontalStackLayout>
+                            <!-- User -->
+                            <HorizontalStackLayout Spacing="4">
+                                   <Label Text="User:"
+                                          TextColor="#6B7280"/>
+                                   <Label Text="{Binding UserDisplay}"
+                                          TextColor="#111827"/>
+                            </HorizontalStackLayout>
 
-                <BoxView WidthRequest="1"
-                         HeightRequest="24"
-                         BackgroundColor="#E5E7EB" />
+                            <BoxView WidthRequest="1"
+                                     HeightRequest="24"
+                                     BackgroundColor="#E5E7EB"/>
 
-                <!-- Time -->
-                <HorizontalStackLayout Spacing="6">
-                    <Label Text="⏰"
-                           TextColor="#6B7280" />
-                    <Label Text="{Binding CurrentTime}"
-                           TextColor="#111827" />
-                </HorizontalStackLayout>
+                            <!-- Time -->
+                            <HorizontalStackLayout Spacing="6">
+                                   <Label Text="⏰"
+                                          TextColor="#6B7280"/>
+                                   <Label Text="{Binding CurrentTime}"
+                                          TextColor="#111827"/>
+                            </HorizontalStackLayout>
 
-            </HorizontalStackLayout>
+                     </HorizontalStackLayout>
 
-            <!-- RIGHT SECTION -->
-            <HorizontalStackLayout Grid.Column="1"
-                                   Spacing="24">
+                     <!-- RIGHT SECTION -->
+                     <HorizontalStackLayout Grid.Column="1"
+                                            Spacing="24">
 
-                <!-- Status -->
-                <HorizontalStackLayout Spacing="6">
-                    <Label Text="Status:"
-                           TextColor="#6B7280" />
-                    <BoxView WidthRequest="8"
-                             HeightRequest="8"
-                             CornerRadius="4"
-                             BackgroundColor="#10B981"
-                             VerticalOptions="Center" />
-                    <Label Text="Online"
-                           TextColor="#10B981" />
-                </HorizontalStackLayout>
+                            <!-- Status -->
+                            <HorizontalStackLayout Spacing="6">
+                                   <Label Text="Status:"
+                                          TextColor="#6B7280"/>
+                                   <BoxView WidthRequest="8"
+                                            HeightRequest="8"
+                                            CornerRadius="4"
+                                            BackgroundColor="#10B981"
+                                            VerticalOptions="Center"/>
+                                   <Label Text="Online"
+                                          TextColor="#10B981"/>
+                            </HorizontalStackLayout>
 
-                <BoxView WidthRequest="1"
-                         HeightRequest="24"
-                         BackgroundColor="#E5E7EB" />
+                            <BoxView WidthRequest="1"
+                                     HeightRequest="24"
+                                     BackgroundColor="#E5E7EB"/>
 
-                <!-- RRA -->
-                <HorizontalStackLayout Spacing="6">
-                    <Label Text="RRA:"
-                           TextColor="#6B7280" />
-                    <Label Text="📶"
-                           TextColor="#10B981" />
-                    <Label Text="Connected"
-                           TextColor="#10B981" />
-                </HorizontalStackLayout>
+                            <!-- RRA -->
+                            <HorizontalStackLayout Spacing="6">
+                                   <Label Text="RRA:"
+                                          TextColor="#6B7280"/>
+                                   <Label Text="📶"
+                                          TextColor="#10B981"/>
+                                   <Label Text="Connected"
+                                          TextColor="#10B981"/>
+                            </HorizontalStackLayout>
 
-                <BoxView WidthRequest="1"
-                         HeightRequest="24"
-                         BackgroundColor="#E5E7EB" />
+                            <BoxView WidthRequest="1"
+                                     HeightRequest="24"
+                                     BackgroundColor="#E5E7EB"/>
 
-                <!-- Sync -->
-                <HorizontalStackLayout Spacing="6">
-                    <Label Text="Sync:"
-                           TextColor="#6B7280" />
-                    <Label Text="✔"
-                           TextColor="#10B981" />
-                    <Label Text="Up to date"
-                           TextColor="#10B981" />
-                </HorizontalStackLayout>
+                            <!-- Sync -->
+                            <HorizontalStackLayout Spacing="6">
+                                   <Label Text="Sync:"
+                                          TextColor="#6B7280"/>
+                                   <Label Text="✔"
+                                          TextColor="#10B981"/>
+                                   <Label Text="Up to date"
+                                          TextColor="#10B981"/>
+                            </HorizontalStackLayout>
 
-            </HorizontalStackLayout>
-        </Grid>
-    </Border>
+                     </HorizontalStackLayout>
+              </Grid>
+       </Border>
 </ContentView>
