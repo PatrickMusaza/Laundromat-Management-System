@@ -10,8 +10,8 @@
 
         <!-- Customer Header -->
         <views:CustomerHeader Grid.Row="0"
-                             Language="{Binding Language, Mode=TwoWay}"
-                             Theme="{Binding Theme, Mode=TwoWay}" />
+                              Language="{Binding Language, Mode=TwoWay}"
+                              Theme="{Binding Theme, Mode=TwoWay}"/>
 
         <!-- Main Content -->
         <Grid Grid.Row="1"
@@ -25,10 +25,10 @@
                     StrokeThickness="0"
                     Padding="0">
                 <views:ServiceGrid SelectedCategory="{Binding SelectedCategory}"
-                                  Language="{Binding Language}"
-                                  Theme="{Binding Theme}"
-                                  CategoryChangedCommand="{Binding ChangeCategoryCommand}"
-                                  AddToCartCommand="{Binding AddToCartCommand}" />
+                                   Language="{Binding Language}"
+                                   Theme="{Binding Theme}"
+                                   CategoryChangedCommand="{Binding ChangeCategoryCommand}"
+                                   AddToCartCommand="{Binding AddToCartCommand}"/>
             </Border>
 
             <!-- Right Panel - Shopping Cart -->
@@ -36,15 +36,17 @@
                     StrokeThickness="0"
                     Padding="0">
                 <views:ShoppingCart Cart="{Binding Cart}"
-                                   Subtotal="{Binding Subtotal}"
-                                   Tax="{Binding Tax}"
-                                   Total="{Binding Total}"
-                                   Language="{Binding Language}"
-                                   Theme="{Binding Theme}"
-                                   RemoveItemCommand="{Binding RemoveFromCartCommand}"
-                                   UpdateQuantityCommand="{Binding UpdateQuantityCommand}"
-                                   ProcessPaymentCommand="{Binding ProcessPaymentCommand}" />
+                                    Subtotal="{Binding Subtotal}"
+                                    Tax="{Binding Tax}"
+                                    Total="{Binding Total}"
+                                    Language="{Binding Language}"
+                                    Theme="{Binding Theme}"
+                                    RemoveItemCommand="{Binding RemoveFromCartCommand}"
+                                    UpdateQuantityCommand="{Binding UpdateQuantityCommand}"
+                                    ProcessPaymentCommand="{Binding ProcessPaymentCommand}"/>
             </Border>
+
+            <views:Footer Grid.RowSpan="2"/>
 
         </Grid>
 
@@ -58,11 +60,11 @@
             <Border VerticalOptions="Center"
                     HorizontalOptions="Center">
                 <views:PaymentModal Total="{Binding Total}"
-                                   TransactionId="{Binding TransactionId}"
-                                   Language="{Binding Language}"
-                                   Theme="{Binding Theme}"
-                                   CloseCommand="{Binding ClosePaymentModalCommand}"
-                                   PaymentCompleteCommand="{Binding CompletePaymentCommand}" />
+                                    TransactionId="{Binding TransactionId}"
+                                    Language="{Binding Language}"
+                                    Theme="{Binding Theme}"
+                                    CloseCommand="{Binding ClosePaymentModalCommand}"
+                                    PaymentCompleteCommand="{Binding CompletePaymentCommand}"/>
             </Border>
 
         </Border>
