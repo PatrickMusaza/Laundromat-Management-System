@@ -2,9 +2,10 @@
 <Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:LaundromatManagementSystem.Views"
-       x:Class="LaundromatManagementSystem.AppShell">
-    
-    <ShellContent ContentTemplate="{DataTemplate views:Dashboard}"
-                  Route="Dashboard" />
-    
+       x:Class="LaundromatManagementSystem.AppShell"
+       Title="Laundromat Management System">
+
+   <ShellContent ContentTemplate="{DataTemplate views:Dashboard}"
+                 Route="Dashboard"/>
+
 </Shell>
