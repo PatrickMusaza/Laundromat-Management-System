@@ -1,81 +1,48 @@
 SOFTWARE LICENSE AGREEMENT
+IMPORTANT NOTICE: PLEASE READ THIS LEGAL DOCUMENT CAREFULLY BEFORE INSTALLING, ACCESSING, OR USING THE SOFTWARE.
+This SOFTWARE LICENSE AGREEMENT (the "Agreement") constitutes a legally binding contract between you, whether an individual or a single entity (the "Licensee" or "User"), and the software author, developer, or company (the "Licensor"), governing the use of the proprietary software application identified as:
 
-IMPORTANT: PLEASE READ THIS LICENSE CAREFULLY BEFORE USING THIS SOFTWARE.
+"Laundromat Management System"
+(the "Software")
 
-This Software License Agreement ("Agreement") is a legal agreement between you
-(the "User") and the software author/company ("Licensor") for the software
-application titled "Laundromat Management System" ("Software").
+BY PROCEEDING TO INSTALL, COPY, DOWNLOAD, ACCESS, OR OTHERWISE UTILIZE THE SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE REVIEWED, UNDERSTOOD, AND IRREVOCABLY AGREE TO BE BOUND BY ALL THE TERMS AND CONDITIONS SET FORTH IN THIS AGREEMENT. IF YOU DO NOT UNCONDITIONALLY AGREE TO THESE TERMS, YOU ARE NOT PERMITTED TO INSTALL, ACCESS, OR USE THE SOFTWARE IN ANY MANNER, AND YOU MUST CEASE ANY FURTHER PROCEEDINGS IMMEDIATELY.
 
-By installing, copying, or otherwise using the Software, you agree to be bound
-by the terms of this Agreement. If you do not agree to the terms of this
-Agreement, do not install or use the Software.
+ARTICLE 1: GRANT OF LICENSE
+Subject to your strict and ongoing compliance with this Agreement, the Licensor hereby grants to you a limited, non-exclusive, non-transferable, and revocable license to install and operate one (1) instance of the Software on a single computer or device, solely for your internal business operations or personal use, in accordance with its intended functionality.
 
---------------------------------------------------
-1. GRANT OF LICENSE
---------------------------------------------------
-The Licensor grants you a non-exclusive, non-transferable, revocable license to
-install and use the Software on a single computer or device for business or
-personal use.
+ARTICLE 2: LICENSE RESTRICTIONS
+The granted license is expressly conditioned upon your adherence to the following strict prohibitions. You are NOT PERMITTED to:
 
---------------------------------------------------
-2. RESTRICTIONS
---------------------------------------------------
-You may not:
-- Modify, reverse engineer, decompile, or disassemble the Software.
-- Rent, lease, lend, sell, sublicense, or distribute the Software to third
-  parties without prior written permission from the Licensor.
-- Remove or alter any copyright or proprietary notices.
+Modify, adapt, translate, or create derivative works based upon the Software;
 
---------------------------------------------------
-3. OWNERSHIP
---------------------------------------------------
-The Software is licensed, not sold. The Licensor retains all rights, title, and
-interest in and to the Software, including all intellectual property rights.
+Reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code, underlying ideas, or algorithms of the Software, except to the limited extent expressly permitted by applicable mandatory law;
 
---------------------------------------------------
-4. UPDATES AND MAINTENANCE
---------------------------------------------------
-The Licensor may provide updates, patches, or enhancements at its discretion.
-This Agreement applies to any updates unless accompanied by a separate license.
+Rent, lease, loan, license, sublicense, sell, resell, transfer, assign, distribute, or otherwise commercially exploit or make the Software available to any third party without the prior express written consent of the Licensor;
 
---------------------------------------------------
-5. DISCLAIMER OF WARRANTIES
---------------------------------------------------
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+Remove, obscure, or alter any proprietary rights notices, including copyright, trademark, and patent notices, affixed to or contained within the Software or its documentation.
 
---------------------------------------------------
-6. LIMITATION OF LIABILITY
---------------------------------------------------
-IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY DAMAGES ARISING OUT OF OR IN
-CONNECTION WITH THE USE OR INABILITY TO USE THE SOFTWARE, INCLUDING BUT NOT
-LIMITED TO DIRECT, INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES.
+ARTICLE 3: INTELLECTUAL PROPERTY OWNERSHIP
+You expressly acknowledge and agree that the Software is licensed, not sold, to you. The Licensor retains all right, title, and interest, including, without limitation, all intellectual property rights (including copyrights, patents, and trade secrets) in and to the Software, any copies thereof, and all related documentation. This Agreement conveys no ownership interest in the Software itself.
 
---------------------------------------------------
-7. TERMINATION
---------------------------------------------------
-This Agreement is effective until terminated. It will terminate automatically
-without notice if you fail to comply with any provision of this Agreement.
-Upon termination, you must stop using and uninstall the Software.
+ARTICLE 4: UPDATES AND MAINTENANCE
+The Licensor may, at its sole discretion and without obligation, provide updates, upgrades, patches, enhancements, or new releases of the Software (collectively, "Updates"). Any such Updates provided to you shall be governed by the terms of this Agreement, unless accompanied by a separate license agreement, in which case the terms of that separate agreement shall prevail.
 
---------------------------------------------------
-8. GOVERNING LAW
---------------------------------------------------
-This Agreement shall be governed by and construed in accordance with the laws
-of the jurisdiction in which the Licensor operates, without regard to its
-conflict of law principles.
+ARTICLE 5: DISCLAIMER OF WARRANTIES
+THE SOFTWARE IS PROVIDED TO YOU ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITH ALL FAULTS AND WITHOUT WARRANTY OF ANY KIND. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSOR HEREBY EXPRESSLY DISCLAIMS ALL WARRANTIES AND CONDITIONS, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES AND/OR CONDITIONS OF MERCHANTABILITY, SATISFACTORY QUALITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY, QUIET ENJOYMENT, AND NON-INFRINGEMENT OF THIRD-PARTY RIGHTS.
 
---------------------------------------------------
-9. ENTIRE AGREEMENT
---------------------------------------------------
-This Agreement constitutes the entire agreement between you and the Licensor
-regarding the Software and supersedes all prior or contemporaneous agreements,
-whether written or oral.
+ARTICLE 6: LIMITATION OF LIABILITY
+TO THE FULLEST EXTENT ALLOWED BY LAW, IN NO EVENT SHALL THE LICENSOR, ITS AFFILIATES, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO DAMAGES FOR LOSS OF PROFITS, REVENUE, DATA, OR DATA USE, BUSINESS INTERRUPTION, OR ANY OTHER COMMERCIAL DAMAGES OR LOSSES, ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT OR YOUR USE OR INABILITY TO USE THE SOFTWARE, HOWEVER CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY (WHETHER IN CONTRACT, TORT, OR OTHERWISE), EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. THE LICENSOR'S TOTAL CUMULATIVE LIABILITY UNDER THIS AGREEMENT SHALL IN NO EVENT EXCEED THE AMOUNT ACTUALLY PAID BY YOU FOR THE SOFTWARE LICENSE.
 
---------------------------------------------------
-10. CONTACT INFORMATION
---------------------------------------------------
-If you have any questions about this Agreement, please contact the Licensor.
+ARTICLE 7: TERM AND TERMINATION
+This Agreement is effective upon your acceptance and shall remain in force until terminated. It will terminate immediately and automatically, without prior notice from the Licensor, if you fail to comply with any of its terms or conditions. Upon termination, you must cease all use of the Software and permanently delete or destroy all copies of the Software in your possession or control, including any archival or backup copies.
 
-END OF LICENSE AGREEMENT
+ARTICLE 8: GOVERNING LAW AND JURISDICTION
+This Agreement, and any disputes or claims arising out of or in connection with it, shall be governed by, construed, and enforced exclusively in accordance with the substantive laws of the jurisdiction in which the Licensor's principal place of business is located, without giving effect to any principles of conflict of laws that would result in the application of the laws of another jurisdiction.
+
+ARTICLE 9: ENTIRE AGREEMENT AND SEVERABILITY
+This document constitutes the complete and exclusive statement of the agreement between the parties concerning the subject matter herein and supersedes all prior or contemporaneous proposals, understandings, and all other agreements, oral and written, between the parties relating to this subject matter. If any provision of this Agreement is held to be invalid or unenforceable, the remaining provisions shall remain in full force and effect.
+
+ARTICLE 10: CONTACT AND NOTICES
+Should you have any inquiries, require clarification, or need to provide a formal notice concerning this Agreement, please direct all correspondence to the Licensor at the official contact information provided at the time of your acquisition of the Software.
+
+END OF SOFTWARE LICENSE AGREEMENT
