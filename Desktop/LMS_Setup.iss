@@ -31,10 +31,10 @@ ArchitecturesInstallIn64BitMode=x64compatible
 ChangesAssociations=yes
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-LicenseFile=C:\Users\user\Downloads\LAUNDROMAT\Desktop\License.txt
+LicenseFile=C:\Users\user\Downloads\LAUNDROMAT\Desktop\License.rtf
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-OutputBaseFilename=mysetup
+OutputBaseFilename=LMS_Setup
 SolidCompression=yes
 WizardStyle=classic
 
