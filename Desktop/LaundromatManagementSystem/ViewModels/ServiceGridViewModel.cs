@@ -78,6 +78,7 @@ namespace LaundromatManagementSystem.ViewModels
             {
                 _stateService.CurrentLanguage = value;
             }
+            LoadServices();
             UpdateAllLanguageProperties();
         }
 
@@ -123,12 +124,23 @@ namespace LaundromatManagementSystem.ViewModels
                         {
                             Language = _stateService.CurrentLanguage;
                         }
+
+                        foreach (var service in Services)
+                        {
+                            service.Language = Language;
+                        }
+
                         break;
 
                     case nameof(_stateService.CurrentTheme):
                         if (Theme != _stateService.CurrentTheme)
                         {
                             Theme = _stateService.CurrentTheme;
+                        }
+
+                        foreach (var service in Services)
+                        {
+                            service.Theme = Theme;
                         }
                         break;
                 }
@@ -178,6 +190,12 @@ namespace LaundromatManagementSystem.ViewModels
             foreach (var item in serviceItems)
             {
                 Services.Add(new ServiceViewModel(item, _addToCart, Theme, Language));
+            }
+
+            foreach (var service in Services)
+            {
+                service.Theme = Theme;
+                service.Language = Language;
             }
         }
 

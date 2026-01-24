@@ -41,7 +41,8 @@ namespace LaundromatManagementSystem.ViewModels
         private readonly ICartService _cartService;
         private readonly IServiceService _serviceService;
 
-        public Color DashboardBackgroundColor => GetDashboardBackgroundColor();
+        [ObservableProperty]
+        public Color _dashboardBackgroundColor;
 
         public DashboardViewModel(ICartService cartService, IServiceService serviceService)
         {
@@ -53,6 +54,8 @@ namespace LaundromatManagementSystem.ViewModels
             _theme = _stateService.CurrentTheme;
             Cart = new ObservableCollection<CartItem>(_stateService.CartItems);
             CalculateTotals();
+
+            DashboardBackgroundColor = Colors.White;
 
             // Subscribe to state changes
             _stateService.PropertyChanged += OnStateChanged;
@@ -88,6 +91,7 @@ namespace LaundromatManagementSystem.ViewModels
                     case nameof(_stateService.CurrentTheme):
                         if (Theme != _stateService.CurrentTheme)
                             Theme = _stateService.CurrentTheme;
+                        DashboardBackgroundColor = GetDashboardBackgroundColor();
                         break;
 
                     case nameof(_stateService.CartItems):
@@ -253,7 +257,7 @@ namespace LaundromatManagementSystem.ViewModels
             return Theme switch
             {
                 Theme.Dark => Color.FromArgb("#1F2937"),
-                Theme.Gray => Colors.White,
+                Theme.Gray => Color.FromArgb("#F3F4F6"),
                 _ => Colors.White
             };
         }

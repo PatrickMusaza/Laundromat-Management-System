@@ -174,7 +174,7 @@ namespace LaundromatManagementSystem.Services
             return language switch
             {
                 Language.EN => "Wash + Dry + Iron + Bleach",
-                Language.RW => "Karaba + Umisha + Gusukura + Kurera",
+                Language.RW => "Karaba + Umisha + Gusukura",
                 Language.FR => "Laver + Sécher + Repasser + Javel",
                 _ => "Wash + Dry + Iron + Bleach"
             };

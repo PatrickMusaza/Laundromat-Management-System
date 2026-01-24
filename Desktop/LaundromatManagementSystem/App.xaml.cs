@@ -38,7 +38,7 @@ namespace LaundromatManagementSystem
         public static T GetService<T>() where T : class => App.Services.GetService<T>();
     }
     
-    // Enums matching TypeScript
+    // Enums matching appearance and usage in the application
     public enum Theme { Light, Gray, Dark }
     public enum Language { EN, RW, FR }
     public enum PaymentMethod { Cash, MoMo, Card }

@@ -215,7 +215,7 @@ namespace LaundromatManagementSystem.ViewModels
             return Theme switch
             {
                 Theme.Dark => Color.FromArgb("#1F2937"),
-                Theme.Gray => Color.FromArgb("#D1D5DB"),
+                Theme.Gray => Color.FromArgb("#F3F4F6"),
                 _ => Colors.White
             };
         }

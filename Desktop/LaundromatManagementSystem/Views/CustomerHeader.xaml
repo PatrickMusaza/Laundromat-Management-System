@@ -109,8 +109,8 @@
 
         </Grid>
 
-        <BoxView Color="{DynamicResource HeaderBorderColor}"
-                 HeightRequest="1"
+        <BoxView Color="{DynamicResource SeparationBorderColor}"
+                 HeightRequest="0.5"
                  HorizontalOptions="Fill"/>
 
     </VerticalStackLayout>

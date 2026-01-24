@@ -99,6 +99,7 @@
     
     <!-- Dynamic Resources -->
     <Color x:Key="HeaderBorderColor">#E5E7EB</Color>
+    <Color x:Key="SeparationBorderColor">#D1D5DB</Color>
     
     <Color x:Key="LanguageButtonBorder">#D5DCEA</Color>
     <Color x:Key="LanguageLabelColor">#6B7280</Color>

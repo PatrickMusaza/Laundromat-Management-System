@@ -1,11 +1,14 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LaundromatManagementSystem.Models;
+using LaundromatManagementSystem.Services;
 
 namespace LaundromatManagementSystem.ViewModels
 {
     public partial class ServiceViewModel : ObservableObject
     {
+        private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
+
         [ObservableProperty]
         private string _id;
 
@@ -23,6 +26,9 @@ namespace LaundromatManagementSystem.ViewModels
 
         [ObservableProperty]
         private Theme _theme;
+
+        [ObservableProperty]
+        private Language _language;
 
         private readonly Action<CartItem> _addToCart;
 
@@ -51,8 +57,9 @@ namespace LaundromatManagementSystem.ViewModels
             Price = item.Price;
             Icon = item.Icon;
 
-            Theme = theme;
-            Language = language;
+            // Initialize from state service
+            _theme = theme;
+            _language = language;
 
             _addToCart = addToCart;
 
@@ -63,6 +70,51 @@ namespace LaundromatManagementSystem.ViewModels
                 Price = Price,
                 Quantity = 1
             };
+
+            // Subscribe to state changes (if this service needs to update dynamically)
+            _stateService.PropertyChanged += OnStateChanged;
+        }
+
+        // Override setters to update state service
+        partial void OnThemeChanged(Theme value)
+        {
+            if (_stateService.CurrentTheme != value)
+            {
+                _stateService.CurrentTheme = value;
+            }
+            UpdateThemeProperties();
+        }
+
+        partial void OnLanguageChanged(Language value)
+        {
+            if (_stateService.CurrentLanguage != value)
+            {
+                _stateService.CurrentLanguage = value;
+            }
+            UpdateLanguageProperties();
+        }
+
+        private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_stateService.CurrentLanguage):
+                        if (Language != _stateService.CurrentLanguage)
+                        {
+                            Language = _stateService.CurrentLanguage;
+                        }
+                        break;
+                        
+                    case nameof(_stateService.CurrentTheme):
+                        if (Theme != _stateService.CurrentTheme)
+                        {
+                            Theme = _stateService.CurrentTheme;
+                        }
+                        break;
+                }
+            });
         }
 
         [RelayCommand]
@@ -74,7 +126,7 @@ namespace LaundromatManagementSystem.ViewModels
             }
         }
 
-        partial void OnThemeChanged(Theme value)
+        private void UpdateThemeProperties()
         {
             OnPropertyChanged(nameof(IconBackgroundColor));
             OnPropertyChanged(nameof(IconColor));
@@ -86,7 +138,7 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(TapToAddColor));
         }
 
-        partial void OnLanguageChanged(Language value)
+        private void UpdateLanguageProperties()
         {
             OnPropertyChanged(nameof(TapToAddText));
         }
@@ -109,9 +161,9 @@ namespace LaundromatManagementSystem.ViewModels
         {
             return Theme switch
             {
-                Theme.Dark => Color.FromArgb("#000000").WithAlpha(1f),
-                Theme.Gray => Color.FromArgb("#9CA3AF").WithAlpha(1f),
-                _ => Color.FromArgb("#000000").WithAlpha(1f)
+                Theme.Dark => Color.FromArgb("#000000").WithAlpha(0.1f),
+                Theme.Gray => Color.FromArgb("#9CA3AF").WithAlpha(0.1f),
+                _ => Color.FromArgb("#000000").WithAlpha(0.1f)
             };
         }
 
@@ -193,8 +245,11 @@ namespace LaundromatManagementSystem.ViewModels
             };
         }
 
-        [ObservableProperty]
-        private Language language;
+        // Clean up subscriptions
+        public void Cleanup()
+        {
+            _stateService.PropertyChanged -= OnStateChanged;
+        }
     }
 
     public class ServiceItem
