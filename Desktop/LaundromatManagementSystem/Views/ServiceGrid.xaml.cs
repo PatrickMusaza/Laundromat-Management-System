@@ -72,12 +72,8 @@ namespace LaundromatManagementSystem.Views
 
             ViewModel = new ServiceGridViewModel(
                 serviceService,
-                CategoryChangedCommand,
-                cartItem =>
-                {
-                    if (AddToCartCommand?.CanExecute(cartItem) == true)
-                        AddToCartCommand.Execute(cartItem);
-                });
+                CategoryChangedCommand
+            );
 
             ViewModel.SelectedCategory = SelectedCategory;
             ViewModel.Language = Language;

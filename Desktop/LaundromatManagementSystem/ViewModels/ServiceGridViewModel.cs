@@ -54,12 +54,11 @@ namespace LaundromatManagementSystem.ViewModels
         public ICommand AddToCartCommand { get; }
 
         public ServiceGridViewModel(IServiceService serviceService,
-                                   ICommand categoryChangedCommand,
-                                   Action<CartItem> addToCart)
+                                   ICommand categoryChangedCommand)
         {
+
             _serviceService = serviceService;
             CategoryChangedCommand = categoryChangedCommand;
-            _addToCart = addToCart;
 
             // Initialize from state service
             _language = _stateService.CurrentLanguage;
@@ -189,7 +188,7 @@ namespace LaundromatManagementSystem.ViewModels
 
             foreach (var item in serviceItems)
             {
-                Services.Add(new ServiceViewModel(item, _addToCart, Theme, Language));
+                Services.Add(new ServiceViewModel(item, Theme, Language));
             }
 
             foreach (var service in Services)

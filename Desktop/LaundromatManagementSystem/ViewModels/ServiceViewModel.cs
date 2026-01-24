@@ -49,7 +49,7 @@ namespace LaundromatManagementSystem.ViewModels
 
         private CartItem _cartItem;
 
-        public ServiceViewModel(ServiceItem item, Action<CartItem> addToCart, Theme theme, Language language)
+        public ServiceViewModel(ServiceItem item, Theme theme, Language language)
         {
             Id = item.Id;
             Name = item.Name;
@@ -60,8 +60,6 @@ namespace LaundromatManagementSystem.ViewModels
             // Initialize from state service
             _theme = theme;
             _language = language;
-
-            _addToCart = addToCart;
 
             _cartItem = new CartItem
             {
@@ -106,7 +104,7 @@ namespace LaundromatManagementSystem.ViewModels
                             Language = _stateService.CurrentLanguage;
                         }
                         break;
-                        
+
                     case nameof(_stateService.CurrentTheme):
                         if (Theme != _stateService.CurrentTheme)
                         {
@@ -120,9 +118,30 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void AddToCart()
         {
-            if (_cartItem != null)
+
+            if (_cartItem == null)
             {
-                _addToCart?.Invoke(_cartItem);
+                return;
+            }
+
+            try
+            {
+                // Use ApplicationStateService directly
+                var stateService = ApplicationStateService.Instance;
+                stateService.AddToCart(_cartItem);
+
+                // Show a quick feedback
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Added to Cart",
+                        $"Added {Name} to cart",
+                        "OK");
+                });
+            }
+            catch (Exception ex)
+            {
+                Application.Current.MainPage.DisplayAlert("Error", $"DEBUG: Error adding to cart: {ex.Message}", "OK");
             }
         }
 
