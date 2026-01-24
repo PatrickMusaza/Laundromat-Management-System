@@ -10,15 +10,17 @@ namespace LaundromatManagementSystem.ViewModels
     public partial class ServiceGridViewModel : ObservableObject
     {
         private readonly IServiceService _serviceService;
+        private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
 
         [ObservableProperty]
         private string _selectedCategory = "washing";
 
+        // Keep settable properties for XAML binding compatibility
         [ObservableProperty]
-        private Language _language = Language.EN;
+        private Language _language;
 
         [ObservableProperty]
-        private Theme _theme = Theme.Light;
+        private Theme _theme;
 
         [ObservableProperty]
         private ObservableCollection<ServiceViewModel> _services = new();
@@ -59,48 +61,84 @@ namespace LaundromatManagementSystem.ViewModels
             CategoryChangedCommand = categoryChangedCommand;
             _addToCart = addToCart;
 
+            // Initialize from state service
+            _language = _stateService.CurrentLanguage;
+            _theme = _stateService.CurrentTheme;
+
+            // Subscribe to state changes
+            _stateService.PropertyChanged += OnStateChanged;
+
             LoadServices();
+        }
+
+        // Override setters to update state service
+        partial void OnLanguageChanged(Language value)
+        {
+            if (_stateService.CurrentLanguage != value)
+            {
+                _stateService.CurrentLanguage = value;
+            }
+            UpdateAllLanguageProperties();
+        }
+
+        partial void OnThemeChanged(Theme value)
+        {
+            if (_stateService.CurrentTheme != value)
+            {
+                _stateService.CurrentTheme = value;
+            }
+            UpdateAllThemeProperties();
+        }
+
+        private void UpdateAllLanguageProperties()
+        {
+            OnPropertyChanged(nameof(WashText));
+            OnPropertyChanged(nameof(DryText));
+            OnPropertyChanged(nameof(AddonText));
+            OnPropertyChanged(nameof(PackageText));
+
+            foreach (var service in Services)
+            {
+                service.Language = Language;
+            }
+        }
+
+        private void UpdateAllThemeProperties()
+        {
+            RaiseCategoryButtonColors();
+            foreach (var service in Services)
+            {
+                service.Theme = Theme;
+            }
+        }
+
+        private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_stateService.CurrentLanguage):
+                        if (Language != _stateService.CurrentLanguage)
+                        {
+                            Language = _stateService.CurrentLanguage;
+                        }
+                        break;
+
+                    case nameof(_stateService.CurrentTheme):
+                        if (Theme != _stateService.CurrentTheme)
+                        {
+                            Theme = _stateService.CurrentTheme;
+                        }
+                        break;
+                }
+            });
         }
 
         partial void OnSelectedCategoryChanged(string value)
         {
             CategoryChangedCommand?.Execute(value);
             LoadServices();
-            OnPropertyChanged(nameof(WashButtonBackground));
-            OnPropertyChanged(nameof(WashButtonBorder));
-            OnPropertyChanged(nameof(WashButtonTextColor));
-            OnPropertyChanged(nameof(DryButtonBackground));
-            OnPropertyChanged(nameof(DryButtonBorder));
-            OnPropertyChanged(nameof(DryButtonTextColor));
-            OnPropertyChanged(nameof(AddonButtonBackground));
-            OnPropertyChanged(nameof(AddonButtonBorder));
-            OnPropertyChanged(nameof(AddonButtonTextColor));
-            OnPropertyChanged(nameof(PackageButtonBackground));
-            OnPropertyChanged(nameof(PackageButtonBorder));
-            OnPropertyChanged(nameof(PackageButtonTextColor));
-        }
-
-        partial void OnLanguageChanged(Language value)
-        {
-
-            foreach (var service in Services)
-            {
-                service.Language = value;
-            }
-
-            OnPropertyChanged(nameof(WashText));
-            OnPropertyChanged(nameof(DryText));
-            OnPropertyChanged(nameof(AddonText));
-            OnPropertyChanged(nameof(PackageText));
-        }
-
-        partial void OnThemeChanged(Theme value)
-        {
-            foreach (var service in Services)
-            {
-                service.Theme = value;
-            }
-
             RaiseCategoryButtonColors();
         }
 
@@ -119,7 +157,6 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(PackageButtonBorder));
             OnPropertyChanged(nameof(PackageButtonTextColor));
         }
-
 
         [RelayCommand]
         private void SelectWash() => SelectedCategory = "washing";
@@ -214,6 +251,12 @@ namespace LaundromatManagementSystem.ViewModels
                 Theme.Gray => Color.FromArgb("#6B7280"),
                 _ => Color.FromArgb("#6B7280")
             };
+        }
+
+        // Clean up
+        public void Cleanup()
+        {
+            _stateService.PropertyChanged -= OnStateChanged;
         }
     }
 }

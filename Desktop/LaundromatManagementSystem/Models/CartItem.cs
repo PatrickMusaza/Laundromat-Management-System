@@ -9,6 +9,7 @@ namespace LaundromatManagementSystem.Models
         public decimal Price { get; set; }
         public ObservableCollection<ServiceAddon> Addons { get; set; } = new();
         public int Quantity { get; set; } = 1;
+        public int ServiceId { get; set; } = 0;
         
         public decimal TotalPrice => (Price + Addons.Sum(a => a.Price)) * Quantity;
     }

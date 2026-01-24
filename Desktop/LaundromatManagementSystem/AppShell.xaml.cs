@@ -10,8 +10,9 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
-        // Subscribe to Loaded event correctly
+#if WINDOWS
         Loaded += OnLoaded;
+#endif
     }
 
 #if WINDOWS
@@ -24,7 +25,6 @@ public partial class AppShell : Shell
             var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
             var appWindow = AppWindow.GetFromWindowId(windowId);
 
-            // Fullscreen, no title bar, no buttons
             appWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
         }
     }

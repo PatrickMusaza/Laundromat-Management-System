@@ -35,6 +35,22 @@ namespace LaundromatManagementSystem.Services
             CartUpdated?.Invoke(this, EventArgs.Empty);
         }
 
+        public void AddItem(CartItem item)
+        {
+            _cartItems.Add(item);
+            CartUpdated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RemoveItem(string itemId)
+        {
+            var item = _cartItems.FirstOrDefault(i => i.Id == itemId);
+            if (item != null)
+            {
+                _cartItems.Remove(item);
+                CartUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
         public void RemoveFromCart(string itemId)
         {
             var item = _cartItems.FirstOrDefault(i => i.Id == itemId);

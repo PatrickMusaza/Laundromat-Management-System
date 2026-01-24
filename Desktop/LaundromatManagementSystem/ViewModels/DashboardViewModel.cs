@@ -8,11 +8,14 @@ namespace LaundromatManagementSystem.ViewModels
 {
     public partial class DashboardViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private Language _language = Language.EN;
+        // Using the singleton ApplicationStateService
+        private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
 
         [ObservableProperty]
-        private Theme _theme = Theme.Light;
+        private Language _language;
+
+        [ObservableProperty]
+        private Theme _theme;
 
         [ObservableProperty]
         private string _selectedCategory = "washing";
@@ -38,14 +41,64 @@ namespace LaundromatManagementSystem.ViewModels
         private readonly ICartService _cartService;
         private readonly IServiceService _serviceService;
 
+        public Color DashboardBackgroundColor => GetDashboardBackgroundColor();
+
         public DashboardViewModel(ICartService cartService, IServiceService serviceService)
         {
             _cartService = cartService;
             _serviceService = serviceService;
 
-            _cartService.CartUpdated += OnCartUpdated;
-            Cart = new ObservableCollection<CartItem>(_cartService.GetCartItems());
+            // Initialize from state service
+            _language = _stateService.CurrentLanguage;
+            _theme = _stateService.CurrentTheme;
+            Cart = new ObservableCollection<CartItem>(_stateService.CartItems);
             CalculateTotals();
+
+            // Subscribe to state changes
+            _stateService.PropertyChanged += OnStateChanged;
+            _stateService.CartUpdated += OnCartUpdated;
+
+            // Subscribe to cart service events (if still needed)
+            _cartService.CartUpdated += OnServiceCartUpdated;
+        }
+
+        // Override the setters to update the state service
+        partial void OnLanguageChanged(Language value)
+        {
+            _stateService.CurrentLanguage = value;
+        }
+
+        partial void OnThemeChanged(Theme value)
+        {
+            _stateService.CurrentTheme = value;
+        }
+
+        // Listen for state changes from other views/components
+        private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_stateService.CurrentLanguage):
+                        if (Language != _stateService.CurrentLanguage)
+                            Language = _stateService.CurrentLanguage;
+                        break;
+
+                    case nameof(_stateService.CurrentTheme):
+                        if (Theme != _stateService.CurrentTheme)
+                            Theme = _stateService.CurrentTheme;
+                        break;
+
+                    case nameof(_stateService.CartItems):
+                        if (!Cart.SequenceEqual(_stateService.CartItems))
+                        {
+                            Cart = new ObservableCollection<CartItem>(_stateService.CartItems);
+                            CalculateTotals();
+                        }
+                        break;
+                }
+            });
         }
 
         [RelayCommand]
@@ -54,39 +107,31 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void AddToCart(CartItem item)
         {
-            var existing = Cart.FirstOrDefault(i =>
-                i.Name == item.Name &&
-                i.Addons.SequenceEqual(item.Addons, new AddonComparer()));
+            // Use state service to add item
+            _stateService.AddToCart(item);
 
-            if (existing != null)
+            // Also update the cart service if needed
+            var cartItem = new CartItem
             {
-                existing.Quantity++;
-            }
-            else
-            {
-                Cart.Add(new CartItem
-                {
-                    Id = $"{item.Name}-{Guid.NewGuid():N}",
-                    Name = item.Name,
-                    Price = item.Price,
-                    Addons = new ObservableCollection<ServiceAddon>(item.Addons),
-                    Quantity = 1
-                });
-            }
+                Id = $"{item.Name}-{Guid.NewGuid():N}",
+                Name = item.Name,
+                Price = item.Price,
+                Addons = new ObservableCollection<ServiceAddon>(item.Addons),
+                Quantity = 1
+            };
 
-            CalculateTotals();
-            _cartService.CartUpdated += OnCartUpdated;
+            _cartService.AddItem(cartItem);
         }
 
         [RelayCommand]
         private void RemoveFromCart(string itemId)
         {
+            // Remove via state service
             var item = Cart.FirstOrDefault(i => i.Id == itemId);
             if (item != null)
             {
-                Cart.Remove(item);
-                CalculateTotals();
-                _cartService.CartUpdated += OnCartUpdated;
+                _stateService.RemoveFromCart(item.ServiceId);
+                _cartService.RemoveItem(itemId);
             }
         }
 
@@ -103,8 +148,16 @@ namespace LaundromatManagementSystem.ViewModels
             if (item != null)
             {
                 item.Quantity = parameters.quantity;
+
+                // Update state service
+                var stateItem = _stateService.CartItems.FirstOrDefault(i => i.ServiceId == item.ServiceId);
+                if (stateItem != null)
+                {
+                    stateItem.Quantity = parameters.quantity;
+                    _stateService.CartItems = new ObservableCollection<CartItem>(_stateService.CartItems);
+                }
+
                 CalculateTotals();
-                _cartService.CartUpdated += OnCartUpdated;
             }
         }
 
@@ -135,10 +188,26 @@ namespace LaundromatManagementSystem.ViewModels
 
             // TODO: Add transaction to history
 
+            // Clear all carts
+            _stateService.CartItems.Clear();
+            _cartService.ClearCart();
+
             Cart.Clear();
             CalculateTotals();
             ShowPaymentModal = false;
-            _cartService.CartUpdated += OnCartUpdated;
+        }
+
+        private void OnServiceCartUpdated(object? sender, EventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                // Sync from cart service to state service
+                var serviceItems = _cartService.GetCartItems();
+                if (!serviceItems.SequenceEqual(_stateService.CartItems))
+                {
+                    _stateService.CartItems = new ObservableCollection<CartItem>(serviceItems);
+                }
+            });
         }
 
         private void OnCartUpdated(object? sender, EventArgs e)
@@ -156,6 +225,14 @@ namespace LaundromatManagementSystem.ViewModels
             Total = Subtotal + Tax;
         }
 
+        // Clean up subscriptions
+        public void Cleanup()
+        {
+            _stateService.PropertyChanged -= OnStateChanged;
+            _stateService.CartUpdated -= OnCartUpdated;
+            _cartService.CartUpdated -= OnServiceCartUpdated;
+        }
+
         private class AddonComparer : IEqualityComparer<ServiceAddon>
         {
             public bool Equals(ServiceAddon? x, ServiceAddon? y)
@@ -169,6 +246,16 @@ namespace LaundromatManagementSystem.ViewModels
             {
                 return HashCode.Combine(obj.Name, obj.Price);
             }
+        }
+
+        private Color GetDashboardBackgroundColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#1F2937"),
+                Theme.Gray => Colors.White,
+                _ => Colors.White
+            };
         }
     }
 }

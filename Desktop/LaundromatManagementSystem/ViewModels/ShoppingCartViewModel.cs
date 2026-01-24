@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LaundromatManagementSystem.Models;
+using LaundromatManagementSystem.Services;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -8,8 +9,12 @@ namespace LaundromatManagementSystem.ViewModels
 {
     public partial class ShoppingCartViewModel : ObservableObject
     {
+        private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
+
+        // Keep settable properties for XAML binding
         [ObservableProperty]
         private ObservableCollection<CartItem> _cart = new();
+
 
         [ObservableProperty]
         private decimal _subtotal;
@@ -21,10 +26,10 @@ namespace LaundromatManagementSystem.ViewModels
         private decimal _total;
 
         [ObservableProperty]
-        private Language _language = Language.EN;
+        private Language _language;
 
         [ObservableProperty]
-        private Theme _theme = Theme.Light;
+        private Theme _theme;
 
         // Text properties
         public string CartTitle => GetTranslation("cart");
@@ -52,6 +57,7 @@ namespace LaundromatManagementSystem.ViewModels
         public ICommand UpdateQuantityCommand { get; }
         public ICommand ProcessPaymentCommand { get; }
 
+
         public ShoppingCartViewModel(ICommand removeItemCommand,
                                     ICommand updateQuantityCommand,
                                     ICommand processPaymentCommand)
@@ -59,16 +65,87 @@ namespace LaundromatManagementSystem.ViewModels
             RemoveItemCommand = removeItemCommand;
             UpdateQuantityCommand = updateQuantityCommand;
             ProcessPaymentCommand = processPaymentCommand;
+
+            // Initialize from state service
+            _language = _stateService.CurrentLanguage;
+            _theme = _stateService.CurrentTheme;
+            _cart = new ObservableCollection<CartItem>(_stateService.CartItems);
+
+            // Subscribe to state changes
+            _stateService.PropertyChanged += OnStateChanged;
+            _stateService.CartUpdated += OnCartUpdated;
+
+            CalculateTotals();
+        }
+
+        // Override setters to update state service
+        partial void OnLanguageChanged(Language value)
+        {
+            if (_stateService.CurrentLanguage != value)
+            {
+                _stateService.CurrentLanguage = value;
+            }
+            UpdateTextProperties();
+        }
+
+        partial void OnThemeChanged(Theme value)
+        {
+            if (_stateService.CurrentTheme != value)
+            {
+                _stateService.CurrentTheme = value;
+            }
+            UpdateThemeProperties();
         }
 
         partial void OnCartChanged(ObservableCollection<CartItem> value)
         {
+            // Update state service if different
+            if (!value.SequenceEqual(_stateService.CartItems))
+            {
+                _stateService.CartItems = new ObservableCollection<CartItem>(value);
+            }
             CalculateTotals();
-            OnPropertyChanged(nameof(CartTitle));
-            OnPropertyChanged(nameof(EmptyCartText));
         }
 
-        partial void OnLanguageChanged(Language value)
+        private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_stateService.CurrentLanguage):
+                        if (Language != _stateService.CurrentLanguage)
+                        {
+                            Language = _stateService.CurrentLanguage;
+                        }
+                        break;
+
+                    case nameof(_stateService.CurrentTheme):
+                        if (Theme != _stateService.CurrentTheme)
+                        {
+                            Theme = _stateService.CurrentTheme;
+                        }
+                        break;
+
+                    case nameof(_stateService.CartItems):
+                        if (!Cart.SequenceEqual(_stateService.CartItems))
+                        {
+                            Cart = new ObservableCollection<CartItem>(_stateService.CartItems);
+                        }
+                        break;
+                }
+            });
+        }
+
+        private void OnCartUpdated(object sender, EventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                CalculateTotals();
+            });
+        }
+
+        private void UpdateTextProperties()
         {
             OnPropertyChanged(nameof(CartTitle));
             OnPropertyChanged(nameof(EmptyCartText));
@@ -80,7 +157,7 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(ProcessPaymentText));
         }
 
-        partial void OnThemeChanged(Theme value)
+        private void UpdateThemeProperties()
         {
             OnPropertyChanged(nameof(CartBackgroundColor));
             OnPropertyChanged(nameof(CartBorderColor));
@@ -99,6 +176,11 @@ namespace LaundromatManagementSystem.ViewModels
             Subtotal = Cart.Sum(item => item.TotalPrice);
             Tax = Math.Round(Subtotal * 0.1m, 2);
             Total = Subtotal + Tax;
+
+            // Notify property changes
+            OnPropertyChanged(nameof(Subtotal));
+            OnPropertyChanged(nameof(Tax));
+            OnPropertyChanged(nameof(Total));
         }
 
         private string GetTranslation(string key)
@@ -252,6 +334,13 @@ namespace LaundromatManagementSystem.ViewModels
                 Theme.Gray => Color.FromArgb("#D1D5DB"),
                 _ => Color.FromArgb("#E5E7EB")
             };
+        }
+
+        // Clean up
+        public void Cleanup()
+        {
+            _stateService.PropertyChanged -= OnStateChanged;
+            _stateService.CartUpdated -= OnCartUpdated;
         }
     }
 }

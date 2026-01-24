@@ -12,5 +12,7 @@ namespace LaundromatManagementSystem.Services
         void ClearCart();
         decimal GetTotalAmount();
         int GetItemCount();
+        void AddItem(CartItem item);
+        void RemoveItem(string itemId);
     }
 }

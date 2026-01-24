@@ -1,22 +1,26 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LaundromatManagementSystem.Services;
 
 namespace LaundromatManagementSystem.ViewModels
 {
     public partial class PaymentModalViewModel : ObservableObject
     {
+        private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
+
         [ObservableProperty]
         private decimal _total;
 
         [ObservableProperty]
         private string _transactionId = string.Empty;
 
+        // Keep settable properties for XAML binding
         [ObservableProperty]
-        private Language _language = Language.EN;
+        private Language _language;
 
         [ObservableProperty]
-        private Theme _theme = Theme.Light;
+        private Theme _theme;
 
         [ObservableProperty]
         private PaymentMethod? _selectedMethod;
@@ -63,6 +67,68 @@ namespace LaundromatManagementSystem.ViewModels
         {
             CloseCommand = closeCommand;
             PaymentCompleteCommand = paymentCompleteCommand;
+
+            // Initialize from state service
+            _language = _stateService.CurrentLanguage;
+            _theme = _stateService.CurrentTheme;
+
+            // Subscribe to state changes
+            _stateService.PropertyChanged += OnStateChanged;
+        }
+
+        // Override setters to update state service
+        partial void OnLanguageChanged(Language value)
+        {
+            if (_stateService.CurrentLanguage != value)
+            {
+                _stateService.CurrentLanguage = value;
+            }
+            UpdateTextProperties();
+        }
+
+        partial void OnThemeChanged(Theme value)
+        {
+            if (_stateService.CurrentTheme != value)
+            {
+                _stateService.CurrentTheme = value;
+            }
+        }
+
+        private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_stateService.CurrentLanguage):
+                        if (Language != _stateService.CurrentLanguage)
+                        {
+                            Language = _stateService.CurrentLanguage;
+                        }
+                        break;
+
+                    case nameof(_stateService.CurrentTheme):
+                        if (Theme != _stateService.CurrentTheme)
+                        {
+                            Theme = _stateService.CurrentTheme;
+                        }
+                        break;
+                }
+            });
+        }
+        private void UpdateTextProperties()
+        {
+            OnPropertyChanged(nameof(Title));
+            OnPropertyChanged(nameof(TransactionLabel));
+            OnPropertyChanged(nameof(TotalLabel));
+            OnPropertyChanged(nameof(CustomerLabel));
+            OnPropertyChanged(nameof(CashLabel));
+            OnPropertyChanged(nameof(MoMoLabel));
+            OnPropertyChanged(nameof(CardLabel));
+            OnPropertyChanged(nameof(ProcessCashText));
+            OnPropertyChanged(nameof(ConfirmPaymentText));
+            OnPropertyChanged(nameof(CancelText));
+            OnPropertyChanged(nameof(ProcessingText));
         }
 
         [RelayCommand]
@@ -118,27 +184,6 @@ namespace LaundromatManagementSystem.ViewModels
 
             IsProcessing = false;
             ClearSelection();
-        }
-
-        partial void OnLanguageChanged(Language value)
-        {
-            OnPropertyChanged(nameof(Title));
-            OnPropertyChanged(nameof(TransactionLabel));
-            OnPropertyChanged(nameof(TotalLabel));
-            OnPropertyChanged(nameof(CustomerLabel));
-            OnPropertyChanged(nameof(CashLabel));
-            OnPropertyChanged(nameof(MoMoLabel));
-            OnPropertyChanged(nameof(CardLabel));
-            OnPropertyChanged(nameof(ProcessCashText));
-            OnPropertyChanged(nameof(ConfirmPaymentText));
-            OnPropertyChanged(nameof(CancelText));
-            OnPropertyChanged(nameof(ProcessingText));
-        }
-
-        partial void OnThemeChanged(Theme value)
-        {
-            // Trigger UI updates for theme changes
-            OnPropertyChanged(nameof(CanCompletePayment));
         }
 
         private string GetTranslation(string key)
@@ -214,6 +259,12 @@ namespace LaundromatManagementSystem.ViewModels
             };
 
             return translations[key][Language];
+        }
+
+        // Clean up
+        public void Cleanup()
+        {
+            _stateService.PropertyChanged -= OnStateChanged;
         }
     }
 }

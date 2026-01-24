@@ -1,16 +1,20 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LaundromatManagementSystem.Services;
 
 namespace LaundromatManagementSystem.ViewModels
 {
     public partial class CustomerHeaderViewModel : ObservableObject
     {
+        private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
+
+        // Keep settable properties for XAML binding
         [ObservableProperty]
-        private Language _language = Language.EN;
+        private Language _language;
 
         [ObservableProperty]
-        private Theme _theme = Theme.Light;
+        private Theme _theme;
 
         [ObservableProperty]
         private string _welcomeText = "Welcome to Laundromat";
@@ -60,7 +64,7 @@ namespace LaundromatManagementSystem.ViewModels
                 ["welcome"] = "Bienvenue à la Laverie",
                 ["selectService"] = "Sélectionnez Vos Services",
                 ["language"] = "Langue",
-                ["theme"] = "Apparence",
+                ["theme"] = "Appearance",
                 ["light"] = "Clair",
                 ["gray"] = "Gris",
                 ["dark"] = "Sombre"
@@ -76,20 +80,55 @@ namespace LaundromatManagementSystem.ViewModels
 
         public CustomerHeaderViewModel()
         {
+            // Initialize from state service
+            _language = _stateService.CurrentLanguage;
+            _theme = _stateService.CurrentTheme;
+
+            // Subscribe to state changes
+            _stateService.PropertyChanged += OnStateChanged;
             UpdateTranslations();
         }
 
+        // Override setters to update state service
         partial void OnLanguageChanged(Language value)
         {
+            if (_stateService.CurrentLanguage != value)
+            {
+                _stateService.CurrentLanguage = value;
+            }
             UpdateTranslations();
-            CurrentLanguage = value.ToString();
         }
 
         partial void OnThemeChanged(Theme value)
         {
+            if (_stateService.CurrentTheme != value)
+            {
+                _stateService.CurrentTheme = value;
+            }
             UpdateTranslations();
-            CurrentThemeText = _translations[Language][value.ToString().ToLower()];
-            ThemeIcon = _themeIcons[value];
+        }
+
+        private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                switch (e.PropertyName)
+                {
+                    case nameof(_stateService.CurrentLanguage):
+                        if (Language != _stateService.CurrentLanguage)
+                        {
+                            Language = _stateService.CurrentLanguage;
+                        }
+                        break;
+
+                    case nameof(_stateService.CurrentTheme):
+                        if (Theme != _stateService.CurrentTheme)
+                        {
+                            Theme = _stateService.CurrentTheme;
+                        }
+                        break;
+                }
+            });
         }
 
         private void UpdateTranslations()
@@ -152,6 +191,12 @@ namespace LaundromatManagementSystem.ViewModels
                     Theme = themes[selectedIndex];
                 }
             }
+        }
+
+        // Clean up
+        public void Cleanup()
+        {
+            _stateService.PropertyChanged -= OnStateChanged;
         }
     }
 }
