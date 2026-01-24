@@ -71,19 +71,7 @@ namespace LaundromatManagementSystem.ViewModels
             _stateService.PropertyChanged += OnStateChanged;
             _stateService.CartUpdated += OnCartUpdated;
 
-            // Also subscribe to collection changes
-            _stateService.CartItems.CollectionChanged += OnCartItemsChanged;
-
             CalculateTotals();
-        }
-
-        private void OnCartItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                OnPropertyChanged(nameof(Cart));
-                CalculateTotals();
-            });
         }
 
         // Override setters to update state service
@@ -109,7 +97,6 @@ namespace LaundromatManagementSystem.ViewModels
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Console.WriteLine("DEBUG: CartUpdated event received");
                 OnPropertyChanged(nameof(Cart));  // Force UI refresh
                 CalculateTotals();
             });
@@ -133,6 +120,12 @@ namespace LaundromatManagementSystem.ViewModels
                         {
                             Theme = _stateService.CurrentTheme;
                         }
+                        break;
+
+                    case nameof(_stateService.CartItems):
+                        // Force UI refresh when cart items change
+                        OnPropertyChanged(nameof(Cart));
+                        CalculateTotals();
                         break;
                 }
             });

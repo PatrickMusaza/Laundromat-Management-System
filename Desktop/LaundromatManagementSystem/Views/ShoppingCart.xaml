@@ -2,6 +2,7 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:LaundromatManagementSystem.ViewModels"
+             xmlns:models="clr-namespace:LaundromatManagementSystem.Models"
              x:Class="LaundromatManagementSystem.Views.ShoppingCart"
              x:DataType="vm:ShoppingCartViewModel">
 
@@ -18,17 +19,26 @@
                                  Padding="0,0,0,12"
                                  Margin="0,0,0,16">
 
-                <HorizontalStackLayout Spacing="8"
-                                       VerticalOptions="Center">
-                    <Label Text="🛒"
+                <Grid ColumnDefinitions="Auto,Auto,*,Auto"
+                      VerticalOptions="Center"
+                      ColumnSpacing="8">
+
+                    <Label Grid.Column="0"
+                           Text="🛒"
                            FontSize="24"/>
-                    <Label Text="{Binding CartTitle}"
+                    <Label Grid.Column="1"
+                           Text="{Binding CartTitle}"
                            FontSize="20"
                            FontAttributes="Bold"
                            TextColor="{Binding CartTitleColor}"/>
 
+                    <!-- Spacer -->
+                    <BoxView Grid.Column="2"
+                             HeightRequest="0"/>
+
                     <!-- Cart Count Badge -->
-                    <Border IsVisible="{Binding Cart.Count, Converter={StaticResource GreaterThanZeroConverter}}"
+                    <Border Grid.Column="3"
+                            IsVisible="{Binding Cart.Count, Converter={StaticResource GreaterThanZeroConverter}}"
                             BackgroundColor="#F59E0B"
                             StrokeThickness="0"
                             StrokeShape="RoundRectangle 100,100,100,100"
@@ -43,13 +53,7 @@
                                VerticalOptions="Center"/>
                     </Border>
 
-                    <!-- Bottom Line -->
-                    <BoxView HeightRequest="0.5"
-                             Color="{Binding CartBorderColor}"
-                             HorizontalOptions="Fill"
-                             VerticalOptions="End"/>
-
-                </HorizontalStackLayout>
+                </Grid>
 
                 <BoxView Color="{DynamicResource HeaderBorderColor}"
                          HeightRequest="1"
@@ -66,7 +70,7 @@
                             EmptyView="{Binding EmptyView}">
 
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:CartItem">  <!-- ADD THIS LINE -->
                         <Border Stroke="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
                                                 Path=BindingContext.ItemBorderColor}"
                                 StrokeThickness="1"
@@ -106,7 +110,7 @@
                                                         SelectionMode="None"
                                                         VerticalScrollBarVisibility="Never">
                                             <CollectionView.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="models:ServiceAddon">  <!-- ADD THIS IF ADDONS EXIST -->
                                                     <Label Text="{Binding Name, StringFormat='+ {0}'}"
                                                            FontSize="11"
                                                            TextColor="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, 
