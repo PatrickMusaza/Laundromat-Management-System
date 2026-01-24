@@ -9,7 +9,7 @@
 
         <Grid ColumnDefinitions="*, Auto"
               Padding="32,24"
-              BackgroundColor="{DynamicResource HeaderBackgroundColor}">
+              BackgroundColor="{Binding HeaderBackgroundColor}">
 
             <!-- Logo and Title -->
             <VerticalStackLayout Grid.Column="0"
@@ -17,11 +17,11 @@
                 <Label Text="{Binding WelcomeText}"
                        FontSize="24"
                        FontAttributes="Bold"
-                       TextColor="{DynamicResource HeaderTextColor}"
+                       TextColor="{Binding HeaderTextColor}"
                        Margin="0,0,0,4"/>
                 <Label Text="{Binding SelectServiceText}"
                        FontSize="16"
-                       TextColor="{DynamicResource HeaderSubtextColor}"/>
+                       TextColor="{Binding SubheaderTextColor}"/>
             </VerticalStackLayout>
 
             <!-- Controls -->
@@ -30,8 +30,8 @@
                                    VerticalOptions="Center">
 
                 <!-- Language Selector -->
-                <Border BackgroundColor="{DynamicResource LanguageButtonBackground}"
-                        Stroke="{DynamicResource LanguageButtonBorder}"
+                <Border BackgroundColor="{Binding LanguageBackgroundColor}"
+                        Stroke="{Binding ButtonBorder}"
                         StrokeThickness="1"
                         StrokeShape="RoundRectangle 8,8,8,8"
                         HeightRequest="56"
@@ -52,11 +52,11 @@
                                              VerticalOptions="Center">
                             <Label Text="{Binding LanguageLabelText}"
                                    FontSize="10"
-                                   TextColor="{DynamicResource LanguageLabelColor}"/>
+                                   TextColor="{Binding ButtonLabelColor}"/>
                             <Label Text="{Binding CurrentLanguage}"
                                    FontSize="16"
                                    FontAttributes="Bold"
-                                   TextColor="{DynamicResource LanguageValueColor}"/>
+                                   TextColor="{Binding ButtonValueColor}"/>
                         </VerticalStackLayout>
 
                     </Grid>
@@ -68,10 +68,10 @@
                 </Border>
 
                 <!-- Theme Selector -->
-                <Border BackgroundColor="{DynamicResource ThemeButtonBackground}"
-                        Stroke="{DynamicResource ThemeButtonBorder}"
-                        StrokeThickness="1"
+                <Border BackgroundColor="{Binding LanguageBackgroundColor}"
                         StrokeShape="RoundRectangle 8,8,8,8"
+                        Stroke="{Binding ButtonBorder}"
+                        StrokeThickness="1"
                         HeightRequest="56"
                         WidthRequest="160"
                         Padding="16,0">
@@ -90,11 +90,11 @@
                                              VerticalOptions="Center">
                             <Label Text="{Binding ThemeLabelText}"
                                    FontSize="10"
-                                   TextColor="{DynamicResource ThemeLabelColor}"/>
+                                   TextColor="{Binding ButtonLabelColor}"/>
                             <Label Text="{Binding CurrentThemeText}"
                                    FontSize="16"
                                    FontAttributes="Bold"
-                                   TextColor="{DynamicResource ThemeValueColor}"/>
+                                   TextColor="{Binding ButtonValueColor}"/>
                         </VerticalStackLayout>
 
                     </Grid>

@@ -1,4 +1,3 @@
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LaundromatManagementSystem.Services;
@@ -37,6 +36,15 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private string _themeIcon = "☀️";
 
+        // New properties for dynamic colors
+        public Color HeaderBackgroundColor => GetBackgroundColor(); 
+        public Color LanguageBackgroundColor => GetLanguageButtonBackgroundColor();
+        public Color HeaderTextColor => GetHeaderTextColor();
+        public Color SubheaderTextColor => GetSubheaderTextColor();
+        public Color ButtonBorder => Theme == Theme.Dark ? Color.FromArgb("#6B7280") : Color.FromArgb("#D1D5DB");
+        public Color ButtonLabelColor => Theme == Theme.Dark ? Colors.White : Color.FromArgb("#1E3A8A");
+        public Color ButtonValueColor => Theme == Theme.Dark ? Colors.White : Color.FromArgb("#1E3A8A");
+
         private readonly Dictionary<Language, Dictionary<string, string>> _translations = new()
         {
             [Language.EN] = new()
@@ -55,8 +63,8 @@ namespace LaundromatManagementSystem.ViewModels
                 ["selectService"] = "Hitamo Serivisi Zawe",
                 ["language"] = "Ururimi",
                 ["theme"] = "Isura",
-                ["light"] = "Yera",
-                ["gray"] = "Icyatsi",
+                ["light"] = "Umucyo",
+                ["gray"] = "Icyigina",
                 ["dark"] = "Umwijima"
             },
             [Language.FR] = new()
@@ -140,6 +148,15 @@ namespace LaundromatManagementSystem.ViewModels
             ThemeLabelText = t["theme"];
             CurrentThemeText = t[Theme.ToString().ToLower()];
             ThemeIcon = _themeIcons[Theme];
+            CurrentLanguage = Language.ToString();
+
+            OnPropertyChanged(nameof(HeaderBackgroundColor));
+            OnPropertyChanged(nameof(LanguageBackgroundColor));
+            OnPropertyChanged(nameof(HeaderTextColor));
+            OnPropertyChanged(nameof(SubheaderTextColor));
+            OnPropertyChanged(nameof(ButtonBorder));
+            OnPropertyChanged(nameof(ButtonLabelColor));
+            OnPropertyChanged(nameof(ButtonValueColor));
         }
 
         [RelayCommand]
@@ -191,6 +208,46 @@ namespace LaundromatManagementSystem.ViewModels
                     Theme = themes[selectedIndex];
                 }
             }
+        }
+
+        private Color GetBackgroundColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#1F2937"),
+                Theme.Gray => Color.FromArgb("#D1D5DB"),
+                _ => Colors.White
+            };
+        }
+
+        private Color GetLanguageButtonBackgroundColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#374151"),
+                Theme.Gray => Color.FromArgb("#E5E7EB"),
+                _ => Colors.White
+            };
+        }
+
+        private Color GetHeaderTextColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Colors.White,
+                Theme.Gray => Color.FromArgb("#1E3A8A"),
+                _ => Color.FromArgb("#1E3A8A")
+            };
+        }
+
+        private Color GetSubheaderTextColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Colors.White,
+                Theme.Gray => Color.FromArgb("#6B7280"),
+                _ => Color.FromArgb("#6B7280")
+            };
         }
 
         // Clean up

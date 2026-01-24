@@ -97,18 +97,13 @@
     <Color x:Key="Error">#EF4444</Color>
     <Color x:Key="Info">#3B82F6</Color>
     
-    <!-- Dynamic Resources (Will be set based on theme) -->
-    <Color x:Key="HeaderBackgroundColor">#FFFFFF</Color>
+    <!-- Dynamic Resources -->
     <Color x:Key="HeaderBorderColor">#E5E7EB</Color>
-    <Color x:Key="HeaderTextColor">#1E3A8A</Color>
-    <Color x:Key="HeaderSubtextColor">#6B7280</Color>
     
-    <Color x:Key="LanguageButtonBackground">#FFFFFF</Color>
-    <Color x:Key="LanguageButtonBorder">#E5E7EB</Color>
+    <Color x:Key="LanguageButtonBorder">#D5DCEA</Color>
     <Color x:Key="LanguageLabelColor">#6B7280</Color>
     <Color x:Key="LanguageValueColor">#111827</Color>
     
-    <Color x:Key="ThemeButtonBackground">#FFFFFF</Color>
     <Color x:Key="ThemeButtonBorder">#E5E7EB</Color>
     <Color x:Key="ThemeLabelColor">#6B7280</Color>
     <Color x:Key="ThemeValueColor">#111827</Color>
