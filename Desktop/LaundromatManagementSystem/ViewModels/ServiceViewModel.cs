@@ -64,6 +64,7 @@ namespace LaundromatManagementSystem.ViewModels
             _cartItem = new CartItem
             {
                 Id = $"{Id}-{Guid.NewGuid():N}",
+                ServiceId = Id,
                 Name = Name,
                 Price = Price,
                 Quantity = 1

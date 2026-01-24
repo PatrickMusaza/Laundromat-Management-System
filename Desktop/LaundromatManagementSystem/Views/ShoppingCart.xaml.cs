@@ -111,7 +111,6 @@ namespace LaundromatManagementSystem.Views
             BindingContext = ViewModel;
             
             // Set initial values
-            ViewModel.Cart = Cart;
             ViewModel.Subtotal = Subtotal;
             ViewModel.Tax = Tax;
             ViewModel.Total = Total;
@@ -123,7 +122,7 @@ namespace LaundromatManagementSystem.Views
         {
             if (bindable is ShoppingCart shoppingCart && newValue is ObservableCollection<CartItem> cart)
             {
-                shoppingCart.ViewModel.Cart = cart;
+                // shoppingCart.ViewModel.Cart = cart; // Updated to use a method to set the cart
             }
         }
         

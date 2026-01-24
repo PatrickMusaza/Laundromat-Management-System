@@ -11,10 +11,7 @@ namespace LaundromatManagementSystem.ViewModels
     {
         private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
 
-        // Keep settable properties for XAML binding
-        [ObservableProperty]
-        private ObservableCollection<CartItem> _cart = new();
-
+        public ObservableCollection<CartItem> Cart => _stateService.CartItems;
 
         [ObservableProperty]
         private decimal _subtotal;
@@ -69,13 +66,24 @@ namespace LaundromatManagementSystem.ViewModels
             // Initialize from state service
             _language = _stateService.CurrentLanguage;
             _theme = _stateService.CurrentTheme;
-            _cart = new ObservableCollection<CartItem>(_stateService.CartItems);
 
             // Subscribe to state changes
             _stateService.PropertyChanged += OnStateChanged;
             _stateService.CartUpdated += OnCartUpdated;
 
+            // Also subscribe to collection changes
+            _stateService.CartItems.CollectionChanged += OnCartItemsChanged;
+
             CalculateTotals();
+        }
+
+        private void OnCartItemsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                OnPropertyChanged(nameof(Cart));
+                CalculateTotals();
+            });
         }
 
         // Override setters to update state service
@@ -97,14 +105,14 @@ namespace LaundromatManagementSystem.ViewModels
             UpdateThemeProperties();
         }
 
-        partial void OnCartChanged(ObservableCollection<CartItem> value)
+        private void OnCartUpdated(object sender, EventArgs e)
         {
-            // Update state service if different
-            if (!value.SequenceEqual(_stateService.CartItems))
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                _stateService.CartItems = new ObservableCollection<CartItem>(value);
-            }
-            CalculateTotals();
+                Console.WriteLine("DEBUG: CartUpdated event received");
+                OnPropertyChanged(nameof(Cart));  // Force UI refresh
+                CalculateTotals();
+            });
         }
 
         private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -126,22 +134,7 @@ namespace LaundromatManagementSystem.ViewModels
                             Theme = _stateService.CurrentTheme;
                         }
                         break;
-
-                    case nameof(_stateService.CartItems):
-                        if (!Cart.SequenceEqual(_stateService.CartItems))
-                        {
-                            Cart = new ObservableCollection<CartItem>(_stateService.CartItems);
-                        }
-                        break;
                 }
-            });
-        }
-
-        private void OnCartUpdated(object sender, EventArgs e)
-        {
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                CalculateTotals();
             });
         }
 

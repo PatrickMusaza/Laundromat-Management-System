@@ -83,7 +83,7 @@ public class ApplicationStateService : INotifyPropertyChanged
         CartUpdated?.Invoke(this, EventArgs.Empty);
     }
 
-    public void RemoveFromCart(int serviceId)
+    public void RemoveFromCart(string serviceId)
     {
         var item = CartItems.FirstOrDefault(i => i.ServiceId == serviceId);
         if (item != null)
