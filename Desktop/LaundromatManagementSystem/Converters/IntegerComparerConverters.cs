@@ -1,4 +1,5 @@
 using System.Globalization;
+using LaundromatManagementSystem.Models;
 
 namespace LaundromatManagementSystem.Converters
 {
@@ -8,10 +9,10 @@ namespace LaundromatManagementSystem.Converters
         {
             if (value is int intValue)
                 return intValue > 0;
-            
+
             if (value is System.Collections.ICollection collection)
                 return collection.Count > 0;
-            
+
             return false;
         }
 
@@ -20,17 +21,17 @@ namespace LaundromatManagementSystem.Converters
             throw new NotImplementedException();
         }
     }
-    
+
     public class EqualToZeroConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is int intValue)
                 return intValue == 0;
-            
+
             if (value is System.Collections.ICollection collection)
                 return collection.Count == 0;
-            
+
             return true;
         }
 
@@ -39,12 +40,12 @@ namespace LaundromatManagementSystem.Converters
             throw new NotImplementedException();
         }
     }
-    
+
     public class DecreaseQuantityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Models.CartItem item)
+            if (value is CartItem item)
             {
                 return (item.Id, item.Quantity - 1);
             }
@@ -56,12 +57,12 @@ namespace LaundromatManagementSystem.Converters
             throw new NotImplementedException();
         }
     }
-    
+
     public class IncreaseQuantityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Models.CartItem item)
+            if (value is CartItem item)
             {
                 return (item.Id, item.Quantity + 1);
             }

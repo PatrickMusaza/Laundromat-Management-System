@@ -50,6 +50,10 @@ namespace LaundromatManagementSystem.ViewModels
         public Color TotalBackgroundColor => GetTotalBackgroundColor();
         public Color TotalBorderColor => GetTotalBorderColor();
 
+        // Button colors
+        public Color QuantityButtonBackground => GetQuantityButtonBackground();
+        public Color QuantityButtonTextColor => GetQuantityButtonTextColor();
+
         public ICommand RemoveItemCommand { get; }
         public ICommand UpdateQuantityCommand { get; }
         public ICommand ProcessPaymentCommand { get; }
@@ -119,6 +123,7 @@ namespace LaundromatManagementSystem.ViewModels
                         if (Theme != _stateService.CurrentTheme)
                         {
                             Theme = _stateService.CurrentTheme;
+                            UpdateThemeProperties();
                         }
                         break;
 
@@ -155,6 +160,11 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(ItemTextColor));
             OnPropertyChanged(nameof(TotalBackgroundColor));
             OnPropertyChanged(nameof(TotalBorderColor));
+            OnPropertyChanged(nameof(QuantityButtonBackground));
+            OnPropertyChanged(nameof(QuantityButtonTextColor));
+
+            // Force CollectionView to refresh all items
+            OnPropertyChanged(nameof(Cart));
         }
 
         private void CalculateTotals()
@@ -298,6 +308,7 @@ namespace LaundromatManagementSystem.ViewModels
             return Theme switch
             {
                 Theme.Dark => Colors.White,
+                Theme.Gray => Color.FromArgb("#111827"),
                 _ => Color.FromArgb("#111827")
             };
         }
@@ -319,6 +330,25 @@ namespace LaundromatManagementSystem.ViewModels
                 Theme.Dark => Color.FromArgb("#374151"),
                 Theme.Gray => Color.FromArgb("#D1D5DB"),
                 _ => Color.FromArgb("#E5E7EB")
+            };
+        }
+
+        private Color GetQuantityButtonBackground()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#374151"),
+                Theme.Gray => Color.FromArgb("#E5E7EB"),
+                _ => Color.FromArgb("#F3F4F6")
+            };
+        }
+
+        private Color GetQuantityButtonTextColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Colors.White,
+                _ => Color.FromArgb("#111827")
             };
         }
 
