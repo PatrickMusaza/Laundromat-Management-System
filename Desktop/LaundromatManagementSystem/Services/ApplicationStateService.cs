@@ -68,17 +68,25 @@ public class ApplicationStateService : INotifyPropertyChanged
 
     public void AddToCart(CartItem item)
     {
-        Debug.WriteLine($"Adding to cart: {item.Name} (Id: {item.Id}, Quantity: {item.Quantity})");
         var existingItem = CartItems.FirstOrDefault(i => i.ServiceId == item.ServiceId);
         if (existingItem != null)
         {
             existingItem.Quantity += 1;
-            Debug.WriteLine($"Increased quantity of existing item. New quantity: {existingItem.Quantity}");
         }
         else
         {
-            CartItems.Add(item);
-            Debug.WriteLine($"Added new item to cart: {item.Name} (Id: {item.Id})");
+            var newItem = new CartItem
+            {
+                Id = Guid.NewGuid().ToString(),
+                ServiceId = item.ServiceId,
+                Name = item.Name,
+                Price = item.Price,
+                Quantity = 1,
+                Addons = new ObservableCollection<ServiceAddon>(
+                    item.Addons ?? new ObservableCollection<ServiceAddon>())
+            };
+
+            CartItems.Add(newItem);
         }
 
         OnPropertyChanged(nameof(CartItems));
@@ -95,7 +103,7 @@ public class ApplicationStateService : INotifyPropertyChanged
         {
             if (newQuantity <= 0)
             {
-                RemoveFromCart(serviceId);
+                RemoveItem(item.Id);
                 Debug.WriteLine($"Removed item from cart due to zero quantity: {item.Id}");
             }
             else
@@ -120,21 +128,6 @@ public class ApplicationStateService : INotifyPropertyChanged
             OnPropertyChanged(nameof(CartTotal));
             OnPropertyChanged(nameof(ItemCount));
             CartUpdated?.Invoke(this, EventArgs.Empty);
-            Debug.WriteLine($"Removed item from cart: {itemId}");
-        }
-    }
-
-    public void RemoveFromCart(string serviceId)
-    {
-        var item = CartItems.FirstOrDefault(i => i.ServiceId == serviceId);
-        if (item != null)
-        {
-            CartItems.Remove(item);
-            OnPropertyChanged(nameof(CartItems));
-            OnPropertyChanged(nameof(CartTotal));
-            OnPropertyChanged(nameof(ItemCount));
-            CartUpdated?.Invoke(this, EventArgs.Empty);
-            Debug.WriteLine($"Removed item from cart: {serviceId}");
         }
     }
 

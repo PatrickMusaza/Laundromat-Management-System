@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using LaundromatManagementSystem.Models;
 using LaundromatManagementSystem.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace LaundromatManagementSystem.ViewModels
@@ -53,16 +54,15 @@ namespace LaundromatManagementSystem.ViewModels
         // Button colors
         public Color QuantityButtonBackground => GetQuantityButtonBackground();
         public Color QuantityButtonTextColor => GetQuantityButtonTextColor();
-
-        public ICommand RemoveItemCommand { get; }
         public ICommand UpdateQuantityCommand { get; }
         public ICommand ProcessPaymentCommand { get; }
-
+        public ICommand RemoveItemCommand { get; }
 
         public ShoppingCartViewModel(ICommand removeItemCommand,
                                     ICommand updateQuantityCommand,
                                     ICommand processPaymentCommand)
         {
+            Debug.WriteLine("Initializing ShoppingCartViewModel");
             RemoveItemCommand = removeItemCommand;
             UpdateQuantityCommand = updateQuantityCommand;
             ProcessPaymentCommand = processPaymentCommand;
@@ -134,6 +134,64 @@ namespace LaundromatManagementSystem.ViewModels
                         break;
                 }
             });
+        }
+
+        [RelayCommand]
+        private void RemoveItemFromCart(string itemId)
+        {
+            if (string.IsNullOrEmpty(itemId))
+                return;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                async Task ConfirmAndRemove()
+                {
+                    bool confirm = await Application.Current.MainPage.DisplayAlert(     
+                        GetTranslationDeletedItem("removeItem"),
+                        GetTranslationDeletedItem("removeConfirm"),
+                        GetTranslationDeletedItem("yes"),
+                        GetTranslationDeletedItem("no"));
+
+                    if (confirm)
+                    {
+                        _stateService.RemoveItem(itemId);
+                    }
+                }
+
+                ConfirmAndRemove();
+            });
+        }
+
+        private string GetTranslationDeletedItem(string key)
+        {
+            var translations = new Dictionary<string, Dictionary<Language, string>>
+            {
+                ["removeItem"] = new()
+                {
+                    [Language.EN] = "Confirm Removal",
+                    [Language.RW] = "Emeza Gusiba",
+                    [Language.FR] = "Confirmer la suppression"
+                },
+                ["removeConfirm"] = new()
+                {
+                    [Language.EN] = "Are you sure you want to remove this item from the cart?",
+                    [Language.RW] = "Urashaka koko gukuraho iki kintu mu gitebo?",
+                    [Language.FR] = "Êtes-vous sûr de vouloir supprimer cet article du panier?"
+                },
+                ["yes"] = new()
+                {
+                    [Language.EN] = "Yes",
+                    [Language.RW] = "Yego",
+                    [Language.FR] = "Oui"
+                },
+                ["no"] = new()
+                {
+                    [Language.EN] = "No",
+                    [Language.RW] = "Oya",
+                    [Language.FR] = "Non"
+                }
+            };
+
+            return translations[key][Language];
         }
 
         private void UpdateTextProperties()

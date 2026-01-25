@@ -130,7 +130,7 @@
 
                                         <Border BackgroundColor="{Binding Path=BindingContext.QuantityButtonBackground, Source={x:Reference ShoppingCartView}}"
                                                 StrokeThickness="0"
-                                                StrokeShape="RoundRectangle 4,4,4,4"
+                                                StrokeShape="RoundRectangle 4"
                                                 WidthRequest="28"
                                                 HeightRequest="28">
                                             <Label Text="-"
@@ -210,7 +210,7 @@
                                     <Border.GestureRecognizers>
                                         <TapGestureRecognizer>
                                             <TapGestureRecognizer.Command>
-                                                <Binding Path="BindingContext.RemoveItemCommand"
+                                                <Binding Path="BindingContext.RemoveItemFromCartCommand"
                                                          Source="{x:Reference ShoppingCartView}"/>
                                             </TapGestureRecognizer.Command>
                                             <TapGestureRecognizer.CommandParameter>

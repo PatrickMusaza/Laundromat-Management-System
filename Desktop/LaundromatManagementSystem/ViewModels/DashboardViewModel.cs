@@ -110,7 +110,7 @@ namespace LaundromatManagementSystem.ViewModels
                     Name = item.Name,
                     Price = item.Price,
                     Addons = new ObservableCollection<ServiceAddon>(item.Addons ?? new ObservableCollection<ServiceAddon>()),
-                    Quantity = 1  // Always start with 1
+                    Quantity = 1  
                 };
 
                 _stateService.CartItems.Add(cartItem);
