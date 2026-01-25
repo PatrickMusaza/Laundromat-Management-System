@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LaundromatManagementSystem.Models;
 
@@ -67,14 +68,17 @@ public class ApplicationStateService : INotifyPropertyChanged
 
     public void AddToCart(CartItem item)
     {
+        Debug.WriteLine($"Adding to cart: {item.Name} (Id: {item.Id}, Quantity: {item.Quantity})");
         var existingItem = CartItems.FirstOrDefault(i => i.ServiceId == item.ServiceId);
         if (existingItem != null)
         {
-            existingItem.Quantity += item.Quantity;
+            existingItem.Quantity += 1;
+            Debug.WriteLine($"Increased quantity of existing item. New quantity: {existingItem.Quantity}");
         }
         else
         {
             CartItems.Add(item);
+            Debug.WriteLine($"Added new item to cart: {item.Name} (Id: {item.Id})");
         }
 
         OnPropertyChanged(nameof(CartItems));
@@ -85,12 +89,14 @@ public class ApplicationStateService : INotifyPropertyChanged
 
     public void UpdateQuantity(string serviceId, int newQuantity)
     {
+        Debug.WriteLine($"Updating quantity for ServiceId: {serviceId} to {newQuantity}");
         var item = CartItems.FirstOrDefault(i => i.ServiceId == serviceId);
         if (item != null)
         {
             if (newQuantity <= 0)
             {
                 RemoveFromCart(serviceId);
+                Debug.WriteLine($"Removed item from cart due to zero quantity: {item.Id}");
             }
             else
             {
@@ -99,6 +105,7 @@ public class ApplicationStateService : INotifyPropertyChanged
                 OnPropertyChanged(nameof(CartTotal));
                 OnPropertyChanged(nameof(ItemCount));
                 CartUpdated?.Invoke(this, EventArgs.Empty);
+                Debug.WriteLine($"Updated item quantity: {item.Id}, New Quantity: {item.Quantity}");
             }
         }
     }
@@ -113,6 +120,7 @@ public class ApplicationStateService : INotifyPropertyChanged
             OnPropertyChanged(nameof(CartTotal));
             OnPropertyChanged(nameof(ItemCount));
             CartUpdated?.Invoke(this, EventArgs.Empty);
+            Debug.WriteLine($"Removed item from cart: {itemId}");
         }
     }
 
@@ -123,6 +131,23 @@ public class ApplicationStateService : INotifyPropertyChanged
         {
             CartItems.Remove(item);
             OnPropertyChanged(nameof(CartItems));
+            OnPropertyChanged(nameof(CartTotal));
+            OnPropertyChanged(nameof(ItemCount));
+            CartUpdated?.Invoke(this, EventArgs.Empty);
+            Debug.WriteLine($"Removed item from cart: {serviceId}");
+        }
+    }
+
+    public void NotifyCartItemChanged(CartItem item)
+    {
+        // This will trigger the INotifyPropertyChanged on the item
+        var index = CartItems.IndexOf(item);
+        if (index >= 0)
+        {
+            // Replacing the item at the same index triggers collection change
+            CartItems[index] = item;
+
+            // Also notify totals changed
             OnPropertyChanged(nameof(CartTotal));
             OnPropertyChanged(nameof(ItemCount));
             CartUpdated?.Invoke(this, EventArgs.Empty);

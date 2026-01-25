@@ -8,14 +8,14 @@ namespace LaundromatManagementSystem.Views
         public Dashboard()
         {
             InitializeComponent();
-            
+
             // Create ViewModel with dependencies
             var cartService = new CartService();
             var serviceService = new ServiceService();
-            var viewModel = new DashboardViewModel(cartService, serviceService);
-            
+            var viewModel = new DashboardViewModel(serviceService);
+
             BindingContext = viewModel;
-            
+
             // Subscribe to cart updates to refresh the shopping cart
             cartService.CartUpdated += (sender, e) =>
             {

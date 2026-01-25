@@ -116,7 +116,8 @@
                                              VerticalOptions="Center"
                                              Spacing="16">
                             <Label Text="💰"
-                                   FontSize="48"/>
+                                   FontSize="48"
+                                   HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding CashLabel}"
                                    FontSize="16"
                                    FontAttributes="Bold"
@@ -140,7 +141,8 @@
                                              VerticalOptions="Center"
                                              Spacing="16">
                             <Label Text="📱"
-                                   FontSize="48"/>
+                                   FontSize="48"
+                                   HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding MoMoLabel}"
                                    FontSize="16"
                                    FontAttributes="Bold"
@@ -164,7 +166,8 @@
                                              VerticalOptions="Center"
                                              Spacing="16">
                             <Label Text="💳"
-                                   FontSize="48"/>
+                                   FontSize="48"
+                                   HorizontalTextAlignment="Center"/>
                             <Label Text="{Binding CardLabel}"
                                    FontSize="16"
                                    FontAttributes="Bold"
