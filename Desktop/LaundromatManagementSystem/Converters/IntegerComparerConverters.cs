@@ -47,7 +47,8 @@ namespace LaundromatManagementSystem.Converters
         {
             if (value is CartItem item)
             {
-                return (item.Id, item.Quantity - 1);
+                // Return a tuple (itemId, newQuantity)
+                return (item.Id, Math.Max(1, item.Quantity - 1));
             }
             return null;
         }
@@ -64,6 +65,7 @@ namespace LaundromatManagementSystem.Converters
         {
             if (value is CartItem item)
             {
+                // Return a tuple (itemId, newQuantity)
                 return (item.Id, item.Quantity + 1);
             }
             return null;

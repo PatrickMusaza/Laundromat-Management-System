@@ -131,35 +131,35 @@ namespace LaundromatManagementSystem.ViewModels
         private void RemoveFromCart(string itemId)
         {
             // Remove via state service
-            var item = Cart.FirstOrDefault(i => i.Id == itemId);
-            if (item != null)
-            {
-                _stateService.RemoveFromCart(item.ServiceId);
-                _cartService.RemoveItem(itemId);
-            }
+            _stateService.RemoveItem(itemId);
+
+            // Also update the cart service if needed
+            _cartService.RemoveItem(itemId);
+
+            // Force UI update
+            OnPropertyChanged(nameof(Cart));
+            CalculateTotals();
         }
 
         [RelayCommand]
         private void UpdateQuantity((string itemId, int quantity) parameters)
         {
+
             if (parameters.quantity <= 0)
             {
                 RemoveFromCart(parameters.itemId);
                 return;
             }
 
+            // Find the item by Id (not ServiceId)
             var item = Cart.FirstOrDefault(i => i.Id == parameters.itemId);
             if (item != null)
             {
-                item.Quantity = parameters.quantity;
+                // Update via state service
+                _stateService.UpdateQuantity(item.ServiceId, parameters.quantity);
 
-                // Update state service
-                var stateItem = _stateService.CartItems.FirstOrDefault(i => i.ServiceId == item.ServiceId);
-                if (stateItem != null)
-                {
-                    stateItem.Quantity = parameters.quantity;
-                    _stateService.CartItems = new ObservableCollection<CartItem>(_stateService.CartItems);
-                }
+                // Also update the cart service if needed
+                _cartService.UpdateQuantity(parameters.itemId, parameters.quantity);
 
                 CalculateTotals();
             }

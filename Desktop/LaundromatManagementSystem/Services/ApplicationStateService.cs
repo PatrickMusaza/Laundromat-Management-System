@@ -13,7 +13,7 @@ public class ApplicationStateService : INotifyPropertyChanged
     private Theme _currentTheme = Theme.Light;
     private Language _currentLanguage = Language.EN;
     private ObservableCollection<CartItem> _cartItems = new();
-    
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     public Theme CurrentTheme
@@ -76,11 +76,44 @@ public class ApplicationStateService : INotifyPropertyChanged
         {
             CartItems.Add(item);
         }
-        
+
         OnPropertyChanged(nameof(CartItems));
         OnPropertyChanged(nameof(CartTotal));
         OnPropertyChanged(nameof(ItemCount));
         CartUpdated?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void UpdateQuantity(string serviceId, int newQuantity)
+    {
+        var item = CartItems.FirstOrDefault(i => i.ServiceId == serviceId);
+        if (item != null)
+        {
+            if (newQuantity <= 0)
+            {
+                RemoveFromCart(serviceId);
+            }
+            else
+            {
+                item.Quantity = newQuantity;
+                OnPropertyChanged(nameof(CartItems));
+                OnPropertyChanged(nameof(CartTotal));
+                OnPropertyChanged(nameof(ItemCount));
+                CartUpdated?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    public void RemoveItem(string itemId)
+    {
+        var item = CartItems.FirstOrDefault(i => i.Id == itemId);
+        if (item != null)
+        {
+            CartItems.Remove(item);
+            OnPropertyChanged(nameof(CartItems));
+            OnPropertyChanged(nameof(CartTotal));
+            OnPropertyChanged(nameof(ItemCount));
+            CartUpdated?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public void RemoveFromCart(string serviceId)
@@ -97,7 +130,7 @@ public class ApplicationStateService : INotifyPropertyChanged
     }
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {    
+    {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
