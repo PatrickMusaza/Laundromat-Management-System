@@ -54,18 +54,9 @@ namespace LaundromatManagementSystem.ViewModels
         // Button colors
         public Color QuantityButtonBackground => GetQuantityButtonBackground();
         public Color QuantityButtonTextColor => GetQuantityButtonTextColor();
-        public ICommand UpdateQuantityCommand { get; }
-        public ICommand ProcessPaymentCommand { get; }
-        public ICommand RemoveItemCommand { get; }
 
-        public ShoppingCartViewModel(ICommand removeItemCommand,
-                                    ICommand updateQuantityCommand,
-                                    ICommand processPaymentCommand)
+        public ShoppingCartViewModel()
         {
-            Debug.WriteLine("Initializing ShoppingCartViewModel");
-            RemoveItemCommand = removeItemCommand;
-            UpdateQuantityCommand = updateQuantityCommand;
-            ProcessPaymentCommand = processPaymentCommand;
 
             // Initialize from state service
             _language = _stateService.CurrentLanguage;
@@ -208,6 +199,13 @@ namespace LaundromatManagementSystem.ViewModels
             };
 
             return translations[key][Language];
+        }
+
+        [RelayCommand]
+        private void ProcessPayment()
+        {
+            // Payment processing logic would go here
+            Debug.WriteLine("Processing payment...");
         }
 
         private void UpdateTextProperties()

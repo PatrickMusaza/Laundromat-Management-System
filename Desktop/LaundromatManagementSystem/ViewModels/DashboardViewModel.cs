@@ -91,61 +91,6 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void ChangeCategory(string category) => SelectedCategory = category;
 
-        [RelayCommand]
-        private void AddToCart(CartItem item)
-        {
-            // Always add quantity 1, regardless of what's passed
-            var existingItem = _stateService.CartItems
-                .FirstOrDefault(i => i.ServiceId == item.ServiceId);
-            if (existingItem != null)
-            {
-                existingItem.Quantity += 1;
-            }
-            else
-            {
-                var cartItem = new CartItem
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ServiceId = item.ServiceId,
-                    Name = item.Name,
-                    Price = item.Price,
-                    Addons = new ObservableCollection<ServiceAddon>(item.Addons ?? new ObservableCollection<ServiceAddon>()),
-                    Quantity = 1  
-                };
-
-                _stateService.CartItems.Add(cartItem);
-            }
-
-            RefreshCart();
-        }
-
-        [RelayCommand]
-        private void RemoveFromCart(string itemId)
-        {
-            _stateService.RemoveItem(itemId);
-            RefreshCart();
-        }
-
-        [RelayCommand]
-        private void UpdateQuantity((string itemId, int quantity) parameters)
-        {
-            var item = _stateService.CartItems.FirstOrDefault(i => i.Id == parameters.itemId);
-
-            if (item != null)
-            {
-                if (parameters.quantity <= 0)
-                {
-                    _stateService.RemoveItem(item.Id);
-                }
-                else
-                {
-                    item.Quantity = parameters.quantity;
-                }
-
-                RefreshCart();
-            }
-        }
-
         private void RefreshCart()
         {
             // Update the Cart collection

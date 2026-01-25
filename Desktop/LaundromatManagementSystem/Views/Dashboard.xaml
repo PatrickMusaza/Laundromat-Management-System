@@ -35,10 +35,7 @@
                 <views:ShoppingCart
                     Subtotal="{Binding Subtotal}"
                     Tax="{Binding Tax}"
-                    Total="{Binding Total}"
-                    RemoveItemCommand="{Binding RemoveFromCartCommand}"
-                    UpdateQuantityCommand="{Binding UpdateQuantityCommand}"
-                    ProcessPaymentCommand="{Binding ProcessPaymentCommand}"/>
+                    Total="{Binding Total}"/>
             </Border>
 
         </Grid>

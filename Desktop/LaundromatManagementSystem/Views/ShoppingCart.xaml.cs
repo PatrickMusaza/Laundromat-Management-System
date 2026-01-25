@@ -27,15 +27,6 @@ namespace LaundromatManagementSystem.Views
             BindableProperty.Create(nameof(Theme), typeof(Theme), typeof(ShoppingCart), Theme.Light,
                 propertyChanged: OnThemeChanged);
 
-        public static readonly BindableProperty RemoveItemCommandProperty =
-            BindableProperty.Create(nameof(RemoveItemCommand), typeof(ICommand), typeof(ShoppingCart));
-
-        public static readonly BindableProperty UpdateQuantityCommandProperty =
-            BindableProperty.Create(nameof(UpdateQuantityCommand), typeof(ICommand), typeof(ShoppingCart));
-
-        public static readonly BindableProperty ProcessPaymentCommandProperty =
-            BindableProperty.Create(nameof(ProcessPaymentCommand), typeof(ICommand), typeof(ShoppingCart));
-
         public decimal Subtotal
         {
             get => (decimal)GetValue(SubtotalProperty);
@@ -66,24 +57,6 @@ namespace LaundromatManagementSystem.Views
             set => SetValue(ThemeProperty, value);
         }
 
-        public ICommand RemoveItemCommand
-        {
-            get => (ICommand)GetValue(RemoveItemCommandProperty);
-            set => SetValue(RemoveItemCommandProperty, value);
-        }
-
-        public ICommand UpdateQuantityCommand
-        {
-            get => (ICommand)GetValue(UpdateQuantityCommandProperty);
-            set => SetValue(UpdateQuantityCommandProperty, value);
-        }
-
-        public ICommand ProcessPaymentCommand
-        {
-            get => (ICommand)GetValue(ProcessPaymentCommandProperty);
-            set => SetValue(ProcessPaymentCommandProperty, value);
-        }
-
         public ShoppingCartViewModel ViewModel { get; private set; }
 
         public ShoppingCart()
@@ -91,11 +64,7 @@ namespace LaundromatManagementSystem.Views
             InitializeComponent();
 
             // Create ViewModel with commands
-            ViewModel = new ShoppingCartViewModel(
-                RemoveItemCommand,
-                UpdateQuantityCommand,
-                ProcessPaymentCommand
-            );
+            ViewModel = new ShoppingCartViewModel();
 
             BindingContext = ViewModel;
 
