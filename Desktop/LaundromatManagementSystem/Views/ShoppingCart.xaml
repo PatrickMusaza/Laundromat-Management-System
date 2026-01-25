@@ -68,6 +68,11 @@
                             VerticalScrollBarVisibility="Always"
                             EmptyView="{Binding EmptyView}">
 
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="2"/>
+                </CollectionView.ItemsLayout>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <!-- REMOVED x:DataType -->
@@ -75,8 +80,7 @@
                                 StrokeThickness="1"
                                 StrokeShape="RoundRectangle 8"
                                 BackgroundColor="{Binding Path=BindingContext.ItemBackgroundColor, Source={x:Reference ShoppingCartView}}"
-                                Padding="12"
-                                Margin="10">
+                                Padding="12">
 
                             <Grid RowDefinitions="1*, 1*, 1*"
                                   ColumnDefinitions="*, Auto">
@@ -140,11 +144,11 @@
                                                 <TapGestureRecognizer>
                                                     <TapGestureRecognizer.Command>
                                                         <Binding Path="BindingContext.UpdateQuantityCommand"
-                                                                Source="{x:Reference ShoppingCartView}"/>
+                                                                 Source="{x:Reference ShoppingCartView}"/>
                                                     </TapGestureRecognizer.Command>
                                                     <TapGestureRecognizer.CommandParameter>
                                                         <Binding Path="."
-                                                                Converter="{StaticResource DecreaseQuantityConverter}"/>
+                                                                 Converter="{StaticResource DecreaseQuantityConverter}"/>
                                                     </TapGestureRecognizer.CommandParameter>
                                                 </TapGestureRecognizer>
                                             </Border.GestureRecognizers>
@@ -176,11 +180,11 @@
                                                 <TapGestureRecognizer>
                                                     <TapGestureRecognizer.Command>
                                                         <Binding Path="BindingContext.UpdateQuantityCommand"
-                                                                Source="{x:Reference ShoppingCartView}"/>
+                                                                 Source="{x:Reference ShoppingCartView}"/>
                                                     </TapGestureRecognizer.Command>
                                                     <TapGestureRecognizer.CommandParameter>
                                                         <Binding Path="."
-                                                                Converter="{StaticResource IncreaseQuantityConverter}"/>
+                                                                 Converter="{StaticResource IncreaseQuantityConverter}"/>
                                                     </TapGestureRecognizer.CommandParameter>
                                                 </TapGestureRecognizer>
                                             </Border.GestureRecognizers>
@@ -207,7 +211,7 @@
                                         <TapGestureRecognizer>
                                             <TapGestureRecognizer.Command>
                                                 <Binding Path="BindingContext.RemoveItemCommand"
-                                                        Source="{x:Reference ShoppingCartView}"/>
+                                                         Source="{x:Reference ShoppingCartView}"/>
                                             </TapGestureRecognizer.Command>
                                             <TapGestureRecognizer.CommandParameter>
                                                 <Binding Path="Id"/>
