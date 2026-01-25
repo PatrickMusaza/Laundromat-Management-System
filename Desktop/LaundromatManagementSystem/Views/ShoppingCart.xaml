@@ -141,17 +141,12 @@
                                                    VerticalOptions="Center"/>
 
                                             <Border.GestureRecognizers>
-                                                <TapGestureRecognizer>
-                                                    <TapGestureRecognizer.Command>
-                                                        <Binding Path="BindingContext.UpdateQuantityCommand"
-                                                                 Source="{x:Reference ShoppingCartView}"/>
-                                                    </TapGestureRecognizer.Command>
-                                                    <TapGestureRecognizer.CommandParameter>
-                                                        <Binding Path="."
-                                                                 Converter="{StaticResource DecreaseQuantityConverter}"/>
-                                                    </TapGestureRecognizer.CommandParameter>
-                                                </TapGestureRecognizer>
+                                                <TapGestureRecognizer
+                                                    Command="{Binding BindingContext.DecreaseQuantityCommand,
+                                                                      Source={x:Reference ShoppingCartView}}"
+                                                    CommandParameter="{Binding Id}"/>
                                             </Border.GestureRecognizers>
+
                                         </Border>
 
                                         <Label Grid.Column="1"

@@ -95,16 +95,15 @@ public class ApplicationStateService : INotifyPropertyChanged
         CartUpdated?.Invoke(this, EventArgs.Empty);
     }
 
-    public void UpdateQuantity(string serviceId, int newQuantity)
+    public void UpdateQuantity(string itemId, int changeQuantity)
     {
-        Debug.WriteLine($"Updating quantity for ServiceId: {serviceId} to {newQuantity}");
-        var item = CartItems.FirstOrDefault(i => i.ServiceId == serviceId);
+        var item = CartItems.FirstOrDefault(i => i.Id == itemId);
         if (item != null)
         {
+            var newQuantity = item.Quantity + changeQuantity;
             if (newQuantity <= 0)
             {
                 RemoveItem(item.Id);
-                Debug.WriteLine($"Removed item from cart due to zero quantity: {item.Id}");
             }
             else
             {
@@ -113,7 +112,6 @@ public class ApplicationStateService : INotifyPropertyChanged
                 OnPropertyChanged(nameof(CartTotal));
                 OnPropertyChanged(nameof(ItemCount));
                 CartUpdated?.Invoke(this, EventArgs.Empty);
-                Debug.WriteLine($"Updated item quantity: {item.Id}, New Quantity: {item.Quantity}");
             }
         }
     }
