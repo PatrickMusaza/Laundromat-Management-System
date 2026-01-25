@@ -139,10 +139,17 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void DecreaseQuantity(string itemId)
         {
-            Debug.WriteLine($"DecreaseQuantity called with itemId: {itemId}");
             if (string.IsNullOrEmpty(itemId))
                 return;
             _stateService.UpdateQuantity(itemId, -1);
+        }
+
+        [RelayCommand]
+        private void IncreaseQuantity(string itemId)
+        {
+            if (string.IsNullOrEmpty(itemId))
+                return;
+            _stateService.UpdateQuantity(itemId, 1);
         }
 
         [RelayCommand]
