@@ -25,6 +25,7 @@ namespace LaundromatManagementSystem
             // Register services
             services.AddSingleton<IServiceService, ServiceService>();
             services.AddSingleton<ICartService, CartService>();
+            services.AddSingleton<IPrinterService, PrinterService>();
             
             // Register ViewModels
             services.AddSingleton<DashboardViewModel>();

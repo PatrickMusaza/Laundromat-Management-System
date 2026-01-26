@@ -10,532 +10,512 @@
 
     <ContentView.Resources>
         <Style TargetType="Button">
-            <Setter Property="FontSize"
-                    Value="16"/>
-            <Setter Property="FontAttributes"
-                    Value="Bold"/>
-            <Setter Property="CornerRadius"
-                    Value="8"/>
-            <Setter Property="HeightRequest"
-                    Value="64"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="HeightRequest" Value="56"/>
         </Style>
     </ContentView.Resources>
 
-    <Border Stroke="{Binding BorderColor}"
-            StrokeThickness="1"
-            StrokeShape="RoundRectangle 16"
-            BackgroundColor="{Binding BackgroundColor}"
-            Padding="32">
+    <ScrollView>
+        <Border Stroke="{Binding BorderColor}"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 16"
+                BackgroundColor="{Binding BackgroundColor}"
+                Padding="32">
 
-        <Grid RowDefinitions="Auto, Auto, *, Auto"
-              RowSpacing="24">
+            <Grid RowDefinitions="Auto, Auto, *, Auto"
+                  RowSpacing="24"
+                  MinimumHeightRequest="500">
 
-            <!-- Header -->
-            <Grid Grid.Row="0"
-                  RowDefinitions="Auto, Auto"
-                  RowSpacing="8"
-                  Padding="0,0,0,16">
+                <!-- Header -->
+                <Grid Grid.Row="0"
+                      RowDefinitions="Auto, Auto"
+                      RowSpacing="8"
+                      Padding="0,0,0,16">
 
-                <!-- Title and Close Button -->
-                <Grid ColumnDefinitions="*, Auto">
-                    <Label Grid.Column="0"
-                           Text="{Binding Title}"
-                           FontSize="28"
-                           FontAttributes="Bold"
-                           TextColor="{Binding TitleColor}"/>
-
-                    <!-- Close Button -->
-                    <Border Grid.Column="1"
-                            BackgroundColor="Transparent"
-                            WidthRequest="44"
-                            HeightRequest="44"
-                            StrokeThickness="0"
-                            StrokeShape="RoundRectangle 22">
-                        <Label Text="✕"
-                               FontSize="24"
+                    <!-- Title and Close Button -->
+                    <Grid ColumnDefinitions="*, Auto">
+                        <Label Grid.Column="0"
+                               Text="{Binding Title}"
+                               FontSize="28"
                                FontAttributes="Bold"
-                               TextColor="{Binding TitleColor}"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center"/>
+                               TextColor="{Binding TitleColor}"/>
 
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ClosePaymentModalCommand}"/>
-                        </Border.GestureRecognizers>
-                    </Border>
-                </Grid>
-
-                <!-- Transaction Info -->
-                <Label Grid.Row="1"
-                       FontSize="16"
-                       TextColor="{Binding SubtitleColor}">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="{Binding TransactionLabel}"/>
-                            <Span Text=" "/>
-                            <Span Text="{Binding TransactionId}"
-                                  FontAttributes="Bold"
-                                  TextColor="#F59E0B"/>
-                            <Span Text=" | "/>
-                            <Span Text="{Binding TotalLabel}"/>
-                            <Span Text=" "/>
-                            <Span Text="{Binding Total, StringFormat='{0:N0} RWF'}"
-                                  FontAttributes="Bold"
-                                  TextColor="#F59E0B"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-
-                <!-- Separator -->
-                <BoxView Grid.RowSpan="2"
-                         Grid.ColumnSpan="2"
-                         Color="{Binding BorderColor}"
-                         HeightRequest="2"
-                         VerticalOptions="End"
-                         HorizontalOptions="Fill"/>
-
-            </Grid>
-
-            <!-- Customer Input -->
-            <VerticalStackLayout Grid.Row="1"
-                                 Spacing="12">
-                <Label Text="{Binding CustomerLabel}"
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       TextColor="{Binding TextColor}"/>
-
-                <Entry Text="{Binding Customer}"
-                       Placeholder="+250 788 123 456"
-                       FontSize="16"
-                       HeightRequest="56"
-                       BackgroundColor="{Binding InputBackgroundColor}"
-                       TextColor="{Binding TextColor}"
-                       PlaceholderColor="{Binding PlaceholderColor}"
-                       ClearButtonVisibility="WhileEditing"
-                       Keyboard="Telephone"/>
-            </VerticalStackLayout>
-
-            <!-- Payment Method Selection -->
-            <Grid Grid.Row="2"
-                  RowDefinitions="Auto, *"
-                  RowSpacing="24">
-
-                <Label Text="{Binding SelectMethodLabel}"
-                       FontSize="20"
-                       FontAttributes="Bold"
-                       TextColor="{Binding TextColor}"/>
-
-                <!-- Method Selection Grid (When no method selected) -->
-                <Grid Grid.Row="1"
-                      ColumnDefinitions="*, 16, *, 16, *"
-                      ColumnSpacing="0"
-                      VerticalOptions="Center"
-                      IsVisible="{Binding IsMethodSelected, Converter={StaticResource InvertBooleanConverter}}">
-
-                    <!-- Cash -->
-                    <Border Grid.Column="0"
-                            Stroke="#10B981"
-                            StrokeThickness="2"
-                            StrokeShape="RoundRectangle 16"
-                            BackgroundColor="#D1FAE5"
-                            HeightRequest="192">
-                        <VerticalStackLayout HorizontalOptions="Center"
-                                             VerticalOptions="Center"
-                                             Spacing="16"
-                                             Padding="16">
-
-                            <Label Text="💰"
-                                   FontSize="48"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"/>
-
-                            <Label Text="{Binding CashLabel}"
-                                   FontSize="18"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"
+                        <!-- Close Button -->
+                        <Border Grid.Column="1"
+                                BackgroundColor="Transparent"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 22">
+                            <Label Text="✕"
+                                   FontSize="24"
                                    FontAttributes="Bold"
-                                   TextColor="#10B981"/>
+                                   TextColor="{Binding TitleColor}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
 
-                        </VerticalStackLayout>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ClosePaymentModalCommand}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+                    </Grid>
 
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding SelectPaymentMethodCommand}"
-                                                  CommandParameter="Cash"/>
-                        </Border.GestureRecognizers>
-                    </Border>
+                    <!-- Transaction Info -->
+                    <Label Grid.Row="1"
+                           FontSize="16"
+                           TextColor="{Binding SubtitleColor}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="{Binding TransactionLabel}"/>
+                                <Span Text=" "/>
+                                <Span Text="{Binding TransactionId}"
+                                      FontAttributes="Bold"
+                                      TextColor="#F59E0B"/>
+                                <Span Text=" | "/>
+                                <Span Text="{Binding TotalLabel}"/>
+                                <Span Text=" "/>
+                                <Span Text="{Binding Total, StringFormat='{0:N0} RWF'}"
+                                      FontAttributes="Bold"
+                                      TextColor="#F59E0B"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
 
-                    <!-- Spacer -->
-                    <BoxView Grid.Column="1"
-                             WidthRequest="0"/>
-
-                    <!-- Mobile Money -->
-                    <Border Grid.Column="2"
-                            Stroke="#3B82F6"
-                            StrokeThickness="2"
-                            StrokeShape="RoundRectangle 16"
-                            BackgroundColor="#DBEAFE"
-                            HeightRequest="192">
-                        <VerticalStackLayout HorizontalOptions="Center"
-                                             VerticalOptions="Center"
-                                             Spacing="16"
-                                             Padding="16">
-
-                            <Label Text="📱"
-                                   FontSize="48"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"/>
-
-                            <Label Text="{Binding MoMoLabel}"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"
-                                   TextColor="#3B82F6"/>
-
-                        </VerticalStackLayout>
-
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding SelectPaymentMethodCommand}"
-                                                  CommandParameter="MoMo"/>
-                        </Border.GestureRecognizers>
-                    </Border>
-
-                    <!-- Spacer -->
-                    <BoxView Grid.Column="3"
-                             WidthRequest="0"/>
-
-                    <!-- Card -->
-                    <Border Grid.Column="4"
-                            Stroke="#F59E0B"
-                            StrokeThickness="2"
-                            StrokeShape="RoundRectangle 16"
-                            BackgroundColor="#FEF3C7"
-                            HeightRequest="192">
-                        <VerticalStackLayout HorizontalOptions="Center"
-                                             VerticalOptions="Center"
-                                             Spacing="16"
-                                             Padding="16">
-
-                            <Label Text="💳"
-                                   FontSize="48"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"/>
-
-                            <Label Text="{Binding CardLabel}"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   VerticalTextAlignment="Center"
-                                   HorizontalTextAlignment="Center"
-                                   TextColor="#F59E0B"/>
-
-                        </VerticalStackLayout>
-
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding SelectPaymentMethodCommand}"
-                                                  CommandParameter="Card"/>
-                        </Border.GestureRecognizers>
-                    </Border>
+                    <!-- Separator -->
+                    <BoxView Grid.RowSpan="2"
+                             Grid.ColumnSpan="2"
+                             Color="{Binding BorderColor}"
+                             HeightRequest="2"
+                             VerticalOptions="End"
+                             HorizontalOptions="Fill"/>
 
                 </Grid>
 
-                <!-- Selected Method Content (When method is selected) -->
-                <ContentView Grid.Row="1"
-                             IsVisible="{Binding IsMethodSelected}">
+                <!-- Customer Input -->
+                <VerticalStackLayout Grid.Row="1"
+                                     Spacing="12">
+                    <Label Text="{Binding CustomerLabel}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{Binding TextColor}"/>
 
-                    <!-- Cash Payment -->
-                    <VerticalStackLayout Spacing="24"
-                                         IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Cash}">
+                    <Entry Text="{Binding Customer}"
+                           Placeholder="+250 788 123 456"
+                           FontSize="16"
+                           HeightRequest="56"
+                           BackgroundColor="{Binding InputBackgroundColor}"
+                           TextColor="{Binding TextColor}"
+                           PlaceholderColor="{Binding PlaceholderColor}"
+                           ClearButtonVisibility="WhileEditing"
+                           Keyboard="Telephone"/>
+                </VerticalStackLayout>
 
-                        <!-- Two Column Layout -->
-                        <Grid ColumnDefinitions="*, 24, *"
-                              ColumnSpacing="0">
+                <!-- Payment Method Selection -->
+                <Grid Grid.Row="2"
+                      RowDefinitions="Auto, *"
+                      RowSpacing="24">
 
-                            <!-- Left Column - Amounts -->
-                            <VerticalStackLayout Grid.Column="0"
-                                                 Spacing="20">
+                    <Label Text="{Binding SelectMethodLabel}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="{Binding TextColor}"/>
 
-                                <!-- Total Amount -->
-                                <VerticalStackLayout Spacing="8">
-                                    <Label Text="{Binding TotalLabel}"
-                                           FontSize="16"
-                                           FontAttributes="Bold"
-                                           TextColor="{Binding TextColor}"/>
+                    <!-- Method Selection Grid (When no method selected) -->
+                    <Grid Grid.Row="1"
+                          ColumnDefinitions="*, 16, *, 16, *"
+                          ColumnSpacing="0"
+                          VerticalOptions="Start"
+                          IsVisible="{Binding IsMethodSelected, Converter={StaticResource InvertBooleanConverter}}">
 
-                                    <Border Stroke="{Binding AmountBorderColor}"
-                                            StrokeThickness="2"
-                                            StrokeShape="RoundRectangle 8"
-                                            BackgroundColor="{Binding AmountBackgroundColor}"
-                                            HeightRequest="64"
-                                            Padding="16">
-                                        <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
-                                               FontSize="20"
-                                               FontAttributes="Bold"
-                                               TextColor="#F59E0B"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center"/>
-                                    </Border>
-                                </VerticalStackLayout>
+                        <!-- Cash -->
+                        <Border Grid.Column="0"
+                                Stroke="#10B981"
+                                StrokeThickness="2"
+                                StrokeShape="RoundRectangle 16"
+                                BackgroundColor="#D1FAE5"
+                                HeightRequest="160">
+                            <VerticalStackLayout HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="16"
+                                                 Padding="16">
 
-                                <!-- Cash Received -->
-                                <VerticalStackLayout Spacing="8">
-                                    <Label Text="{Binding ReceivedLabel}"
-                                           FontSize="16"
-                                           FontAttributes="Bold"
-                                           TextColor="{Binding TextColor}"/>
+                                <Label Text="💰"
+                                       FontSize="40"
+                                       VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Center"/>
 
-                                    <Border Stroke="{Binding InputBorderColor}"
-                                            StrokeThickness="2"
-                                            StrokeShape="RoundRectangle 8"
-                                            BackgroundColor="{Binding InputBackgroundColor}"
-                                            HeightRequest="64">
-                                        <Label Text="{Binding CashReceived, StringFormat='{0:N0}'}"
-                                               FontSize="20"
-                                               FontAttributes="Bold"
-                                               TextColor="{Binding TextColor}"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center"/>
-                                    </Border>
-                                </VerticalStackLayout>
-
-                                <!-- Change Due -->
-                                <VerticalStackLayout Spacing="8">
-                                    <Label Text="{Binding ChangeLabel}"
-                                           FontSize="16"
-                                           FontAttributes="Bold"
-                                           TextColor="{Binding TextColor}"/>
-
-                                    <Border Stroke="#10B981"
-                                            StrokeThickness="2"
-                                            StrokeShape="RoundRectangle 8"
-                                            BackgroundColor="#D1FAE5"
-                                            HeightRequest="64"
-                                            Padding="16">
-                                        <Label Text="{Binding Change, StringFormat='{0:N0} RWF'}"
-                                               FontSize="20"
-                                               FontAttributes="Bold"
-                                               TextColor="#10B981"
-                                               HorizontalOptions="Center"
-                                               VerticalOptions="Center"/>
-                                    </Border>
-                                </VerticalStackLayout>
+                                <Label Text="{Binding CashLabel}"
+                                       FontSize="16"
+                                       VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Center"
+                                       FontAttributes="Bold"
+                                       TextColor="#10B981"/>
 
                             </VerticalStackLayout>
 
-                            <!-- Spacer -->
-                            <BoxView Grid.Column="1"
-                                     WidthRequest="0"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectPaymentMethodCommand}"
+                                                      CommandParameter="Cash"/>
+                            </Border.GestureRecognizers>
+                        </Border>
 
-                            <!-- Right Column - Number Pad -->
-                            <Grid Grid.Column="2"
-                                  ColumnDefinitions="*, 8, *, 8, *"
-                                  RowDefinitions="*, 8, *, 8, *, 8, *"
-                                  ColumnSpacing="0"
-                                  RowSpacing="0">
+                        <!-- Spacer -->
+                        <BoxView Grid.Column="1" WidthRequest="0"/>
 
-                                <!-- Row 1 -->
-                                <Button Grid.Row="0"
-                                        Grid.Column="0"
-                                        Text="1"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="1"/>
+                        <!-- Mobile Money -->
+                        <Border Grid.Column="2"
+                                Stroke="#3B82F6"
+                                StrokeThickness="2"
+                                StrokeShape="RoundRectangle 16"
+                                BackgroundColor="#DBEAFE"
+                                HeightRequest="160">
+                            <VerticalStackLayout HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="16"
+                                                 Padding="16">
 
-                                <Button Grid.Row="0"
-                                        Grid.Column="2"
-                                        Text="2"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="2"/>
+                                <Label Text="📱"
+                                       FontSize="40"
+                                       VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Center"/>
 
-                                <Button Grid.Row="0"
-                                        Grid.Column="4"
-                                        Text="3"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="3"/>
+                                <Label Text="{Binding MoMoLabel}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Center"
+                                       TextColor="#3B82F6"/>
 
-                                <!-- Row 2 -->
-                                <Button Grid.Row="2"
-                                        Grid.Column="0"
-                                        Text="4"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="4"/>
+                            </VerticalStackLayout>
 
-                                <Button Grid.Row="2"
-                                        Grid.Column="2"
-                                        Text="5"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="5"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectPaymentMethodCommand}"
+                                                      CommandParameter="MoMo"/>
+                            </Border.GestureRecognizers>
+                        </Border>
 
-                                <Button Grid.Row="2"
-                                        Grid.Column="4"
-                                        Text="6"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="6"/>
+                        <!-- Spacer -->
+                        <BoxView Grid.Column="3" WidthRequest="0"/>
 
-                                <!-- Row 3 -->
-                                <Button Grid.Row="4"
-                                        Grid.Column="0"
-                                        Text="7"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="7"/>
+                        <!-- Card -->
+                        <Border Grid.Column="4"
+                                Stroke="#F59E0B"
+                                StrokeThickness="2"
+                                StrokeShape="RoundRectangle 16"
+                                BackgroundColor="#FEF3C7"
+                                HeightRequest="160">
+                            <VerticalStackLayout HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="16"
+                                                 Padding="16">
 
-                                <Button Grid.Row="4"
-                                        Grid.Column="2"
-                                        Text="8"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="8"/>
+                                <Label Text="💳"
+                                       FontSize="40"
+                                       VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Center"/>
 
-                                <Button Grid.Row="4"
-                                        Grid.Column="4"
-                                        Text="9"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="9"/>
+                                <Label Text="{Binding CardLabel}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Center"
+                                       TextColor="#F59E0B"/>
 
-                                <!-- Row 4 -->
-                                <Button Grid.Row="6"
-                                        Grid.Column="0"
-                                        Text="0"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="0"/>
+                            </VerticalStackLayout>
 
-                                <Button Grid.Row="6"
-                                        Grid.Column="2"
-                                        Text="00"
-                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                        TextColor="{Binding ButtonTextColor}"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="00"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectPaymentMethodCommand}"
+                                                      CommandParameter="Card"/>
+                            </Border.GestureRecognizers>
+                        </Border>
 
-                                <Button Grid.Row="6"
-                                        Grid.Column="4"
-                                        Text="Clear"
-                                        BackgroundColor="#EF4444"
-                                        TextColor="White"
-                                        Command="{Binding AddToCashCommand}"
-                                        CommandParameter="Clear"/>
+                    </Grid>
+
+                    <!-- Selected Method Content (When method is selected) -->
+                    <ContentView Grid.Row="1"
+                                 IsVisible="{Binding IsMethodSelected}">
+
+                        <!-- Cash Payment -->
+                        <VerticalStackLayout Spacing="20"
+                                             IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Cash}">
+
+                            <!-- Two Column Layout -->
+                            <Grid ColumnDefinitions="*, 16, *"
+                                  ColumnSpacing="0">
+
+                                <!-- Left Column - Amounts -->
+                                <VerticalStackLayout Grid.Column="0"
+                                                     Spacing="16">
+
+                                    <!-- Total Amount -->
+                                    <VerticalStackLayout Spacing="8">
+                                        <Label Text="{Binding TotalLabel}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding TextColor}"/>
+
+                                        <Border Stroke="{Binding AmountBorderColor}"
+                                                StrokeThickness="2"
+                                                StrokeShape="RoundRectangle 8"
+                                                BackgroundColor="{Binding AmountBackgroundColor}"
+                                                HeightRequest="56"
+                                                Padding="12">
+                                            <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#F59E0B"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+                                    </VerticalStackLayout>
+
+                                    <!-- Cash Received -->
+                                    <VerticalStackLayout Spacing="8">
+                                        <Label Text="{Binding ReceivedLabel}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding TextColor}"/>
+
+                                        <Border Stroke="{Binding InputBorderColor}"
+                                                StrokeThickness="2"
+                                                StrokeShape="RoundRectangle 8"
+                                                BackgroundColor="{Binding InputBackgroundColor}"
+                                                HeightRequest="56">
+                                            <Label Text="{Binding CashReceived, StringFormat='{0:N0}'}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{Binding TextColor}"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+                                    </VerticalStackLayout>
+
+                                    <!-- Change Due -->
+                                    <VerticalStackLayout Spacing="8">
+                                        <Label Text="{Binding ChangeLabel}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding TextColor}"/>
+
+                                        <Border Stroke="#10B981"
+                                                StrokeThickness="2"
+                                                StrokeShape="RoundRectangle 8"
+                                                BackgroundColor="#D1FAE5"
+                                                HeightRequest="56"
+                                                Padding="12">
+                                            <Label Text="{Binding Change, StringFormat='{0:N0} RWF'}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#10B981"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Border>
+                                    </VerticalStackLayout>
+
+                                </VerticalStackLayout>
+
+                                <!-- Spacer -->
+                                <BoxView Grid.Column="1" WidthRequest="0"/>
+
+                                <!-- Right Column - Number Pad -->
+                                <Grid Grid.Column="2"
+                                      ColumnDefinitions="*, 4, *, 4, *"
+                                      RowDefinitions="*, 4, *, 4, *, 4, *"
+                                      ColumnSpacing="0"
+                                      RowSpacing="0"
+                                      HeightRequest="240">
+
+                                    <!-- Row 1 -->
+                                    <Button Grid.Row="0" Grid.Column="0"
+                                            Text="1"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="1"/>
+
+                                    <Button Grid.Row="0" Grid.Column="2"
+                                            Text="2"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="2"/>
+
+                                    <Button Grid.Row="0" Grid.Column="4"
+                                            Text="3"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="3"/>
+
+                                    <!-- Row 2 -->
+                                    <Button Grid.Row="2" Grid.Column="0"
+                                            Text="4"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="4"/>
+
+                                    <Button Grid.Row="2" Grid.Column="2"
+                                            Text="5"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="5"/>
+
+                                    <Button Grid.Row="2" Grid.Column="4"
+                                            Text="6"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="6"/>
+
+                                    <!-- Row 3 -->
+                                    <Button Grid.Row="4" Grid.Column="0"
+                                            Text="7"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="7"/>
+
+                                    <Button Grid.Row="4" Grid.Column="2"
+                                            Text="8"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="8"/>
+
+                                    <Button Grid.Row="4" Grid.Column="4"
+                                            Text="9"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="9"/>
+
+                                    <!-- Row 4 -->
+                                    <Button Grid.Row="6" Grid.Column="0"
+                                            Text="0"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="0"/>
+
+                                    <Button Grid.Row="6" Grid.Column="2"
+                                            Text="00"
+                                            BackgroundColor="{Binding ButtonBackgroundColor}"
+                                            TextColor="{Binding ButtonTextColor}"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="00"/>
+
+                                    <Button Grid.Row="6" Grid.Column="4"
+                                            Text="Clear"
+                                            BackgroundColor="#EF4444"
+                                            TextColor="White"
+                                            Command="{Binding AddToCashCommand}"
+                                            CommandParameter="Clear"/>
+
+                                </Grid>
 
                             </Grid>
 
-                        </Grid>
+                        </VerticalStackLayout>
 
-                    </VerticalStackLayout>
+                        <!-- Mobile Money Payment -->
+                        <VerticalStackLayout Spacing="24"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=MoMo}">
 
-                    <!-- Mobile Money Payment -->
-                    <VerticalStackLayout Spacing="32"
-                                         HorizontalOptions="Center"
-                                         VerticalOptions="Center"
-                                         IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=MoMo}">
-
-                        <!-- QR Code Placeholder -->
-                        <Border Stroke="#3B82F6"
-                                StrokeThickness="4"
-                                StrokeShape="RoundRectangle 20"
-                                BackgroundColor="White"
-                                WidthRequest="256"
-                                HeightRequest="256">
-                            <Label Text="QR"
+                            <Label Text="📱"
                                    FontSize="64"
                                    TextColor="#3B82F6"
+                                   HorizontalOptions="Center"/>
+
+                            <Label Text="Mobile Money Payment"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="#3B82F6"
+                                   HorizontalOptions="Center"/>
+
+                            <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
+                                   FontSize="28"
+                                   FontAttributes="Bold"
+                                   TextColor="#3B82F6"
+                                   HorizontalOptions="Center"/>
+
+                            <Label Text="This feature requires external payment device integration."
+                                   FontSize="14"
+                                   TextColor="{Binding SubtitleColor}"
                                    HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
-                        </Border>
+                                   VerticalTextAlignment="Center"/>
 
-                        <Label Text="Scan QR Code with Mobile Money App"
-                               FontSize="16"
-                               TextColor="{Binding SubtitleColor}"
-                               HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
 
-                        <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
-                               FontSize="28"
-                               FontAttributes="Bold"
-                               TextColor="#3B82F6"
-                               HorizontalOptions="Center"/>
+                        <!-- Card Payment -->
+                        <VerticalStackLayout Spacing="24"
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Card}">
 
-                    </VerticalStackLayout>
+                            <Label Text="💳"
+                                   FontSize="64"
+                                   TextColor="#F59E0B"
+                                   HorizontalOptions="Center"/>
 
-                    <!-- Card Payment -->
-                    <VerticalStackLayout Spacing="32"
-                                         HorizontalOptions="Center"
-                                         VerticalOptions="Center"
-                                         IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Card}">
+                            <Label Text="Card Payment"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="#F59E0B"
+                                   HorizontalOptions="Center"/>
 
-                        <!-- Card Reader Placeholder -->
-                        <Border Stroke="#F59E0B"
-                                StrokeThickness="4"
-                                StrokeShape="RoundRectangle 20"
-                                BackgroundColor="#FEF3C7"
-                                WidthRequest="256"
-                                HeightRequest="192">
-                            <VerticalStackLayout HorizontalOptions="Center"
-                                                 VerticalOptions="Center"
-                                                 Spacing="24">
-                                <Label Text="💳"
-                                       FontSize="64"/>
-                                <Label Text="Swipe/Tap Card"
-                                       FontSize="18"
-                                       FontAttributes="Bold"
-                                       TextColor="#F59E0B"/>
-                            </VerticalStackLayout>
-                        </Border>
+                            <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
+                                   FontSize="28"
+                                   FontAttributes="Bold"
+                                   TextColor="#F59E0B"
+                                   HorizontalOptions="Center"/>
 
-                        <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
-                               FontSize="28"
-                               FontAttributes="Bold"
-                               TextColor="#F59E0B"
-                               HorizontalOptions="Center"/>
+                            <Label Text="This feature requires external card reader integration."
+                                   FontSize="14"
+                                   TextColor="{Binding SubtitleColor}"
+                                   HorizontalOptions="Center"
+                                   VerticalTextAlignment="Center"/>
 
-                    </VerticalStackLayout>
+                        </VerticalStackLayout>
 
-                </ContentView>
+                    </ContentView>
 
-            </Grid>
+                </Grid>
 
-            <!-- Action Buttons -->
-            <Grid Grid.Row="3"
-                  ColumnDefinitions="*, 16, *"
-                  ColumnSpacing="0"
-                  IsVisible="{Binding IsMethodSelected}">
+                <!-- Action Buttons -->
+                <Grid Grid.Row="3"
+                      ColumnDefinitions="*, 12, *"
+                      ColumnSpacing="0"
+                      IsVisible="{Binding IsMethodSelected}">
 
-                <!-- Cancel/Back Button -->
-                <Button Grid.Column="0"
-                        Text="{Binding CancelText}"
-                        BackgroundColor="{Binding CancelButtonBackgroundColor}"
-                        TextColor="{Binding CancelButtonTextColor}"
-                        Command="{Binding ClearSelectionCommand}"/>
+                    <!-- Cancel/Back Button -->
+                    <Button Grid.Column="0"
+                            Text="{Binding CancelText}"
+                            BackgroundColor="{Binding CancelButtonBackgroundColor}"
+                            TextColor="{Binding CancelButtonTextColor}"
+                            Command="{Binding ClearSelectionCommand}"/>
 
-                <!-- Spacer -->
-                <BoxView Grid.Column="1"
-                         WidthRequest="0"/>
+                    <!-- Spacer -->
+                    <BoxView Grid.Column="1" WidthRequest="0"/>
 
-                <!-- Process Payment Button -->
-                <Button Grid.Column="2"
-                        Text="{Binding ProcessButtonText}"
-                        BackgroundColor="#10B981"
-                        TextColor="White"
-                        Command="{Binding ProcessPaymentCommand}"
-                        IsEnabled="{Binding CanCompletePayment}"/>
+                    <!-- Process Payment Button -->
+                    <Button Grid.Column="2"
+                            Text="{Binding ProcessButtonText}"
+                            BackgroundColor="#10B981"
+                            TextColor="White"
+                            Command="{Binding ProcessPaymentCommand}"
+                            IsEnabled="{Binding CanCompletePayment}"/>
+
+                </Grid>
 
             </Grid>
 
-        </Grid>
-
-    </Border>
+        </Border>
+    </ScrollView>
 
 </ContentView>
