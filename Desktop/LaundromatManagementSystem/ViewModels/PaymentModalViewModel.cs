@@ -43,7 +43,7 @@ namespace LaundromatManagementSystem.ViewModels
         {
             get
             {
-                if (decimal.TryParse(CashReceived, out decimal received) && received >= Total)
+                if (decimal.TryParse(CashReceived, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total)
                 {
                     return received - Total;
                 }
@@ -57,7 +57,7 @@ namespace LaundromatManagementSystem.ViewModels
             {
                 if (SelectedMethod == "Cash")
                 {
-                    return decimal.TryParse(CashReceived, out decimal received) && received >= Total;
+                    return decimal.TryParse(CashReceived, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total;
                 }
                 return !string.IsNullOrEmpty(SelectedMethod);
             }
@@ -77,6 +77,7 @@ namespace LaundromatManagementSystem.ViewModels
         public string ChangeLabel => GetTranslation("change");
         public string CancelText => GetTranslation("cancel");
         public string ProcessButtonText => GetTranslation("process");
+        public string SelectMethodLabel => GetTranslation("select_method");
 
         // Theme colors
         public Color BackgroundColor => GetBackgroundColor();
@@ -120,6 +121,7 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(ChangeLabel));
             OnPropertyChanged(nameof(CancelText));
             OnPropertyChanged(nameof(ProcessButtonText));
+            OnPropertyChanged(nameof(SelectMethodLabel));
         }
 
         partial void OnThemeChanged(Theme value)
@@ -141,37 +143,42 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void AddToCash(string input)
         {
+            // Remove thousand separators for parsing
+            var cleanCash = CashReceived.Replace(",", "");
+
             if (input == "Clear")
             {
                 CashReceived = "0";
             }
             else if (input == "00")
             {
-                if (CashReceived == "0")
+                if (cleanCash == "0")
                 {
                     CashReceived = "0";
                 }
                 else
                 {
-                    CashReceived += "00";
+                    cleanCash += "00";
+                    if (long.TryParse(cleanCash, out long value))
+                    {
+                        CashReceived = value.ToString("N0", CultureInfo.InvariantCulture);
+                    }
                 }
             }
             else
             {
-                if (CashReceived == "0")
+                if (cleanCash == "0")
                 {
                     CashReceived = input;
                 }
                 else
                 {
-                    CashReceived += input;
+                    cleanCash += input;
+                    if (long.TryParse(cleanCash, out long value))
+                    {
+                        CashReceived = value.ToString("N0", CultureInfo.InvariantCulture);
+                    }
                 }
-            }
-
-            // Format the number
-            if (long.TryParse(CashReceived, out long value))
-            {
-                CashReceived = value.ToString("N0", CultureInfo.InvariantCulture);
             }
 
             OnPropertyChanged(nameof(Change));
@@ -230,6 +237,24 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(Change));
         }
 
+        [RelayCommand]
+        private void ClosePaymentModal()
+        {
+            // Reset the modal state
+            SelectedMethod = null;
+            CashReceived = "0";
+            Customer = string.Empty;
+            
+            // Update ApplicationStateService to close modal
+            _stateService.ShowPaymentModal = false;
+            
+            // Also execute the parent close command if provided
+            if (CloseCommand?.CanExecute(null) == true)
+            {
+                CloseCommand.Execute(null);
+            }
+        }
+
         private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             MainThread.BeginInvokeOnMainThread(() =>
@@ -247,6 +272,14 @@ namespace LaundromatManagementSystem.ViewModels
                         if (Theme != _stateService.CurrentTheme)
                         {
                             Theme = _stateService.CurrentTheme;
+                        }
+                        break;
+                        
+                    case nameof(_stateService.ShowPaymentModal):
+                        // If state service says modal should be closed, execute close
+                        if (!_stateService.ShowPaymentModal && CloseCommand?.CanExecute(null) == true)
+                        {
+                            CloseCommand.Execute(null);
                         }
                         break;
                 }
@@ -296,7 +329,7 @@ namespace LaundromatManagementSystem.ViewModels
                 ["customer"] = new()
                 {
                     [Language.EN] = "Customer (Optional)",
-                    [Language.RW] = "Umukiriya (Bibaho)",
+                    [Language.RW] = "Umukiriya (Sitegeko)",
                     [Language.FR] = "Client (Optionnel)"
                 },
                 ["cash"] = new()
@@ -340,6 +373,12 @@ namespace LaundromatManagementSystem.ViewModels
                     [Language.EN] = "COMPLETE PAYMENT",
                     [Language.RW] = "GUSOZA KWISHYURA",
                     [Language.FR] = "TERMINER LE PAIEMENT"
+                },
+                ["select_method"] = new()
+                {
+                    [Language.EN] = "Select Payment Method",
+                    [Language.RW] = "Hitamo Uburyo bwo Kwishyura",
+                    [Language.FR] = "Sélectionner le Mode de Paiement"
                 }
             };
 
@@ -415,7 +454,7 @@ namespace LaundromatManagementSystem.ViewModels
             return Theme switch
             {
                 Theme.Dark => Color.FromArgb("#111827"),
-                _ => Color.FromArgb("#F9FAFB")
+                _ => Color.FromArgb("#D1D5DB")
             };
         }
 

@@ -34,13 +34,12 @@ namespace LaundromatManagementSystem.ViewModels
         private decimal _total;
 
         [ObservableProperty]
-        private bool _showPaymentModal;
-
-        [ObservableProperty]
         private string _transactionId = string.Empty;
 
         [ObservableProperty]
         private Color _dashboardBackgroundColor;
+
+        public bool ShowPaymentModal => _stateService.ShowPaymentModal;
 
         public DashboardViewModel(IServiceService serviceService)
         {
@@ -86,16 +85,7 @@ namespace LaundromatManagementSystem.ViewModels
                         break;
 
                     case nameof(_stateService.ShowPaymentModal):
-                        ShowPaymentModal = _stateService.ShowPaymentModal;
-                        if (ShowPaymentModal)
-                        {
-                            TransactionId = $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
-                        }
-                        else
-                        {
-                            TransactionId = string.Empty;
-                            _stateService.ClosePaymentModal();
-                        }
+                        OnPropertyChanged(nameof(ShowPaymentModal));
                         break;
                 }
             });
@@ -109,6 +99,26 @@ namespace LaundromatManagementSystem.ViewModels
             // Update the Cart collection
             Cart = new ObservableCollection<CartItem>(_stateService.CartItems);
             CalculateTotals();
+        }
+
+        [RelayCommand]
+        private void ProcessPayment()
+        {
+            if (Cart.Count == 0) return;
+
+            // Show modal via state service
+            _stateService.ShowPaymentModal = true;
+            TransactionId = $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
+
+            Debug.WriteLine($"Payment modal shown via state service: {_stateService.ShowPaymentModal}");
+        }
+
+        [RelayCommand]
+        private void ClosePaymentModal()
+        {
+            // Close modal via state service
+            _stateService.ShowPaymentModal = false;
+            Debug.WriteLine($"Payment modal closed via state service: {_stateService.ShowPaymentModal}");
         }
 
         [RelayCommand]
@@ -130,7 +140,6 @@ namespace LaundromatManagementSystem.ViewModels
             // Clear cart
             _stateService.CartItems.Clear();
             RefreshCart();
-            ShowPaymentModal = false;
         }
 
         private void OnCartUpdated(object? sender, EventArgs e) => RefreshCart();
