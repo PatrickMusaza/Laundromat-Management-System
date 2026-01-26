@@ -90,7 +90,7 @@ namespace LaundromatManagementSystem.ViewModels
         // Add these properties for receipt
         public decimal Subtotal => _stateService.CartTotal;
         public decimal Tax => _stateService.CartTotal * 0.1m; // Assuming 10% tax
-        public decimal GrandTotal => Total;
+        public decimal GrandTotal => Subtotal + Tax;
 
         // Theme colors 
         public Color BackgroundColor => GetBackgroundColor();
@@ -152,7 +152,7 @@ namespace LaundromatManagementSystem.ViewModels
         private void SelectPaymentMethod(string method)
         {
             SelectedMethod = method;
-            CashReceived = string.Empty;
+            CashReceived = Total.ToString("N0", CultureInfo.InvariantCulture);
 
             OnPropertyChanged(nameof(IsMethodSelected));
             OnPropertyChanged(nameof(CanCompletePayment));
@@ -226,7 +226,7 @@ namespace LaundromatManagementSystem.ViewModels
                     Customer = Customer,
                     Subtotal = Subtotal,
                     Tax = Tax,
-                    GrandTotal = GrandTotal,
+                    GrandTotal = Subtotal + Tax,
                     Amount = Total,
                     Change = Change,
                     TransactionId = newTransactionId,
@@ -467,9 +467,9 @@ namespace LaundromatManagementSystem.ViewModels
                 },
                 ["customer"] = new()
                 {
-                    [Language.EN] = "Customer (Optional)",
-                    [Language.RW] = "Umukiriya (Bibaho)",
-                    [Language.FR] = "Client (Optionnel)"
+                    [Language.EN] = "Phone Number or TIN",
+                    [Language.RW] = "Nimero ya Telefoni cyangwa TIN",
+                    [Language.FR] = "Numéro de Téléphone ou TIN"
                 },
                 ["cash"] = new()
                 {

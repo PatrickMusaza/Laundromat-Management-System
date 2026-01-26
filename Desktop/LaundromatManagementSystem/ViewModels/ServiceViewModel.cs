@@ -135,8 +135,8 @@ namespace LaundromatManagementSystem.ViewModels
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await Application.Current.MainPage.DisplayAlert(
-                        "Added to Cart",
-                        $"Added {Name} to cart",
+                        GetAlertTranslation("AddedToCart"),
+                        GetAlertTranslation("AddedToCartMessage"),
                         "OK");
                 });
             }
@@ -144,6 +144,32 @@ namespace LaundromatManagementSystem.ViewModels
             {
                 Application.Current.MainPage.DisplayAlert("Error", $"DEBUG: Error adding to cart: {ex.Message}", "OK");
             }
+        }
+
+        private string GetAlertTranslation(string key)
+        {
+            return Language switch
+            {
+                Language.EN => key switch
+                {
+                    "AddedToCart" => "Added to Cart",
+                    "AddedToCartMessage" => $"Added {Name} to cart",
+                    _ => key
+                },
+                Language.RW => key switch
+                {
+                    "AddedToCart" => "Byongerewe mu gikapu",
+                    "AddedToCartMessage" => $"{Name} yongerewe mu gikapu",
+                    _ => key
+                },
+                Language.FR => key switch
+                {
+                    "AddedToCart" => "Ajouté au panier",
+                    "AddedToCartMessage" => $"Ajouté {Name} au panier",
+                    _ => key
+                },
+                _ => key
+            };
         }
 
         private void UpdateThemeProperties()
