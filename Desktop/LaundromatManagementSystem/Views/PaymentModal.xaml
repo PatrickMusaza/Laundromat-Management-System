@@ -74,7 +74,7 @@
                                                                 <Span Text="{Binding TransactionLabel}"
                                                                       TextColor="{Binding SubtitleColor}"/>
                                                                 <Span Text=" "/>
-                                                                <Span Text="{Binding GetTransactionId}"
+                                                                <Span Text="{Binding TransactionId}"
                                                                       FontAttributes="Bold"
                                                                       TextColor="#F59E0B"/>
                                                                 <Span Text=" | "

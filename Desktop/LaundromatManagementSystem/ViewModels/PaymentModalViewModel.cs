@@ -15,7 +15,6 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private decimal _total;
 
-        [ObservableProperty]
         private string _transactionId = string.Empty;
 
         [ObservableProperty]
@@ -48,10 +47,9 @@ namespace LaundromatManagementSystem.ViewModels
         {
             get
             {
-                if (decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""),
-                    NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total)
+                if (SelectedMethod == "Cash")
                 {
-                    return received - Total;
+                    return 0;
                 }
                 return 0;
             }
@@ -87,12 +85,14 @@ namespace LaundromatManagementSystem.ViewModels
         public string SelectMethodLabel => GetTranslation("select_method");
         public string ProcessButtonText => GetProcessingButtonText();
 
-        // Add these properties for receipt
-        public decimal Subtotal => _stateService.CartTotal;
-        public decimal Tax => _stateService.CartTotal * 0.1m; // Assuming 10% tax
-        public decimal GrandTotal => Subtotal + Tax;
+        [ObservableProperty]
+        private decimal _subtotal;
 
-        public string GetTransactionId => _stateService.GenerateTransactionId();
+        [ObservableProperty]
+        private decimal _tax;
+
+        [ObservableProperty]
+        private decimal _grandTotal;
 
         // Theme colors 
         public Color BackgroundColor => GetBackgroundColor();
@@ -110,7 +110,7 @@ namespace LaundromatManagementSystem.ViewModels
         public Color CancelButtonBackgroundColor => GetCancelButtonBackgroundColor();
         public Color CancelButtonTextColor => GetCancelButtonTextColor();
 
-        private readonly IPrinterService _printerService;
+        private IPrinterService? _printerService;
 
         public PaymentModalViewModel(ICommand closeCommand, ICommand paymentCompleteCommand)
         {
@@ -121,9 +121,12 @@ namespace LaundromatManagementSystem.ViewModels
             _language = _stateService.CurrentLanguage;
             _theme = _stateService.CurrentTheme;
 
+            Subtotal = _stateService.CartTotal;
+            Tax = Subtotal * 0.1m;
+            GrandTotal = Subtotal + Tax;
+
             // Initialize cart items and total
-            Total = _stateService.CartTotal;
-            TransactionId = _stateService.GenerateTransactionId();
+            Total = Subtotal + Tax;
             CartItems = new ObservableCollection<CartItem>(_stateService.CartItems);
 
             // Subscribe to state changes
@@ -148,6 +151,19 @@ namespace LaundromatManagementSystem.ViewModels
         partial void OnThemeChanged(Theme value)
         {
             UpdateThemeProperties();
+        }
+
+        public string TransactionId
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_transactionId))
+                {
+                    _transactionId = _stateService.GenerateTransactionId();
+                }
+                return _transactionId;
+            }
+            set => SetProperty(ref _transactionId, value);
         }
 
         [RelayCommand]
@@ -207,7 +223,7 @@ namespace LaundromatManagementSystem.ViewModels
         {
             if (!CanCompletePayment) return;
 
-            if(SelectedMethod=="Cash")
+            if (SelectedMethod == "Cash")
             {
                 await Application.Current.MainPage.DisplayAlert(
                     "Confirm Cash Payment",
@@ -222,9 +238,8 @@ namespace LaundromatManagementSystem.ViewModels
 
             try
             {
-                // Generate a new transaction ID for this payment
-                string newTransactionId = GetTransactionId;
-                TransactionId = newTransactionId;
+                // Generate new transaction ID
+                var newTransactionId = TransactionId;
 
                 // Create payment result
                 var paymentResult = new PaymentResult
@@ -284,6 +299,14 @@ namespace LaundromatManagementSystem.ViewModels
                 Processing = false;
             }
         }
+
+        private void RecalculateTotals()
+        {
+            Subtotal = _stateService.CartTotal;
+            Tax = Subtotal * 0.1m;
+            GrandTotal = Subtotal + Tax;
+        }
+
 
         private void ClearCart()
         {
@@ -406,6 +429,9 @@ namespace LaundromatManagementSystem.ViewModels
                         // Update local cart items when state service cart changes
                         CartItems = new ObservableCollection<CartItem>(_stateService.CartItems);
                         Total = _stateService.CartTotal;
+
+                        RecalculateTotals();
+
                         OnPropertyChanged(nameof(CartItems));
                         OnPropertyChanged(nameof(Total));
                         break;
