@@ -286,6 +286,7 @@ namespace LaundromatManagementSystem.ViewModels
                 ClearCart();
 
                 // Close modal after successful payment
+                Reset();
                 ClosePaymentModal();
 
             }
@@ -393,6 +394,27 @@ namespace LaundromatManagementSystem.ViewModels
                 CloseCommand.Execute(null);
             }
         }
+
+        public void Reset()
+        {
+            SelectedMethod = null;
+            CashReceived = string.Empty;
+            Customer = string.Empty;
+
+            Processing = false;
+            TransactionId = string.Empty;
+
+            Subtotal = _stateService.CartTotal;
+            Tax = Subtotal * 0.1m;
+            GrandTotal = Subtotal + Tax;
+            Total = GrandTotal;
+
+            OnPropertyChanged(nameof(IsMethodSelected));
+            OnPropertyChanged(nameof(CanCompletePayment));
+            OnPropertyChanged(nameof(Change));
+            OnPropertyChanged(nameof(ProcessButtonText));
+        }
+
 
         private string GetProcessingButtonText()
         {
