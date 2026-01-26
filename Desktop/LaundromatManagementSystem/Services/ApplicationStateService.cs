@@ -15,6 +15,8 @@ public class ApplicationStateService : INotifyPropertyChanged
     private Language _currentLanguage = Language.EN;
     private ObservableCollection<CartItem> _cartItems = new();
 
+    private bool _showPaymentModal;
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     public Theme CurrentTheme
@@ -145,6 +147,29 @@ public class ApplicationStateService : INotifyPropertyChanged
         }
     }
 
+    public bool ShowPaymentModal
+    {
+        get => _showPaymentModal;
+        set
+        {
+            if (_showPaymentModal != value)
+            {
+                _showPaymentModal = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public void RequestPayment()
+    {
+        ShowPaymentModal = true;
+    }
+
+    public void ClosePaymentModal()
+    {
+        ShowPaymentModal = false;
+    }
+    
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

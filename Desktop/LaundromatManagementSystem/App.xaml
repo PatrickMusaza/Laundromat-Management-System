@@ -3,39 +3,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:LaundromatManagementSystem.Converters"
              x:Class="LaundromatManagementSystem.App">
-    
+
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            
+
             <!-- Converters -->
-            <converters:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
-            <converters:EqualToZeroConverter x:Key="EqualToZeroConverter" />
-            <converters:DecreaseQuantityConverter x:Key="DecreaseQuantityConverter" />
-            <converters:IncreaseQuantityConverter x:Key="IncreaseQuantityConverter" />
-            <converters:IsNullConverter x:Key="IsNullConverter" />
-            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
-            <converters:EqualsConverter x:Key="EqualsConverter" />
-            
+            <converters:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter"/>
+            <converters:EqualToZeroConverter x:Key="EqualToZeroConverter"/>
+            <converters:DecreaseQuantityConverter x:Key="DecreaseQuantityConverter"/>
+            <converters:IncreaseQuantityConverter x:Key="IncreaseQuantityConverter"/>
+            <converters:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
+            <converters:StringEqualsConverter x:Key="StringEqualsConverter"/>
+
             <!-- Global Styles -->
             <Style TargetType="Label">
-                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontFamily"
+                        Value="Segoe UI"/>
             </Style>
-            
+
             <Style TargetType="Button">
-                <Setter Property="FontFamily" Value="Segoe UI" />
-                <Setter Property="CornerRadius" Value="8" />
-                <Setter Property="HeightRequest" Value="48" />
-                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily"
+                        Value="Segoe UI"/>
+                <Setter Property="CornerRadius"
+                        Value="8"/>
+                <Setter Property="HeightRequest"
+                        Value="48"/>
+                <Setter Property="FontSize"
+                        Value="14"/>
             </Style>
-            
+
             <Style TargetType="Entry">
-                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontFamily"
+                        Value="Segoe UI"/>
             </Style>
-            
+
         </ResourceDictionary>
     </Application.Resources>
-    
+
 </Application>

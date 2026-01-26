@@ -84,6 +84,19 @@ namespace LaundromatManagementSystem.ViewModels
                     case nameof(_stateService.CartItems):
                         RefreshCart();
                         break;
+
+                    case nameof(_stateService.ShowPaymentModal):
+                        ShowPaymentModal = _stateService.ShowPaymentModal;
+                        if (ShowPaymentModal)
+                        {
+                            TransactionId = $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
+                        }
+                        else
+                        {
+                            TransactionId = string.Empty;
+                            _stateService.ClosePaymentModal();
+                        }
+                        break;
                 }
             });
         }
@@ -97,17 +110,6 @@ namespace LaundromatManagementSystem.ViewModels
             Cart = new ObservableCollection<CartItem>(_stateService.CartItems);
             CalculateTotals();
         }
-
-        [RelayCommand]
-        private void ProcessPayment()
-        {
-            if (Cart.Count == 0) return;
-            ShowPaymentModal = true;
-            TransactionId = $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
-        }
-
-        [RelayCommand]
-        private void ClosePaymentModal() => ShowPaymentModal = false;
 
         [RelayCommand]
         private void CompletePayment((PaymentMethod paymentMethod, string customer) parameters)

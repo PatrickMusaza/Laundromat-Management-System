@@ -204,8 +204,7 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void ProcessPayment()
         {
-            // Payment processing logic would go here
-            Debug.WriteLine("Processing payment...");
+            _stateService.RequestPayment();
         }
 
         private void UpdateTextProperties()

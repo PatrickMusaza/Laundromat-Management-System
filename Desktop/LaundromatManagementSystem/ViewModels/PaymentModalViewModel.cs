@@ -1,7 +1,8 @@
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 using LaundromatManagementSystem.Services;
+using System.Globalization;
 
 namespace LaundromatManagementSystem.ViewModels
 {
@@ -15,53 +16,83 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private string _transactionId = string.Empty;
 
-        // Keep settable properties for XAML binding
+        [ObservableProperty]
+        private string _customer = string.Empty;
+
+        [ObservableProperty]
+        private string? _selectedMethod;
+
+        [ObservableProperty]
+        private string _cashReceived = "0";
+
+        [ObservableProperty]
+        private bool _processing = false;
+
         [ObservableProperty]
         private Language _language;
 
         [ObservableProperty]
         private Theme _theme;
 
-        [ObservableProperty]
-        private PaymentMethod? _selectedMethod;
+        // Commands from parent
+        public ICommand CloseCommand { get; }
+        public ICommand PaymentCompleteCommand { get; }
 
-        [ObservableProperty]
-        private string _cashReceived = string.Empty;
+        // Computed properties
+        public decimal Change
+        {
+            get
+            {
+                if (decimal.TryParse(CashReceived, out decimal received) && received >= Total)
+                {
+                    return received - Total;
+                }
+                return 0;
+            }
+        }
 
-        [ObservableProperty]
-        private string _customer = string.Empty;
+        public bool CanCompletePayment
+        {
+            get
+            {
+                if (SelectedMethod == "Cash")
+                {
+                    return decimal.TryParse(CashReceived, out decimal received) && received >= Total;
+                }
+                return !string.IsNullOrEmpty(SelectedMethod);
+            }
+        }
 
-        [ObservableProperty]
-        private bool _isProcessing;
+        public bool IsMethodSelected => !string.IsNullOrEmpty(SelectedMethod);
 
         // Text properties
-        public string Title => GetTranslation("title");
+        public string Title => GetTranslation("payment");
         public string TransactionLabel => GetTranslation("transaction");
         public string TotalLabel => GetTranslation("total");
         public string CustomerLabel => GetTranslation("customer");
         public string CashLabel => GetTranslation("cash");
         public string MoMoLabel => GetTranslation("momo");
         public string CardLabel => GetTranslation("card");
-        public string ProcessCashText => GetTranslation("process");
-        public string ConfirmPaymentText => GetTranslation("confirm");
+        public string ReceivedLabel => GetTranslation("received");
+        public string ChangeLabel => GetTranslation("change");
         public string CancelText => GetTranslation("cancel");
-        public string ProcessingText => GetTranslation("processing");
+        public string ProcessButtonText => GetTranslation("process");
 
-        // Computed properties
-        public decimal Change => !string.IsNullOrEmpty(CashReceived) &&
-                                decimal.TryParse(CashReceived, out var received)
-                                ? Math.Max(0, received - Total)
-                                : 0;
-
-        public bool CanProcessCash => !string.IsNullOrEmpty(CashReceived) &&
-                                     decimal.TryParse(CashReceived, out var received) &&
-                                     received >= Total;
-
-        public bool CanCompletePayment => SelectedMethod.HasValue &&
-                                         (SelectedMethod != PaymentMethod.Cash || CanProcessCash);
-
-        public ICommand CloseCommand { get; }
-        public ICommand PaymentCompleteCommand { get; }
+        // Theme colors
+        public Color BackgroundColor => GetBackgroundColor();
+        public Color BorderColor => GetBorderColor();
+        public Color TitleColor => GetTitleColor();
+        public Color SubtitleColor => GetSubtitleColor();
+        public Color TextColor => GetTextColor();
+        public Color PlaceholderColor => GetPlaceholderColor();
+        public Color InputBorderColor => GetInputBorderColor();
+        public Color InputBackgroundColor => GetInputBackgroundColor();
+        public Color AmountBorderColor => GetAmountBorderColor();
+        public Color AmountBackgroundColor => GetAmountBackgroundColor();
+        public Color ButtonBackgroundColor => GetButtonBackgroundColor();
+        public Color ButtonTextColor => GetButtonTextColor();
+        public Color CancelButtonBackgroundColor => GetCancelButtonBackgroundColor();
+        public Color CancelButtonTextColor => GetCancelButtonTextColor();
 
         public PaymentModalViewModel(ICommand closeCommand, ICommand paymentCompleteCommand)
         {
@@ -76,22 +107,127 @@ namespace LaundromatManagementSystem.ViewModels
             _stateService.PropertyChanged += OnStateChanged;
         }
 
-        // Override setters to update state service
         partial void OnLanguageChanged(Language value)
         {
-            if (_stateService.CurrentLanguage != value)
-            {
-                _stateService.CurrentLanguage = value;
-            }
-            UpdateTextProperties();
+            OnPropertyChanged(nameof(Title));
+            OnPropertyChanged(nameof(TransactionLabel));
+            OnPropertyChanged(nameof(TotalLabel));
+            OnPropertyChanged(nameof(CustomerLabel));
+            OnPropertyChanged(nameof(CashLabel));
+            OnPropertyChanged(nameof(MoMoLabel));
+            OnPropertyChanged(nameof(CardLabel));
+            OnPropertyChanged(nameof(ReceivedLabel));
+            OnPropertyChanged(nameof(ChangeLabel));
+            OnPropertyChanged(nameof(CancelText));
+            OnPropertyChanged(nameof(ProcessButtonText));
         }
 
         partial void OnThemeChanged(Theme value)
         {
-            if (_stateService.CurrentTheme != value)
+            UpdateThemeProperties();
+        }
+
+        [RelayCommand]
+        private void SelectPaymentMethod(string method)
+        {
+            SelectedMethod = method;
+            CashReceived = "0"; // Reset cash received when switching methods
+            
+            OnPropertyChanged(nameof(IsMethodSelected));
+            OnPropertyChanged(nameof(CanCompletePayment));
+            OnPropertyChanged(nameof(Change));
+        }
+
+        [RelayCommand]
+        private void AddToCash(string input)
+        {
+            if (input == "Clear")
             {
-                _stateService.CurrentTheme = value;
+                CashReceived = "0";
             }
+            else if (input == "00")
+            {
+                if (CashReceived == "0")
+                {
+                    CashReceived = "0";
+                }
+                else
+                {
+                    CashReceived += "00";
+                }
+            }
+            else
+            {
+                if (CashReceived == "0")
+                {
+                    CashReceived = input;
+                }
+                else
+                {
+                    CashReceived += input;
+                }
+            }
+
+            // Format the number
+            if (long.TryParse(CashReceived, out long value))
+            {
+                CashReceived = value.ToString("N0", CultureInfo.InvariantCulture);
+            }
+
+            OnPropertyChanged(nameof(Change));
+            OnPropertyChanged(nameof(CanCompletePayment));
+        }
+
+        [RelayCommand]
+        private async Task ProcessPayment()
+        {
+            if (!CanCompletePayment) return;
+
+            Processing = true;
+            
+            try
+            {
+                // Simulate payment processing
+                await Task.Delay(1000);
+                
+                // Create payment result
+                var paymentResult = (
+                    PaymentMethod: SelectedMethod switch
+                    {
+                        "Cash" => PaymentMethod.Cash,
+                        "MoMo" => PaymentMethod.MoMo,
+                        "Card" => PaymentMethod.Card,
+                        _ => PaymentMethod.Cash
+                    },
+                    Customer: Customer
+                );
+                
+                // Execute completion command
+                if (PaymentCompleteCommand?.CanExecute(paymentResult) == true)
+                {
+                    PaymentCompleteCommand.Execute(paymentResult);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error", 
+                    $"Payment processing failed: {ex.Message}", "OK");
+            }
+            finally
+            {
+                Processing = false;
+            }
+        }
+
+        [RelayCommand]
+        private void ClearSelection()
+        {
+            SelectedMethod = null;
+            CashReceived = "0";
+            
+            OnPropertyChanged(nameof(IsMethodSelected));
+            OnPropertyChanged(nameof(CanCompletePayment));
+            OnPropertyChanged(nameof(Change));
         }
 
         private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -116,91 +252,40 @@ namespace LaundromatManagementSystem.ViewModels
                 }
             });
         }
-        private void UpdateTextProperties()
+
+        private void UpdateThemeProperties()
         {
-            OnPropertyChanged(nameof(Title));
-            OnPropertyChanged(nameof(TransactionLabel));
-            OnPropertyChanged(nameof(TotalLabel));
-            OnPropertyChanged(nameof(CustomerLabel));
-            OnPropertyChanged(nameof(CashLabel));
-            OnPropertyChanged(nameof(MoMoLabel));
-            OnPropertyChanged(nameof(CardLabel));
-            OnPropertyChanged(nameof(ProcessCashText));
-            OnPropertyChanged(nameof(ConfirmPaymentText));
-            OnPropertyChanged(nameof(CancelText));
-            OnPropertyChanged(nameof(ProcessingText));
-        }
-
-        [RelayCommand]
-        private void SelectPaymentMethod(string method)
-        {
-            SelectedMethod = method switch
-            {
-                "Cash" => PaymentMethod.Cash,
-                "MoMo" => PaymentMethod.MoMo,
-                "Card" => PaymentMethod.Card,
-                _ => null
-            };
-            OnPropertyChanged(nameof(CanCompletePayment));
-        }
-
-        [RelayCommand]
-        private void ClearSelection()
-        {
-            SelectedMethod = null;
-            CashReceived = string.Empty;
-            OnPropertyChanged(nameof(CanCompletePayment));
-        }
-
-        [RelayCommand]
-        private void AddToCash(string digit)
-        {
-            if (digit == "Clear")
-            {
-                CashReceived = string.Empty;
-            }
-            else
-            {
-                CashReceived += digit;
-            }
-
-            OnPropertyChanged(nameof(Change));
-            OnPropertyChanged(nameof(CanProcessCash));
-            OnPropertyChanged(nameof(CanCompletePayment));
-        }
-
-        [RelayCommand]
-        private async Task ProcessPayment()
-        {
-            if (!CanCompletePayment || !SelectedMethod.HasValue)
-                return;
-
-            IsProcessing = true;
-
-            // Simulate payment processing
-            await Task.Delay(1500);
-
-            PaymentCompleteCommand?.Execute((SelectedMethod.Value, Customer));
-
-            IsProcessing = false;
-            ClearSelection();
+            OnPropertyChanged(nameof(BackgroundColor));
+            OnPropertyChanged(nameof(BorderColor));
+            OnPropertyChanged(nameof(TitleColor));
+            OnPropertyChanged(nameof(SubtitleColor));
+            OnPropertyChanged(nameof(TextColor));
+            OnPropertyChanged(nameof(PlaceholderColor));
+            OnPropertyChanged(nameof(InputBorderColor));
+            OnPropertyChanged(nameof(InputBackgroundColor));
+            OnPropertyChanged(nameof(AmountBorderColor));
+            OnPropertyChanged(nameof(AmountBackgroundColor));
+            OnPropertyChanged(nameof(ButtonBackgroundColor));
+            OnPropertyChanged(nameof(ButtonTextColor));
+            OnPropertyChanged(nameof(CancelButtonBackgroundColor));
+            OnPropertyChanged(nameof(CancelButtonTextColor));
         }
 
         private string GetTranslation(string key)
         {
             var translations = new Dictionary<string, Dictionary<Language, string>>
             {
-                ["title"] = new()
+                ["payment"] = new()
                 {
-                    [Language.EN] = "Payment Processing",
-                    [Language.RW] = "Gutanga Amafaranga",
-                    [Language.FR] = "Traitement du Paiement"
+                    [Language.EN] = "Process Payment",
+                    [Language.RW] = "Kwishyura",
+                    [Language.FR] = "Traiter le Paiement"
                 },
                 ["transaction"] = new()
                 {
-                    [Language.EN] = "Transaction #",
-                    [Language.RW] = "Ikirangirizo #",
-                    [Language.FR] = "Transaction #"
+                    [Language.EN] = "Transaction",
+                    [Language.RW] = "Igicuruzwa",
+                    [Language.FR] = "Transaction"
                 },
                 ["total"] = new()
                 {
@@ -210,58 +295,184 @@ namespace LaundromatManagementSystem.ViewModels
                 },
                 ["customer"] = new()
                 {
-                    [Language.EN] = "Customer",
-                    [Language.RW] = "Umukiriya",
-                    [Language.FR] = "Client"
+                    [Language.EN] = "Customer (Optional)",
+                    [Language.RW] = "Umukiriya (Bibaho)",
+                    [Language.FR] = "Client (Optionnel)"
                 },
                 ["cash"] = new()
                 {
-                    [Language.EN] = "CASH",
-                    [Language.RW] = "AMAFARANGA",
-                    [Language.FR] = "ESPÈCES"
+                    [Language.EN] = "Cash",
+                    [Language.RW] = "Amafaranga",
+                    [Language.FR] = "Espèces"
                 },
                 ["momo"] = new()
                 {
-                    [Language.EN] = "MOBILE MONEY",
-                    [Language.RW] = "MOMO",
-                    [Language.FR] = "MOBILE MONEY"
+                    [Language.EN] = "Mobile Money",
+                    [Language.RW] = "Mobile Money",
+                    [Language.FR] = "Mobile Money"
                 },
                 ["card"] = new()
                 {
-                    [Language.EN] = "CARD PAYMENT",
-                    [Language.RW] = "KARITA",
-                    [Language.FR] = "PAIEMENT CARTE"
+                    [Language.EN] = "Card",
+                    [Language.RW] = "Ikarita",
+                    [Language.FR] = "Carte"
                 },
-                ["process"] = new()
+                ["received"] = new()
                 {
-                    [Language.EN] = "Process Cash",
-                    [Language.RW] = "Emeza Amafaranga",
-                    [Language.FR] = "Traiter Espèces"
+                    [Language.EN] = "Cash Received",
+                    [Language.RW] = "Amafaranga Yakiriwe",
+                    [Language.FR] = "Espèces Reçues"
                 },
-                ["confirm"] = new()
+                ["change"] = new()
                 {
-                    [Language.EN] = "Confirm Payment",
-                    [Language.RW] = "Emeza Kwishyura",
-                    [Language.FR] = "Confirmer Paiement"
+                    [Language.EN] = "Change Due",
+                    [Language.RW] = "Amafaranga Asigaye",
+                    [Language.FR] = "Monnaie à Rendre"
                 },
                 ["cancel"] = new()
                 {
-                    [Language.EN] = "Cancel",
-                    [Language.RW] = "Hagarika",
-                    [Language.FR] = "Annuler"
+                    [Language.EN] = "CANCEL",
+                    [Language.RW] = "HAGARIKA",
+                    [Language.FR] = "ANNULER"
                 },
-                ["processing"] = new()
+                ["process"] = new()
                 {
-                    [Language.EN] = "Processing...",
-                    [Language.RW] = "Gutunganya...",
-                    [Language.FR] = "Traitement..."
+                    [Language.EN] = "COMPLETE PAYMENT",
+                    [Language.RW] = "GUSOZA KWISHYURA",
+                    [Language.FR] = "TERMINER LE PAIEMENT"
                 }
             };
 
-            return translations[key][Language];
+            return translations.ContainsKey(key) ? translations[key][Language] : key;
         }
 
-        // Clean up
+        private Color GetBackgroundColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#1F2937"),
+                Theme.Gray => Colors.White,
+                _ => Colors.White
+            };
+        }
+
+        private Color GetBorderColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#374151"),
+                _ => Color.FromArgb("#E5E7EB")
+            };
+        }
+
+        private Color GetTitleColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Colors.White,
+                _ => Color.FromArgb("#1E3A8A")
+            };
+        }
+
+        private Color GetSubtitleColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#9CA3AF"),
+                _ => Color.FromArgb("#6B7280")
+            };
+        }
+
+        private Color GetTextColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Colors.White,
+                _ => Color.FromArgb("#111827")
+            };
+        }
+
+        private Color GetPlaceholderColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#6B7280"),
+                _ => Color.FromArgb("#9CA3AF")
+            };
+        }
+
+        private Color GetInputBorderColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#374151"),
+                _ => Color.FromArgb("#D1D5DB")
+            };
+        }
+
+        private Color GetInputBackgroundColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#111827"),
+                _ => Color.FromArgb("#F9FAFB")
+            };
+        }
+
+        private Color GetAmountBorderColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#374151"),
+                _ => Color.FromArgb("#E5E7EB")
+            };
+        }
+
+        private Color GetAmountBackgroundColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#111827"),
+                _ => Color.FromArgb("#F9FAFB")
+            };
+        }
+
+        private Color GetButtonBackgroundColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#374151"),
+                _ => Color.FromArgb("#F3F4F6")
+            };
+        }
+
+        private Color GetButtonTextColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Colors.White,
+                _ => Color.FromArgb("#111827")
+            };
+        }
+
+        private Color GetCancelButtonBackgroundColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Color.FromArgb("#374151"),
+                _ => Color.FromArgb("#F3F4F6")
+            };
+        }
+
+        private Color GetCancelButtonTextColor()
+        {
+            return Theme switch
+            {
+                Theme.Dark => Colors.White,
+                _ => Color.FromArgb("#111827")
+            };
+        }
+
         public void Cleanup()
         {
             _stateService.PropertyChanged -= OnStateChanged;
