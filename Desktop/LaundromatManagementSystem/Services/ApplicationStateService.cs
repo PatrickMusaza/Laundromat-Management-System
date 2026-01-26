@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LaundromatManagementSystem.Models;
 
@@ -67,6 +66,16 @@ public class ApplicationStateService : INotifyPropertyChanged
     public event EventHandler<Theme> ThemeChanged;
     public event EventHandler<Language> LanguageChanged;
     public event EventHandler CartUpdated;
+
+    // Add this public method to clear cart from external classes
+    public void ClearCart()
+    {
+        _cartItems.Clear();
+        OnPropertyChanged(nameof(CartItems));
+        OnPropertyChanged(nameof(CartTotal));
+        OnPropertyChanged(nameof(ItemCount));
+        CartUpdated?.Invoke(this, EventArgs.Empty);
+    }
 
     public void AddToCart(CartItem item)
     {
@@ -169,7 +178,12 @@ public class ApplicationStateService : INotifyPropertyChanged
     {
         ShowPaymentModal = false;
     }
-    
+
+    public string GenerateTransactionId()
+    {
+        return $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
+    }
+
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

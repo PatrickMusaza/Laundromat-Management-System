@@ -3,13 +3,14 @@ using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 using LaundromatManagementSystem.Services;
 using System.Globalization;
+using System.Collections.ObjectModel;
+using LaundromatManagementSystem.Models;
 
 namespace LaundromatManagementSystem.ViewModels
 {
     public partial class PaymentModalViewModel : ObservableObject
     {
         private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
-        private readonly IPrinterService _printerService;
 
         [ObservableProperty]
         private decimal _total;
@@ -24,7 +25,7 @@ namespace LaundromatManagementSystem.ViewModels
         private string? _selectedMethod;
 
         [ObservableProperty]
-        private string _cashReceived = "0";
+        private string _cashReceived = string.Empty;
 
         [ObservableProperty]
         private bool _processing = false;
@@ -35,6 +36,9 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private Theme _theme;
 
+        [ObservableProperty]
+        private ObservableCollection<CartItem> _cartItems = new();
+
         // Commands from parent
         public ICommand CloseCommand { get; }
         public ICommand PaymentCompleteCommand { get; }
@@ -44,7 +48,8 @@ namespace LaundromatManagementSystem.ViewModels
         {
             get
             {
-                if (decimal.TryParse(CashReceived.Replace(",", ""), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total)
+                if (decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""), 
+                    NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total)
                 {
                     return received - Total;
                 }
@@ -58,7 +63,8 @@ namespace LaundromatManagementSystem.ViewModels
             {
                 if (SelectedMethod == "Cash")
                 {
-                    return decimal.TryParse(CashReceived.Replace(",", ""), NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total;
+                    return decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""), 
+                        NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total;
                 }
                 return !string.IsNullOrEmpty(SelectedMethod);
             }
@@ -66,8 +72,8 @@ namespace LaundromatManagementSystem.ViewModels
 
         public bool IsMethodSelected => !string.IsNullOrEmpty(SelectedMethod);
 
-        // Text properties
-        public string Title => GetTranslation("payment");
+        // Text properties (same as before)
+        public string Title => GetTranslation("title");
         public string TransactionLabel => GetTranslation("transaction");
         public string TotalLabel => GetTranslation("total");
         public string CustomerLabel => GetTranslation("customer");
@@ -77,10 +83,12 @@ namespace LaundromatManagementSystem.ViewModels
         public string ReceivedLabel => GetTranslation("received");
         public string ChangeLabel => GetTranslation("change");
         public string CancelText => GetTranslation("cancel");
-        public string ProcessButtonText => GetTranslation("process");
         public string SelectMethodLabel => GetTranslation("select_method");
+        public string ProcessButtonText => GetProcessingButtonText();
 
-        // Theme colors
+        public string GetTransactionId => _stateService.GenerateTransactionId();
+
+        // Theme colors (same as before)
         public Color BackgroundColor => GetBackgroundColor();
         public Color BorderColor => GetBorderColor();
         public Color TitleColor => GetTitleColor();
@@ -96,18 +104,34 @@ namespace LaundromatManagementSystem.ViewModels
         public Color CancelButtonBackgroundColor => GetCancelButtonBackgroundColor();
         public Color CancelButtonTextColor => GetCancelButtonTextColor();
 
-        public PaymentModalViewModel(ICommand closeCommand, ICommand paymentCompleteCommand, IPrinterService printerService)
+        private readonly IPrinterService _printerService;
+
+        public PaymentModalViewModel(ICommand closeCommand, ICommand paymentCompleteCommand)
         {
             CloseCommand = closeCommand;
             PaymentCompleteCommand = paymentCompleteCommand;
-            _printerService = printerService;
 
             // Initialize from state service
             _language = _stateService.CurrentLanguage;
             _theme = _stateService.CurrentTheme;
 
+            // Initialize cart items and total
+            Total = _stateService.CartTotal;
+            TransactionId = _stateService.GenerateTransactionId();
+            CartItems = new ObservableCollection<CartItem>(_stateService.CartItems);
+
             // Subscribe to state changes
             _stateService.PropertyChanged += OnStateChanged;
+
+            try
+            {
+                _printerService = ServiceLocator.GetService<IPrinterService>();
+            }
+            catch (Exception ex)
+            {
+                // Handle missing printer service
+                _printerService = null;
+            }
         }
 
         partial void OnLanguageChanged(Language value)
@@ -124,64 +148,60 @@ namespace LaundromatManagementSystem.ViewModels
         private void SelectPaymentMethod(string method)
         {
             SelectedMethod = method;
-            CashReceived = "0"; // Reset cash received when switching methods
-            
+            CashReceived = string.Empty;
+
             // Show alert for MoMo and Card (future implementation)
             if (method == "MoMo" || method == "Card")
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await Application.Current.MainPage.DisplayAlert(
-                        "Future Feature",
-                        $"{method} payment requires external device integration. This will be implemented when hardware is available.",
+                        "Feature Preview",
+                        $"{method} payment simulation mode. Real implementation requires external payment device.",
                         "OK");
                 });
             }
-            
+
             OnPropertyChanged(nameof(IsMethodSelected));
             OnPropertyChanged(nameof(CanCompletePayment));
             OnPropertyChanged(nameof(Change));
+            OnPropertyChanged(nameof(ProcessButtonText));
         }
 
         [RelayCommand]
         private void AddToCash(string input)
         {
-            // Remove thousand separators for parsing
-            var cleanCash = CashReceived.Replace(",", "");
-
             if (input == "Clear")
             {
-                CashReceived = "0";
+                CashReceived = string.Empty;
             }
             else if (input == "00")
             {
-                if (cleanCash == "0")
+                if (string.IsNullOrEmpty(CashReceived))
                 {
                     CashReceived = "0";
                 }
                 else
                 {
-                    cleanCash += "00";
-                    if (long.TryParse(cleanCash, out long value))
-                    {
-                        CashReceived = value.ToString("N0", CultureInfo.InvariantCulture);
-                    }
+                    CashReceived += "00";
                 }
             }
             else
             {
-                if (cleanCash == "0")
+                if (string.IsNullOrEmpty(CashReceived))
                 {
                     CashReceived = input;
                 }
                 else
                 {
-                    cleanCash += input;
-                    if (long.TryParse(cleanCash, out long value))
-                    {
-                        CashReceived = value.ToString("N0", CultureInfo.InvariantCulture);
-                    }
+                    CashReceived += input;
                 }
+            }
+
+            // Format the number if it's a valid number
+            if (long.TryParse(CashReceived.Replace(",", "").Replace(".", ""), out long value))
+            {
+                CashReceived = value.ToString("N0", CultureInfo.InvariantCulture);
             }
 
             OnPropertyChanged(nameof(Change));
@@ -194,10 +214,10 @@ namespace LaundromatManagementSystem.ViewModels
             if (!CanCompletePayment) return;
 
             Processing = true;
-            
+
             try
             {
-                // Show processing alert
+                // Show processing alert for non-cash methods
                 if (SelectedMethod == "MoMo" || SelectedMethod == "Card")
                 {
                     await Application.Current.MainPage.DisplayAlert(
@@ -205,40 +225,53 @@ namespace LaundromatManagementSystem.ViewModels
                         $"{SelectedMethod} payment simulation complete.\n\nReal implementation requires:\n1. External payment device\n2. Merchant account setup\n3. Network connectivity",
                         "OK");
                 }
-
+                
                 // Create payment result
-                var paymentResult = (
-                    PaymentMethod: SelectedMethod switch
+                var paymentResult = new PaymentResult
+                {
+                    PaymentMethod = SelectedMethod switch
                     {
                         "Cash" => PaymentMethod.Cash,
                         "MoMo" => PaymentMethod.MoMo,
                         "Card" => PaymentMethod.Card,
                         _ => PaymentMethod.Cash
                     },
-                    Customer: Customer,
-                    Amount: Total,
-                    Change: Change,
-                    TransactionId: TransactionId
-                );
-                
+                    Customer = Customer,
+                    Amount = Total,
+                    Change = Change,
+                    TransactionId = TransactionId,
+                    Items = CartItems.ToList()
+                };
+
                 // Print receipt
                 await PrintReceipt(paymentResult);
-                
+
+                // Clear cart using the public method
+                ClearCart();
+
                 // Execute completion command
                 if (PaymentCompleteCommand?.CanExecute(paymentResult) == true)
                 {
                     PaymentCompleteCommand.Execute(paymentResult);
                 }
-                
+
                 // Show success message
                 await Application.Current.MainPage.DisplayAlert(
-                    "Payment Complete",
-                    $"Payment of {Total:N0} RWF processed successfully!\n\nReceipt has been printed.\nTransaction ID: {TransactionId}",
+                    GetTranslation("success"),
+                    $"{GetTranslation("transaction")}: {TransactionId}\n" +
+                    $"{GetTranslation("total")}: {Total:N0} RWF\n" +
+                    $"{GetTranslation("customer")}: {(string.IsNullOrEmpty(Customer) ? "N/A" : Customer)}\n" +
+                    $"Payment Method: {SelectedMethod}\n\n" +
+                    $"Cart has been cleared.",
                     "OK");
+
+                // Close modal after successful payment
+                ClosePaymentModal();
+
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error", 
+                await Application.Current.MainPage.DisplayAlert("Error",
                     $"Payment processing failed: {ex.Message}", "OK");
             }
             finally
@@ -247,7 +280,20 @@ namespace LaundromatManagementSystem.ViewModels
             }
         }
 
-        private async Task PrintReceipt((PaymentMethod PaymentMethod, string Customer, decimal Amount, decimal Change, string TransactionId) paymentInfo)
+        private void ClearCart()
+        {
+            // Use the public method to clear cart
+            _stateService.ClearCart();
+            
+            // Update the local cart items
+            CartItems.Clear();
+            
+            // Update total
+            Total = 0;
+            OnPropertyChanged(nameof(Total));
+        }
+
+        private async Task PrintReceipt(PaymentResult paymentInfo)
         {
             try
             {
@@ -258,17 +304,25 @@ namespace LaundromatManagementSystem.ViewModels
                     PaymentMethod = paymentInfo.PaymentMethod.ToString(),
                     Amount = paymentInfo.Amount,
                     Change = paymentInfo.Change,
-                    Items = _stateService.CartItems.ToList(),
+                    Items = paymentInfo.Items,
                     Date = DateTime.Now,
                     Cashier = "System" // This would come from logged in user
                 };
 
-                await _printerService.PrintReceipt(receiptContent);
+                if (_printerService != null)
+                {
+                    await _printerService.PrintReceipt(receiptContent);
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert(
+                        "Printer Unavailable",
+                        "Receipt printing service is not available.",
+                        "OK");
+                }
             }
             catch (Exception ex)
             {
-                // Log error but don't stop payment
-                Console.WriteLine($"Receipt printing failed: {ex.Message}");
                 // Show warning but continue
                 await Application.Current.MainPage.DisplayAlert(
                     "Print Warning",
@@ -281,11 +335,12 @@ namespace LaundromatManagementSystem.ViewModels
         private void ClearSelection()
         {
             SelectedMethod = null;
-            CashReceived = "0";
-            
+            CashReceived = string.Empty;
+
             OnPropertyChanged(nameof(IsMethodSelected));
             OnPropertyChanged(nameof(CanCompletePayment));
             OnPropertyChanged(nameof(Change));
+            OnPropertyChanged(nameof(ProcessButtonText));
         }
 
         [RelayCommand]
@@ -293,17 +348,30 @@ namespace LaundromatManagementSystem.ViewModels
         {
             // Reset the modal state
             SelectedMethod = null;
-            CashReceived = "0";
+            CashReceived = string.Empty;
             Customer = string.Empty;
-            
+
             // Update ApplicationStateService to close modal
             _stateService.ShowPaymentModal = false;
-            
+
             // Also execute the parent close command if provided
             if (CloseCommand?.CanExecute(null) == true)
             {
                 CloseCommand.Execute(null);
             }
+        }
+
+        private string GetProcessingButtonText()
+        {
+            if (Processing) return GetTranslation("processing");
+
+            return SelectedMethod switch
+            {
+                "Cash" => GetTranslation("process"),
+                "MoMo" => GetTranslation("generateQR"),
+                "Card" => GetTranslation("processCard"),
+                _ => GetTranslation("confirm")
+            };
         }
 
         private void OnStateChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -325,7 +393,15 @@ namespace LaundromatManagementSystem.ViewModels
                             Theme = _stateService.CurrentTheme;
                         }
                         break;
-                        
+
+                    case nameof(_stateService.CartItems):
+                        // Update local cart items when state service cart changes
+                        CartItems = new ObservableCollection<CartItem>(_stateService.CartItems);
+                        Total = _stateService.CartTotal;
+                        OnPropertyChanged(nameof(CartItems));
+                        OnPropertyChanged(nameof(Total));
+                        break;
+
                     case nameof(_stateService.ShowPaymentModal):
                         // If state service says modal should be closed, execute close
                         if (!_stateService.ShowPaymentModal && CloseCommand?.CanExecute(null) == true)
@@ -375,7 +451,7 @@ namespace LaundromatManagementSystem.ViewModels
         {
             var translations = new Dictionary<string, Dictionary<Language, string>>
             {
-                ["payment"] = new()
+                ["title"] = new()
                 {
                     [Language.EN] = "Process Payment",
                     [Language.RW] = "Kwishyura",
@@ -395,27 +471,27 @@ namespace LaundromatManagementSystem.ViewModels
                 },
                 ["customer"] = new()
                 {
-                    [Language.EN] = "Customer Phone (Optional)",
-                    [Language.RW] = "Telefoni y'Umukiriya (Sitegeko)",
-                    [Language.FR] = "Téléphone Client (Optionnel)"
+                    [Language.EN] = "Customer (Optional)",
+                    [Language.RW] = "Umukiriya (Bibaho)",
+                    [Language.FR] = "Client (Optionnel)"
                 },
                 ["cash"] = new()
                 {
-                    [Language.EN] = "Cash",
-                    [Language.RW] = "Amafaranga",
-                    [Language.FR] = "Espèces"
+                    [Language.EN] = "CASH",
+                    [Language.RW] = "AMAFARANGA",
+                    [Language.FR] = "ESPÈCES"
                 },
                 ["momo"] = new()
                 {
-                    [Language.EN] = "Mobile Money",
-                    [Language.RW] = "Mobile Money",
-                    [Language.FR] = "Mobile Money"
+                    [Language.EN] = "MOBILE MONEY",
+                    [Language.RW] = "MOMO",
+                    [Language.FR] = "MOBILE MONEY"
                 },
                 ["card"] = new()
                 {
-                    [Language.EN] = "Card",
-                    [Language.RW] = "Ikarita",
-                    [Language.FR] = "Carte"
+                    [Language.EN] = "CARD PAYMENT",
+                    [Language.RW] = "KARITA",
+                    [Language.FR] = "PAIEMENT CARTE"
                 },
                 ["received"] = new()
                 {
@@ -426,7 +502,7 @@ namespace LaundromatManagementSystem.ViewModels
                 ["change"] = new()
                 {
                     [Language.EN] = "Change Due",
-                    [Language.RW] = "Amafaranga Asigaye",
+                    [Language.RW] = "Amafaranga Yo Gusubiza",
                     [Language.FR] = "Monnaie à Rendre"
                 },
                 ["cancel"] = new()
@@ -437,9 +513,45 @@ namespace LaundromatManagementSystem.ViewModels
                 },
                 ["process"] = new()
                 {
-                    [Language.EN] = "COMPLETE PAYMENT",
-                    [Language.RW] = "GUSOZA KWISHYURA",
-                    [Language.FR] = "TERMINER LE PAIEMENT"
+                    [Language.EN] = "Process Cash",
+                    [Language.RW] = "Emeza Amafaranga",
+                    [Language.FR] = "Traiter Espèces"
+                },
+                ["generateQR"] = new()
+                {
+                    [Language.EN] = "Generate QR Code",
+                    [Language.RW] = "Kora QR Code",
+                    [Language.FR] = "Générer QR Code"
+                },
+                ["confirm"] = new()
+                {
+                    [Language.EN] = "Confirm Payment",
+                    [Language.RW] = "Emeza Kwishyura",
+                    [Language.FR] = "Confirmer Paiement"
+                },
+                ["swipeCard"] = new()
+                {
+                    [Language.EN] = "Swipe/Tap Card",
+                    [Language.RW] = "Koresha Karita",
+                    [Language.FR] = "Glisser/Taper Carte"
+                },
+                ["processCard"] = new()
+                {
+                    [Language.EN] = "Process Card",
+                    [Language.RW] = "Emeza Karita",
+                    [Language.FR] = "Traiter Carte"
+                },
+                ["processing"] = new()
+                {
+                    [Language.EN] = "Processing...",
+                    [Language.RW] = "Gutunganya...",
+                    [Language.FR] = "Traitement..."
+                },
+                ["success"] = new()
+                {
+                    [Language.EN] = "Payment Successful!",
+                    [Language.RW] = "Kwishyura Byagenze Neza!",
+                    [Language.FR] = "Paiement Réussi!"
                 },
                 ["select_method"] = new()
                 {
@@ -521,7 +633,7 @@ namespace LaundromatManagementSystem.ViewModels
             return Theme switch
             {
                 Theme.Dark => Color.FromArgb("#111827"),
-                _ => Color.FromArgb("#F9FAFB")
+                _ => Color.FromArgb("#D1D5DB")
             };
         }
 
@@ -582,6 +694,17 @@ namespace LaundromatManagementSystem.ViewModels
         public void Cleanup()
         {
             _stateService.PropertyChanged -= OnStateChanged;
+        }
+
+        // Class for payment result
+        public class PaymentResult
+        {
+            public PaymentMethod PaymentMethod { get; set; }
+            public string Customer { get; set; } = string.Empty;
+            public decimal Amount { get; set; }
+            public decimal Change { get; set; }
+            public string TransactionId { get; set; } = string.Empty;
+            public List<CartItem> Items { get; set; } = new();
         }
     }
 }

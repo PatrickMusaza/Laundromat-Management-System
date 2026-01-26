@@ -5,15 +5,18 @@
              xmlns:converters="clr-namespace:LaundromatManagementSystem.Converters"
              x:Class="LaundromatManagementSystem.Views.PaymentModal"
              x:DataType="vm:PaymentModalViewModel"
-             WidthRequest="700"
-             HeightRequest="600">
+             WidthRequest="700">
 
     <ContentView.Resources>
         <Style TargetType="Button">
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="FontAttributes" Value="Bold"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="HeightRequest" Value="56"/>
+            <Setter Property="FontSize"
+                    Value="16"/>
+            <Setter Property="FontAttributes"
+                    Value="Bold"/>
+            <Setter Property="CornerRadius"
+                    Value="8"/>
+            <Setter Property="HeightRequest"
+                    Value="56"/>
         </Style>
     </ContentView.Resources>
 
@@ -70,7 +73,7 @@
                             <FormattedString>
                                 <Span Text="{Binding TransactionLabel}"/>
                                 <Span Text=" "/>
-                                <Span Text="{Binding TransactionId}"
+                                <Span Text="{Binding GetTransactionId}"
                                       FontAttributes="Bold"
                                       TextColor="#F59E0B"/>
                                 <Span Text=" | "/>
@@ -138,8 +141,7 @@
                                 HeightRequest="160">
                             <VerticalStackLayout HorizontalOptions="Center"
                                                  VerticalOptions="Center"
-                                                 Spacing="16"
-                                                 Padding="16">
+                                                 Spacing="16">
 
                                 <Label Text="💰"
                                        FontSize="40"
@@ -162,7 +164,8 @@
                         </Border>
 
                         <!-- Spacer -->
-                        <BoxView Grid.Column="1" WidthRequest="0"/>
+                        <BoxView Grid.Column="1"
+                                WidthRequest="0"/>
 
                         <!-- Mobile Money -->
                         <Border Grid.Column="2"
@@ -173,8 +176,7 @@
                                 HeightRequest="160">
                             <VerticalStackLayout HorizontalOptions="Center"
                                                  VerticalOptions="Center"
-                                                 Spacing="16"
-                                                 Padding="16">
+                                                 Spacing="16">
 
                                 <Label Text="📱"
                                        FontSize="40"
@@ -197,7 +199,8 @@
                         </Border>
 
                         <!-- Spacer -->
-                        <BoxView Grid.Column="3" WidthRequest="0"/>
+                        <BoxView Grid.Column="3"
+                                WidthRequest="0"/>
 
                         <!-- Card -->
                         <Border Grid.Column="4"
@@ -208,8 +211,7 @@
                                 HeightRequest="160">
                             <VerticalStackLayout HorizontalOptions="Center"
                                                  VerticalOptions="Center"
-                                                 Spacing="16"
-                                                 Padding="16">
+                                                 Spacing="16">
 
                                 <Label Text="💳"
                                        FontSize="40"
@@ -317,7 +319,8 @@
                                 </VerticalStackLayout>
 
                                 <!-- Spacer -->
-                                <BoxView Grid.Column="1" WidthRequest="0"/>
+                                <BoxView Grid.Column="1"
+                                        WidthRequest="0"/>
 
                                 <!-- Right Column - Number Pad -->
                                 <Grid Grid.Column="2"
@@ -328,21 +331,24 @@
                                       HeightRequest="240">
 
                                     <!-- Row 1 -->
-                                    <Button Grid.Row="0" Grid.Column="0"
+                                    <Button Grid.Row="0"
+                                            Grid.Column="0"
                                             Text="1"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
                                             Command="{Binding AddToCashCommand}"
                                             CommandParameter="1"/>
 
-                                    <Button Grid.Row="0" Grid.Column="2"
+                                    <Button Grid.Row="0"
+                                            Grid.Column="2"
                                             Text="2"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
                                             Command="{Binding AddToCashCommand}"
                                             CommandParameter="2"/>
 
-                                    <Button Grid.Row="0" Grid.Column="4"
+                                    <Button Grid.Row="0"
+                                            Grid.Column="4"
                                             Text="3"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
@@ -350,21 +356,24 @@
                                             CommandParameter="3"/>
 
                                     <!-- Row 2 -->
-                                    <Button Grid.Row="2" Grid.Column="0"
+                                    <Button Grid.Row="2"
+                                            Grid.Column="0"
                                             Text="4"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
                                             Command="{Binding AddToCashCommand}"
                                             CommandParameter="4"/>
 
-                                    <Button Grid.Row="2" Grid.Column="2"
+                                    <Button Grid.Row="2"
+                                            Grid.Column="2"
                                             Text="5"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
                                             Command="{Binding AddToCashCommand}"
                                             CommandParameter="5"/>
 
-                                    <Button Grid.Row="2" Grid.Column="4"
+                                    <Button Grid.Row="2"
+                                            Grid.Column="4"
                                             Text="6"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
@@ -372,21 +381,24 @@
                                             CommandParameter="6"/>
 
                                     <!-- Row 3 -->
-                                    <Button Grid.Row="4" Grid.Column="0"
+                                    <Button Grid.Row="4"
+                                            Grid.Column="0"
                                             Text="7"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
                                             Command="{Binding AddToCashCommand}"
                                             CommandParameter="7"/>
 
-                                    <Button Grid.Row="4" Grid.Column="2"
+                                    <Button Grid.Row="4"
+                                            Grid.Column="2"
                                             Text="8"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
                                             Command="{Binding AddToCashCommand}"
                                             CommandParameter="8"/>
 
-                                    <Button Grid.Row="4" Grid.Column="4"
+                                    <Button Grid.Row="4"
+                                            Grid.Column="4"
                                             Text="9"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
@@ -394,21 +406,24 @@
                                             CommandParameter="9"/>
 
                                     <!-- Row 4 -->
-                                    <Button Grid.Row="6" Grid.Column="0"
+                                    <Button Grid.Row="6"
+                                            Grid.Column="0"
                                             Text="0"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
                                             Command="{Binding AddToCashCommand}"
                                             CommandParameter="0"/>
 
-                                    <Button Grid.Row="6" Grid.Column="2"
+                                    <Button Grid.Row="6"
+                                            Grid.Column="2"
                                             Text="00"
                                             BackgroundColor="{Binding ButtonBackgroundColor}"
                                             TextColor="{Binding ButtonTextColor}"
                                             Command="{Binding AddToCashCommand}"
                                             CommandParameter="00"/>
 
-                                    <Button Grid.Row="6" Grid.Column="4"
+                                    <Button Grid.Row="6"
+                                            Grid.Column="4"
                                             Text="Clear"
                                             BackgroundColor="#EF4444"
                                             TextColor="White"
@@ -501,7 +516,8 @@
                             Command="{Binding ClearSelectionCommand}"/>
 
                     <!-- Spacer -->
-                    <BoxView Grid.Column="1" WidthRequest="0"/>
+                    <BoxView Grid.Column="1"
+                            WidthRequest="0"/>
 
                     <!-- Process Payment Button -->
                     <Button Grid.Column="2"

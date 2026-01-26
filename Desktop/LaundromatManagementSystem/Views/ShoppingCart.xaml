@@ -65,8 +65,7 @@
             <CollectionView Grid.Row="1"
                             ItemsSource="{Binding Cart}"
                             SelectionMode="None"
-                            VerticalScrollBarVisibility="Always"
-                            EmptyView="{Binding EmptyView}">
+                            VerticalScrollBarVisibility="Always">
 
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical"

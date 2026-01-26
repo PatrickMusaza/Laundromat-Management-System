@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using LaundromatManagementSystem.Services;
 using LaundromatManagementSystem.ViewModels;
 
 namespace LaundromatManagementSystem.Views
@@ -52,8 +51,7 @@ namespace LaundromatManagementSystem.Views
 
             ViewModel = new PaymentModalViewModel(
                 CloseCommand,
-                PaymentCompleteCommand,
-                ServiceLocator.GetService<IPrinterService>()
+                PaymentCompleteCommand
             );
 
             BindingContext = ViewModel;
