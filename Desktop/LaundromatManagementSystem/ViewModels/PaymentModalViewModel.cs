@@ -264,9 +264,6 @@ namespace LaundromatManagementSystem.ViewModels
                 // Print receipt with all details
                 await PrintReceipt(paymentResult);
 
-                // Clear cart using the public method
-                ClearCart();
-
                 // Execute completion command
                 if (PaymentCompleteCommand?.CanExecute(paymentResult) == true)
                 {
@@ -284,6 +281,9 @@ namespace LaundromatManagementSystem.ViewModels
                     $"Payment Method: {SelectedMethod}\n" +
                     $"{(SelectedMethod == "Cash" ? $"Cash Received: {CashReceived}\nChange: {Change:N0} RWF" : "")}",
                     "OK");
+
+                // Clear cart using the public method
+                ClearCart();
 
                 // Close modal after successful payment
                 ClosePaymentModal();
@@ -310,6 +310,8 @@ namespace LaundromatManagementSystem.ViewModels
 
         private void ClearCart()
         {
+            SelectedMethod = null;
+            CashReceived = string.Empty;
             // Use the public method to clear cart
             _stateService.ClearCart();
 
