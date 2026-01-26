@@ -73,7 +73,7 @@
                             <FormattedString>
                                 <Span Text="{Binding TransactionLabel}"/>
                                 <Span Text=" "/>
-                                <Span Text="{Binding GetTransactionId}"
+                                <Span Text="{Binding TransactionId}"
                                       FontAttributes="Bold"
                                       TextColor="#F59E0B"/>
                                 <Span Text=" | "/>

@@ -48,7 +48,7 @@ namespace LaundromatManagementSystem.ViewModels
         {
             get
             {
-                if (decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""), 
+                if (decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""),
                     NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total)
                 {
                     return received - Total;
@@ -63,16 +63,17 @@ namespace LaundromatManagementSystem.ViewModels
             {
                 if (SelectedMethod == "Cash")
                 {
-                    return decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""), 
+                    return decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""),
                         NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total;
                 }
+                // For MoMo and Card, we just need a method selected
                 return !string.IsNullOrEmpty(SelectedMethod);
             }
         }
 
         public bool IsMethodSelected => !string.IsNullOrEmpty(SelectedMethod);
 
-        // Text properties (same as before)
+        // Text properties
         public string Title => GetTranslation("title");
         public string TransactionLabel => GetTranslation("transaction");
         public string TotalLabel => GetTranslation("total");
@@ -86,9 +87,12 @@ namespace LaundromatManagementSystem.ViewModels
         public string SelectMethodLabel => GetTranslation("select_method");
         public string ProcessButtonText => GetProcessingButtonText();
 
-        public string GetTransactionId => _stateService.GenerateTransactionId();
+        // Add these properties for receipt
+        public decimal Subtotal => _stateService.CartTotal;
+        public decimal Tax => _stateService.CartTotal * 0.1m; // Assuming 10% tax
+        public decimal GrandTotal => Total;
 
-        // Theme colors (same as before)
+        // Theme colors 
         public Color BackgroundColor => GetBackgroundColor();
         public Color BorderColor => GetBorderColor();
         public Color TitleColor => GetTitleColor();
@@ -150,18 +154,6 @@ namespace LaundromatManagementSystem.ViewModels
             SelectedMethod = method;
             CashReceived = string.Empty;
 
-            // Show alert for MoMo and Card (future implementation)
-            if (method == "MoMo" || method == "Card")
-            {
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Feature Preview",
-                        $"{method} payment simulation mode. Real implementation requires external payment device.",
-                        "OK");
-                });
-            }
-
             OnPropertyChanged(nameof(IsMethodSelected));
             OnPropertyChanged(nameof(CanCompletePayment));
             OnPropertyChanged(nameof(Change));
@@ -217,15 +209,10 @@ namespace LaundromatManagementSystem.ViewModels
 
             try
             {
-                // Show processing alert for non-cash methods
-                if (SelectedMethod == "MoMo" || SelectedMethod == "Card")
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Simulation Mode",
-                        $"{SelectedMethod} payment simulation complete.\n\nReal implementation requires:\n1. External payment device\n2. Merchant account setup\n3. Network connectivity",
-                        "OK");
-                }
-                
+                // Generate a new transaction ID for this payment
+                string newTransactionId = _stateService.GenerateTransactionId();
+                TransactionId = newTransactionId;
+
                 // Create payment result
                 var paymentResult = new PaymentResult
                 {
@@ -237,13 +224,16 @@ namespace LaundromatManagementSystem.ViewModels
                         _ => PaymentMethod.Cash
                     },
                     Customer = Customer,
+                    Subtotal = Subtotal,
+                    Tax = Tax,
+                    GrandTotal = GrandTotal,
                     Amount = Total,
                     Change = Change,
-                    TransactionId = TransactionId,
+                    TransactionId = newTransactionId,
                     Items = CartItems.ToList()
                 };
 
-                // Print receipt
+                // Print receipt with all details
                 await PrintReceipt(paymentResult);
 
                 // Clear cart using the public method
@@ -258,11 +248,13 @@ namespace LaundromatManagementSystem.ViewModels
                 // Show success message
                 await Application.Current.MainPage.DisplayAlert(
                     GetTranslation("success"),
-                    $"{GetTranslation("transaction")}: {TransactionId}\n" +
-                    $"{GetTranslation("total")}: {Total:N0} RWF\n" +
-                    $"{GetTranslation("customer")}: {(string.IsNullOrEmpty(Customer) ? "N/A" : Customer)}\n" +
-                    $"Payment Method: {SelectedMethod}\n\n" +
-                    $"Cart has been cleared.",
+                    $"Transaction: {newTransactionId}\n" +
+                    $"Subtotal: {Subtotal:N0} RWF\n" +
+                    $"Tax: {Tax:N0} RWF\n" +
+                    $"Grand Total: {GrandTotal:N0} RWF\n" +
+                    $"Customer: {(string.IsNullOrEmpty(Customer) ? "N/A" : Customer)}\n" +
+                    $"Payment Method: {SelectedMethod}\n" +
+                    $"{(SelectedMethod == "Cash" ? $"Cash Received: {CashReceived}\nChange: {Change:N0} RWF" : "")}",
                     "OK");
 
                 // Close modal after successful payment
@@ -284,10 +276,10 @@ namespace LaundromatManagementSystem.ViewModels
         {
             // Use the public method to clear cart
             _stateService.ClearCart();
-            
+
             // Update the local cart items
             CartItems.Clear();
-            
+
             // Update total
             Total = 0;
             OnPropertyChanged(nameof(Total));
@@ -302,11 +294,14 @@ namespace LaundromatManagementSystem.ViewModels
                     TransactionId = paymentInfo.TransactionId,
                     CustomerPhone = paymentInfo.Customer,
                     PaymentMethod = paymentInfo.PaymentMethod.ToString(),
+                    Subtotal = paymentInfo.Subtotal,
+                    Tax = paymentInfo.Tax,
+                    GrandTotal = paymentInfo.GrandTotal,
                     Amount = paymentInfo.Amount,
                     Change = paymentInfo.Change,
                     Items = paymentInfo.Items,
                     Date = DateTime.Now,
-                    Cashier = "System" // This would come from logged in user
+                    Cashier = "System"
                 };
 
                 if (_printerService != null)
@@ -449,6 +444,7 @@ namespace LaundromatManagementSystem.ViewModels
 
         private string GetTranslation(string key)
         {
+
             var translations = new Dictionary<string, Dictionary<Language, string>>
             {
                 ["title"] = new()
@@ -696,11 +692,14 @@ namespace LaundromatManagementSystem.ViewModels
             _stateService.PropertyChanged -= OnStateChanged;
         }
 
-        // Class for payment result
+        // Enhanced class for payment result
         public class PaymentResult
         {
             public PaymentMethod PaymentMethod { get; set; }
             public string Customer { get; set; } = string.Empty;
+            public decimal Subtotal { get; set; }
+            public decimal Tax { get; set; }
+            public decimal GrandTotal { get; set; }
             public decimal Amount { get; set; }
             public decimal Change { get; set; }
             public string TransactionId { get; set; } = string.Empty;

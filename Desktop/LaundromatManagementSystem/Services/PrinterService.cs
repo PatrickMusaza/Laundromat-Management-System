@@ -19,6 +19,9 @@ namespace LaundromatManagementSystem.Services
         public string PaymentMethod { get; set; } = string.Empty;
         public decimal Amount { get; set; }
         public decimal Change { get; set; }
+        public decimal Tax { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal GrandTotal { get; set; }
         public List<CartItem> Items { get; set; } = new();
         public string BusinessName { get; set; } = "LAUNDROMAT SYSTEM";
         public string BusinessAddress { get; set; } = "Kigali, Rwanda";
