@@ -92,6 +92,8 @@ namespace LaundromatManagementSystem.ViewModels
         public decimal Tax => _stateService.CartTotal * 0.1m; // Assuming 10% tax
         public decimal GrandTotal => Subtotal + Tax;
 
+        public string GetTransactionId => _stateService.GenerateTransactionId();
+
         // Theme colors 
         public Color BackgroundColor => GetBackgroundColor();
         public Color BorderColor => GetBorderColor();
@@ -205,12 +207,23 @@ namespace LaundromatManagementSystem.ViewModels
         {
             if (!CanCompletePayment) return;
 
+            if(SelectedMethod=="Cash")
+            {
+                await Application.Current.MainPage.DisplayAlert(
+                    "Confirm Cash Payment",
+                    $"You are about to process a cash payment of {Total:N0} RWF.\n" +
+                    $"Cash Received: {CashReceived}\n" +
+                    $"Change Due: {Change:N0} RWF",
+                    "OK"
+                );
+            }
+
             Processing = true;
 
             try
             {
                 // Generate a new transaction ID for this payment
-                string newTransactionId = _stateService.GenerateTransactionId();
+                string newTransactionId = GetTransactionId;
                 TransactionId = newTransactionId;
 
                 // Create payment result
