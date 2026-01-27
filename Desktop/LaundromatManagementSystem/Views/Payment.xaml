@@ -1,5 +1,8 @@
 <!-- Method-Specific Content -->
-<ContentView>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:LaundromatManagementSystem.Converters"
+             x:Class="LaundromatManagementSystem.Views.Payment">
 
         <ContentView.Resources>
                 <converters:InvertBooleanConverter x:Key="InvertBooleanConverter"/>

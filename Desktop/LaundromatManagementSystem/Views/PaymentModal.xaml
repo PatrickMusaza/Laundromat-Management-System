@@ -15,14 +15,12 @@
                         Padding="32">
 
                         <Grid RowDefinitions="Auto, Auto, *, Auto"
-                              RowSpacing="24"
-                              MinimumHeightRequest="500">
+                              RowSpacing="24">
 
                                 <!-- Header -->
                                 <Grid Grid.Row="0"
                                       RowDefinitions="Auto, Auto"
-                                      RowSpacing="8"
-                                      Padding="0,0,0,16">
+                                      RowSpacing="8">
 
                                         <!-- Title and Close Button -->
                                         <Grid ColumnDefinitions="*, Auto">
@@ -174,7 +172,7 @@
                                                        TextColor="{Binding TextColor}"/>
 
                                                 <Entry Text="{Binding PurchaseCode}"
-                                                       Placeholder="Required for TIN transactions"
+                                                       Placeholder="{Binding PurchaseCodePlaceholder}"
                                                        FontSize="16"
                                                        HeightRequest="56"
                                                        BackgroundColor="{Binding InputBackgroundColor}"
@@ -238,7 +236,7 @@
                                                      Spacing="24"
                                                      IsVisible="{Binding ShowPaymentMethods}">
 
-                                        <!-- Back to Customer Info Button -->
+                                        <!-- Back to Customer Info Button 
                                         <Button Text="{Binding BackToCustomerInfoText}"
                                                 BackgroundColor="Transparent"
                                                 TextColor="#3B82F6"
@@ -246,6 +244,7 @@
                                                 HorizontalOptions="Start"
                                                 HeightRequest="40"
                                                 Command="{Binding GoBackToCustomerInfoCommand}"/>
+                                                -->
 
                                         <!-- Selected Customer Info Summary -->
                                         <Border Stroke="#E5E7EB"
@@ -431,8 +430,8 @@
                                         <!-- Cancel/Back to Methods Button -->
                                         <Button Grid.Column="0"
                                                 Text="{Binding BackToMethodsLabel}"
-                                                BackgroundColor="Transparent"
-                                                TextColor="#6B7280"
+                                                BackgroundColor="#EF4444"
+                                                TextColor="White"
                                                 FontSize="14"
                                                 HeightRequest="48"
                                                 Command="{Binding ClearSelectionCommand}"/>

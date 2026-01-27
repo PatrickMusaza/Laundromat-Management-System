@@ -275,7 +275,7 @@ namespace LaundromatManagementSystem.ViewModels
         private void SelectPaymentMethod(string method)
         {
             SelectedMethod = method;
-            ShowPaymentMethods = false; // Hide payment method selection
+            ShowPaymentMethods = true; // Hide payment method selection
 
             // Auto-fill cash received with total for cash payments
             if (method == "Cash")
