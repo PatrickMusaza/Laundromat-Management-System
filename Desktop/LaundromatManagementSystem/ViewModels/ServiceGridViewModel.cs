@@ -183,18 +183,29 @@ namespace LaundromatManagementSystem.ViewModels
 
         private async void LoadServices()
         {
-            var serviceItems = await _serviceService.GetServicesByCategoryAsync(SelectedCategory, Language);
-            Services.Clear();
-
-            foreach (var item in serviceItems)
+            try
             {
-                Services.Add(new ServiceViewModel(item, Theme, Language));
+                var serviceItems = await _serviceService.GetServicesByCategoryAsync(SelectedCategory, Language);
+                Services.Clear();
+
+                foreach (var item in serviceItems)
+                {
+                    Services.Add(new ServiceViewModel(item, Theme, Language));
+                }
+
+                foreach (var service in Services)
+                {
+                    service.Theme = Theme;
+                    service.Language = Language;
+                }
             }
-
-            foreach (var service in Services)
+            catch (Exception ex)
             {
-                service.Theme = Theme;
-                service.Language = Language;
+                // Handle database errors
+                Debug.WriteLine($"Error loading services: {ex.Message}");
+
+                // Fallback to dummy data if needed
+                Services.Clear();
             }
         }
 

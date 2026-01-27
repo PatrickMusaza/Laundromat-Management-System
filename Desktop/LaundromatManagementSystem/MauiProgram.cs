@@ -1,4 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using LaundromatManagementSystem.Data;
+using LaundromatManagementSystem.Repositories;
+using LaundromatManagementSystem.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace LaundromatManagementSystem;
 
@@ -24,5 +28,35 @@ public static class MauiProgram
 #endif
 
 		return builder.Build();
+	}
+
+
+	private static void ConfigureServices(IServiceCollection services)
+	{
+		// Register DbContext
+		services.AddDbContext<AppDbContext>(options =>
+		{
+			string databasePath = GetDatabasePath();
+			var connectionString = $"Data Source={databasePath};Password=YourSecurePassword123!";
+			options.UseSqlite(connectionString);
+		});
+
+		// Register repositories
+		services.AddScoped<IServiceRepository, ServiceRepository>();
+
+		// Register services
+		services.AddScoped<IServiceService, ServiceService>();
+
+		// Register ViewModels
+		services.AddTransient<ViewModels.ServiceGridViewModel>();
+		services.AddTransient<ViewModels.ServiceViewModel>();
+
+		// Other services...
+		services.AddSingleton<ApplicationStateService>();
+	}
+
+	private static string GetDatabasePath()
+	{
+		return Path.Combine(FileSystem.AppDataDirectory, "laundromat.db3");
 	}
 }

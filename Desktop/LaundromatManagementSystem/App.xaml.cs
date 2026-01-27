@@ -6,39 +6,57 @@ namespace LaundromatManagementSystem
 {
     public partial class App : Application
     {
-        public static IServiceProvider Services { get; private set; }
-        
-        public App()
+        private readonly IServiceProvider _serviceProvider;
+
+        public App(IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            
-            // Set up dependency injection
+            _serviceProvider = serviceProvider;
+
+            // Initialize database
+            InitializeDatabase();
+
+            //Configure services
             ConfigureServices();
-            
+
             MainPage = new AppShell();
         }
-        
+
         private void ConfigureServices()
         {
             var services = new ServiceCollection();
-            
+
             // Register services
             services.AddSingleton<IServiceService, ServiceService>();
             services.AddSingleton<ICartService, CartService>();
             services.AddSingleton<IPrinterService, PrinterService>();
-            
+
             // Register ViewModels
             services.AddSingleton<DashboardViewModel>();
-            
+
             Services = services.BuildServiceProvider();
         }
+
+        private async void InitializeDatabase()
+        {
+            try
+            {
+                using var scope = _serviceProvider.CreateScope();
+                var serviceService = scope.ServiceProvider.GetRequiredService<IServiceService>();
+                await serviceService.InitializeDatabaseAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Database initialization error: {ex.Message}");
+            }
+        }
     }
-    
+
     public static class ServiceLocator
     {
         public static T GetService<T>() where T : class => App.Services.GetService<T>();
     }
-    
+
     // Enums matching appearance and usage in the application
     public enum Theme { Light, Gray, Dark }
     public enum Language { EN, RW, FR }
