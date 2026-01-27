@@ -51,47 +51,6 @@ namespace LaundromatManagementSystem.ViewModels
         public ICommand CloseCommand { get; }
         public ICommand PaymentCompleteCommand { get; }
 
-        public string CustomerSummary
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(Customer))
-                    return $"Phone: {Customer}";
-                else if (!string.IsNullOrWhiteSpace(TinNumber))
-                    return $"TIN: {TinNumber}";
-                else
-                    return "No customer information";
-            }
-        }
-
-        // Computed properties
-        public decimal Change
-        {
-            get
-            {
-                if (SelectedMethod == "Cash" && decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""),
-                    NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total)
-                {
-                    return received - Total;
-                }
-                return 0;
-            }
-        }
-
-        public bool CanCompletePayment
-        {
-            get
-            {
-                if (SelectedMethod == "Cash")
-                {
-                    return decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""),
-                        NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total;
-                }
-                // For MoMo and Card, we just need a method selected and customer info valid
-                return !string.IsNullOrEmpty(SelectedMethod) && IsCustomerInfoValid;
-            }
-        }
-
         public bool IsMethodSelected => !string.IsNullOrEmpty(SelectedMethod);
 
         // Text properties
@@ -106,6 +65,21 @@ namespace LaundromatManagementSystem.ViewModels
         public string ChangeLabel => GetTranslation("change");
         public string CancelText => GetTranslation("cancel");
         public string SelectMethodLabel => GetTranslation("select_method");
+        public string CustomerInfoTitle => GetTranslation("customerInfoTitle");
+        public string TinLabel => GetTranslation("tin");
+        public string OrLabel => GetTranslation("or");
+        public string ClearTinButtonText => GetTranslation("clear");
+        public string PurchaseCodeLabel => GetTranslation("purchaseCode");
+        public string PurchaseCodeAlert => GetTranslation("purchaseCodeAlert");
+        public string CustomerValidationSuccessMessage => GetTranslation("customerValidationSuccessMessage");
+        public string ContinueToPaymentText => GetTranslation("continueToPayment");
+        public string BackToCustomerInfoText => GetTranslation("backToCustomerInfo");
+        public string CustomerLabelText => GetTranslation("customerTitle");
+        public string MoMoInstruction => GetTranslation("momoInstruction");
+        public string CardInstruction => GetTranslation("cardInstruction");
+        public string BackToMethodsLabel => GetTranslation("backToMethods");
+        public string PurchaseCodePlaceholder => GetTranslation("purchaseCodePlaceholder");
+        public string ChangeMethodLabel => GetTranslation("changeMethod");
         public string ProcessButtonText => GetProcessingButtonText();
 
         [ObservableProperty]
@@ -149,6 +123,47 @@ namespace LaundromatManagementSystem.ViewModels
         public Color CancelButtonTextColor => GetCancelButtonTextColor();
 
         private IPrinterService? _printerService;
+
+        public string CustomerSummary
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(Customer))
+                    return $"Phone: {Customer}";
+                else if (!string.IsNullOrWhiteSpace(TinNumber))
+                    return $"TIN: {TinNumber}";
+                else
+                    return "No customer information";
+            }
+        }
+
+        // Computed properties
+        public decimal Change
+        {
+            get
+            {
+                if (SelectedMethod == "Cash" && decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""),
+                    NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total)
+                {
+                    return received - Total;
+                }
+                return 0;
+            }
+        }
+
+        public bool CanCompletePayment
+        {
+            get
+            {
+                if (SelectedMethod == "Cash")
+                {
+                    return decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""),
+                        NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total;
+                }
+                // For MoMo and Card, we just need a method selected and customer info valid
+                return !string.IsNullOrEmpty(SelectedMethod) && IsCustomerInfoValid;
+            }
+        }
 
         public PaymentModalViewModel(ICommand closeCommand, ICommand paymentCompleteCommand)
         {
@@ -746,6 +761,21 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(CancelText));
             OnPropertyChanged(nameof(ProcessButtonText));
             OnPropertyChanged(nameof(SelectMethodLabel));
+            OnPropertyChanged(nameof(CustomerInfoTitle));
+            OnPropertyChanged(nameof(OrLabel));
+            OnPropertyChanged(nameof(TinLabel));
+            OnPropertyChanged(nameof(ClearTinButtonText));
+            OnPropertyChanged(nameof(PurchaseCodeLabel));
+            OnPropertyChanged(nameof(PurchaseCodeAlert));
+            OnPropertyChanged(nameof(CustomerValidationSuccessMessage));
+            OnPropertyChanged(nameof(ContinueToPaymentText));
+            OnPropertyChanged(nameof(BackToCustomerInfoText));
+            OnPropertyChanged(nameof(CustomerLabelText));
+            OnPropertyChanged(nameof(MoMoInstruction));
+            OnPropertyChanged(nameof(CardInstruction));
+            OnPropertyChanged(nameof(BackToMethodsLabel));
+            OnPropertyChanged(nameof(PurchaseCodePlaceholder));
+            OnPropertyChanged(nameof(ChangeMethodLabel));
         }
 
         private void UpdateThemeProperties()
@@ -790,9 +820,9 @@ namespace LaundromatManagementSystem.ViewModels
                 },
                 ["customer"] = new()
                 {
-                    [Language.EN] = "Phone Number or TIN",
-                    [Language.RW] = "Nimero ya Telefoni cyangwa TIN",
-                    [Language.FR] = "Numéro de Téléphone ou TIN"
+                    [Language.EN] = "Phone Number",
+                    [Language.RW] = "Nimero ya Telefoni",
+                    [Language.FR] = "Numéro de Téléphone"
                 },
                 ["cash"] = new()
                 {
@@ -809,7 +839,7 @@ namespace LaundromatManagementSystem.ViewModels
                 ["card"] = new()
                 {
                     [Language.EN] = "CARD PAYMENT",
-                    [Language.RW] = "KARITA",
+                    [Language.RW] = "IKARITA",
                     [Language.FR] = "PAIEMENT CARTE"
                 },
                 ["received"] = new()
@@ -877,6 +907,96 @@ namespace LaundromatManagementSystem.ViewModels
                     [Language.EN] = "Select Payment Method",
                     [Language.RW] = "Hitamo Uburyo bwo Kwishyura",
                     [Language.FR] = "Sélectionner le Mode de Paiement"
+                },
+                ["customerInfoTitle"] = new()
+                {
+                    [Language.EN] = "Customer Information *",
+                    [Language.RW] = "Amakuru y'Umukiriya *",
+                    [Language.FR] = "Informations Client *"
+                },
+                ["or"] = new()
+                {
+                    [Language.EN] = "OR",
+                    [Language.RW] = "CYANGWA",
+                    [Language.FR] = "OU"
+                },
+                ["tin"] = new()
+                {
+                    [Language.EN] = "TIN Number (Tax Identification)",
+                    [Language.RW] = "Nimero ya TIN (Indangamuntu y'Imisoro)",
+                    [Language.FR] = "Numéro TIN (Identification Fiscale)"
+                },
+                ["clear"] = new()
+                {
+                    [Language.EN] = "Clear",
+                    [Language.RW] = "Siba",
+                    [Language.FR] = "Effacer"
+                },
+                ["purchaseCode"] = new()
+                {
+                    [Language.EN] = "Purchase Code *",
+                    [Language.RW] = "Kode y'Igicuruzwa *",
+                    [Language.FR] = "Code d'Achat *"
+                },
+                ["purchaseCodeAlert"] = new()
+                {
+                    [Language.EN] = "Purchase is required when using TIN",
+                    [Language.RW] = "Kode y'Igicuruzwa irakenewe iyo ukoresha TIN",
+                    [Language.FR] = "Le code d'achat est requis lors de l'utilisation du TIN"
+                },
+                ["customerValidationSuccessMessage"] = new()
+                {
+                    [Language.EN] = "Customer information verified. Ready to proceed to payment.",
+                    [Language.RW] = "Amakuru y'umukiriya yemejwe. Biteguye gukomeza kwishyura.",
+                    [Language.FR] = "Informations client vérifiées. Prêt à procéder au paiement."
+                },
+                ["continueToPayment"] = new()
+                {
+                    [Language.EN] = "Continue to Payment →",
+                    [Language.RW] = "Komeza Kwishyura →",  
+                    [Language.FR] = "Continuer vers le Paiement →"
+                },
+                ["backToCustomerInfo"] = new()
+                {
+                    [Language.EN] = "← Edit Customer Information",
+                    [Language.RW] = "← Hindura Amakuru y'Umukiriya",
+                    [Language.FR] = "← Modifier les Informations Client"
+                },
+                ["customerTitle"] = new()
+                {
+                    [Language.EN] = "Customer",
+                    [Language.RW] = "Umukiriya",
+                    [Language.FR] = "Client"
+                },
+                ["momoInstruction"] = new()
+                {
+                    [Language.EN] = "This feature requires external payment device integration.",
+                    [Language.RW] = "Iyi gahunda isaba kwinjiza igikoresho cyo kwishyura hanze.",
+                    [Language.FR] = "Cette fonctionnalité nécessite une intégration de dispositif de paiement externe."
+                },
+                ["cardInstruction"] = new()
+                {
+                    [Language.EN] = "This feature requires external card reader integration.",
+                    [Language.RW] = "Iyi gahunda isaba kwinjiza icyuma gisesengura amakarita hanze.",
+                    [Language.FR] = "Cette fonctionnalité nécessite une intégration de lecteur de carte externe."
+                },
+                ["backToMethods"] = new()
+                {
+                    [Language.EN] = "Back to Methods",
+                    [Language.RW] = "Garuka ku buryo bwo Kwishyura",
+                    [Language.FR] = "Retour aux Méthodes"
+                },
+                ["purchaseCodePlaceholder"] = new()
+                {
+                    [Language.EN] = "Enter Purchase Code",
+                    [Language.RW] = "Andika Kode y'Igicuruzwa",
+                    [Language.FR] = "Entrez le Code d'Achat"
+                },
+                ["changeMethod"] = new()
+                {
+                    [Language.EN] = "Change Payment Method",
+                    [Language.RW] = "Hindura Uburyo bwo Kwishyura",
+                    [Language.FR] = "Changer le Mode de Paiement"
                 }
             };
 

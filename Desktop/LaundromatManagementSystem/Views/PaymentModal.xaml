@@ -7,22 +7,6 @@
              x:DataType="vm:PaymentModalViewModel"
              WidthRequest="700">
 
-        <ContentView.Resources>
-                <converters:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
-                <converters:StringEqualsConverter x:Key="StringEqualsConverter"/>
-
-                <Style TargetType="Button">
-                        <Setter Property="FontSize"
-                                        Value="16"/>
-                        <Setter Property="FontAttributes"
-                                        Value="Bold"/>
-                        <Setter Property="CornerRadius"
-                                        Value="8"/>
-                        <Setter Property="HeightRequest"
-                                        Value="56"/>
-                </Style>
-        </ContentView.Resources>
-
         <ScrollView>
                 <Border Stroke="{Binding BorderColor}"
                         StrokeThickness="1"
@@ -108,14 +92,14 @@
                                                      IsVisible="{Binding ShowPaymentMethods, Converter={StaticResource InvertBooleanConverter}}">
 
                                         <!-- Header -->
-                                        <Label Text="Customer Information *"
+                                        <Label Text="{Binding CustomerInfoTitle}"
                                                FontSize="18"
                                                FontAttributes="Bold"
                                                TextColor="{Binding TitleColor}"/>
 
                                         <!-- Phone Number Input -->
                                         <VerticalStackLayout Spacing="8">
-                                                <Label Text="Phone Number"
+                                                <Label Text="{Binding CustomerLabel}"
                                                        FontSize="16"
                                                        FontAttributes="Bold"
                                                        TextColor="{Binding TextColor}"/>
@@ -133,33 +117,33 @@
 
                                         <!-- OR Divider -->
                                         <Grid ColumnDefinitions="*, Auto, *"
-                                                        VerticalOptions="Center">
+                                              VerticalOptions="Center">
                                                 <BoxView Grid.Column="0"
-                                                                Color="{Binding BorderColor}"
-                                                                HeightRequest="1"
-                                                                VerticalOptions="Center"/>
+                                                         Color="{Binding BorderColor}"
+                                                         HeightRequest="1"
+                                                         VerticalOptions="Center"/>
                                                 <Label Grid.Column="1"
-                                                       Text="OR"
+                                                       Text="{Binding OrLabel}"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
                                                        TextColor="{Binding SubtitleColor}"
                                                        Margin="12,0"
                                                        HorizontalOptions="Center"/>
                                                 <BoxView Grid.Column="2"
-                                                                Color="{Binding BorderColor}"
-                                                                HeightRequest="1"
-                                                                VerticalOptions="Center"/>
+                                                         Color="{Binding BorderColor}"
+                                                         HeightRequest="1"
+                                                         VerticalOptions="Center"/>
                                         </Grid>
 
                                         <!-- TIN Number Input -->
                                         <VerticalStackLayout Spacing="8">
-                                                <Label Text="TIN Number (Tax Identification)"
+                                                <Label Text="{Binding TinLabel}"
                                                        FontSize="16"
                                                        FontAttributes="Bold"
                                                        TextColor="{Binding TextColor}"/>
 
                                                 <Grid ColumnDefinitions="*, Auto"
-                                                                ColumnSpacing="12">
+                                                      ColumnSpacing="12">
                                                         <Entry Grid.Column="0"
                                                                Text="{Binding TinNumber}"
                                                                Placeholder="123456789"
@@ -172,7 +156,7 @@
                                                                Keyboard="Numeric"/>
 
                                                         <Button Grid.Column="1"
-                                                                Text="Clear"
+                                                                Text="{Binding ClearTinButtonText}"
                                                                 BackgroundColor="Transparent"
                                                                 TextColor="#EF4444"
                                                                 FontSize="14"
@@ -183,8 +167,8 @@
 
                                         <!-- Purchase Code Input (Shows when TIN is entered) -->
                                         <VerticalStackLayout Spacing="8"
-                                                        IsVisible="{Binding ShowTinPurchaseCode}">
-                                                <Label Text="Purchase Code *"
+                                                             IsVisible="{Binding ShowTinPurchaseCode}">
+                                                <Label Text="{Binding PurchaseCodeLabel}"
                                                        FontSize="16"
                                                        FontAttributes="Bold"
                                                        TextColor="{Binding TextColor}"/>
@@ -199,7 +183,7 @@
                                                        ClearButtonVisibility="WhileEditing"
                                                        IsPassword="True"/>
 
-                                                <Label Text="Purchase code is required when using TIN"
+                                                <Label Text="{Binding PurchaseCodeAlert}"
                                                        FontSize="12"
                                                        TextColor="#EF4444"/>
                                         </VerticalStackLayout>
@@ -232,14 +216,14 @@
                                                         <Label Text="✓"
                                                                FontSize="16"
                                                                TextColor="#10B981"/>
-                                                        <Label Text="Customer information verified. Ready to proceed to payment."
+                                                        <Label Text="{Binding CustomerValidationSuccessMessage}"
                                                                FontSize="14"
                                                                TextColor="#065F46"/>
                                                 </HorizontalStackLayout>
                                         </Border>
 
                                         <!-- Continue Button -->
-                                        <Button Text="Continue to Payment →"
+                                        <Button Text="{Binding ContinueToPaymentText}"
                                                 BackgroundColor="#3B82F6"
                                                 TextColor="White"
                                                 FontSize="16"
@@ -255,7 +239,7 @@
                                                      IsVisible="{Binding ShowPaymentMethods}">
 
                                         <!-- Back to Customer Info Button -->
-                                        <Button Text="← Edit Customer Information"
+                                        <Button Text="{Binding BackToCustomerInfoText}"
                                                 BackgroundColor="Transparent"
                                                 TextColor="#3B82F6"
                                                 FontSize="14"
@@ -270,7 +254,7 @@
                                                 BackgroundColor="Transparent"
                                                 Padding="16">
                                                 <VerticalStackLayout Spacing="8">
-                                                        <Label Text="Customer"
+                                                        <Label Text="{Binding CustomerLabelText}"
                                                                FontSize="14"
                                                                FontAttributes="Bold"
                                                                TextColor="{Binding TextColor}"/>
@@ -284,7 +268,7 @@
                                         <VerticalStackLayout Spacing="20"
                                                              IsVisible="{Binding IsMethodSelected, Converter={StaticResource InvertBooleanConverter}}">
 
-                                                <Label Text="Select Payment Method"
+                                                <Label Text="{Binding SelectMethodLabel}"
                                                        FontSize="20"
                                                        FontAttributes="Bold"
                                                        TextColor="{Binding TextColor}"/>
@@ -407,13 +391,13 @@
                                                         StrokeShape="RoundRectangle 12"
                                                         Padding="24,16">
                                                         <HorizontalStackLayout Spacing="16"
-                                                                        HorizontalOptions="Center">
+                                                                               HorizontalOptions="Center">
                                                                 <Label Text="{Binding SelectedMethodIcon}"
                                                                        FontSize="32"
                                                                        VerticalOptions="Center"/>
 
                                                                 <VerticalStackLayout Spacing="4">
-                                                                        <Label Text="Selected Payment Method"
+                                                                        <Label Text="{Binding SelectedMethodLabel}"
                                                                                FontSize="14"
                                                                                TextColor="{Binding TextColor}"/>
                                                                         <Label Text="{Binding SelectedMethodDisplay}"
@@ -423,9 +407,9 @@
                                                                 </VerticalStackLayout>
 
                                                                 <!-- Change Method Button -->
-                                                                <Button Text="Change Method"
+                                                                <Button Text="{Binding ChangeMethodLabel}"
                                                                         BackgroundColor="Transparent"
-                                                                        TextColor="#6B7280"
+                                                                        TextColor="White"
                                                                         FontSize="14"
                                                                         HeightRequest="36"
                                                                         Command="{Binding ClearSelectionCommand}"
@@ -434,267 +418,7 @@
                                                 </Border>
 
                                                 <!-- Method-Specific Content -->
-                                                <ContentView>
 
-                                                        <!-- Cash Payment -->
-                                                        <VerticalStackLayout Spacing="20"
-                                                                             IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Cash}">
-
-                                                                <!-- Two Column Layout -->
-                                                                <Grid ColumnDefinitions="*, 16, *"
-                                                                      ColumnSpacing="0">
-
-                                                                        <!-- Left Column - Amounts -->
-                                                                        <VerticalStackLayout Grid.Column="0"
-                                                                                             Spacing="16">
-
-                                                                                <!-- Total Amount -->
-                                                                                <VerticalStackLayout Spacing="8">
-                                                                                        <Label Text="{Binding TotalLabel}"
-                                                                                               FontSize="16"
-                                                                                               FontAttributes="Bold"
-                                                                                               TextColor="{Binding TextColor}"/>
-
-                                                                                        <Border Stroke="{Binding AmountBorderColor}"
-                                                                                                StrokeThickness="2"
-                                                                                                StrokeShape="RoundRectangle 8"
-                                                                                                BackgroundColor="{Binding AmountBackgroundColor}"
-                                                                                                HeightRequest="56"
-                                                                                                Padding="12">
-                                                                                                <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
-                                                                                                       FontSize="18"
-                                                                                                       FontAttributes="Bold"
-                                                                                                       TextColor="#F59E0B"
-                                                                                                       HorizontalOptions="Center"
-                                                                                                       VerticalOptions="Center"/>
-                                                                                        </Border>
-                                                                                </VerticalStackLayout>
-
-                                                                                <!-- Cash Received -->
-                                                                                <VerticalStackLayout Spacing="8">
-                                                                                        <Label Text="{Binding ReceivedLabel}"
-                                                                                               FontSize="16"
-                                                                                               FontAttributes="Bold"
-                                                                                               TextColor="{Binding TextColor}"/>
-
-                                                                                        <Border Stroke="{Binding InputBorderColor}"
-                                                                                                StrokeThickness="2"
-                                                                                                StrokeShape="RoundRectangle 8"
-                                                                                                BackgroundColor="{Binding InputBackgroundColor}"
-                                                                                                HeightRequest="56">
-                                                                                                <Label Text="{Binding CashReceived, StringFormat='{0:N0}'}"
-                                                                                                       FontSize="18"
-                                                                                                       FontAttributes="Bold"
-                                                                                                       TextColor="{Binding TextColor}"
-                                                                                                       HorizontalOptions="Center"
-                                                                                                       VerticalOptions="Center"/>
-                                                                                        </Border>
-                                                                                </VerticalStackLayout>
-
-                                                                                <!-- Change Due -->
-                                                                                <VerticalStackLayout Spacing="8">
-                                                                                        <Label Text="{Binding ChangeLabel}"
-                                                                                               FontSize="16"
-                                                                                               FontAttributes="Bold"
-                                                                                               TextColor="{Binding TextColor}"/>
-
-                                                                                        <Border Stroke="#10B981"
-                                                                                                StrokeThickness="2"
-                                                                                                StrokeShape="RoundRectangle 8"
-                                                                                                BackgroundColor="#D1FAE5"
-                                                                                                HeightRequest="56"
-                                                                                                Padding="12">
-                                                                                                <Label Text="{Binding Change, StringFormat='{0:N0} RWF'}"
-                                                                                                       FontSize="18"
-                                                                                                       FontAttributes="Bold"
-                                                                                                       TextColor="#10B981"
-                                                                                                       HorizontalOptions="Center"
-                                                                                                       VerticalOptions="Center"/>
-                                                                                        </Border>
-                                                                                </VerticalStackLayout>
-
-                                                                        </VerticalStackLayout>
-
-                                                                        <!-- Spacer -->
-                                                                        <BoxView Grid.Column="1"
-                                                                                 WidthRequest="0"/>
-
-                                                                        <!-- Right Column - Number Pad -->
-                                                                        <Grid Grid.Column="2"
-                                                                              ColumnDefinitions="*, 4, *, 4, *"
-                                                                              RowDefinitions="*, 4, *, 4, *, 4, *"
-                                                                              ColumnSpacing="0"
-                                                                              RowSpacing="0"
-                                                                              HeightRequest="240">
-
-                                                                                <!-- Row 1 -->
-                                                                                <Button Grid.Row="0"
-                                                                                        Grid.Column="0"
-                                                                                        Text="1"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="1"/>
-
-                                                                                <Button Grid.Row="0"
-                                                                                        Grid.Column="2"
-                                                                                        Text="2"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="2"/>
-
-                                                                                <Button Grid.Row="0"
-                                                                                        Grid.Column="4"
-                                                                                        Text="3"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="3"/>
-
-                                                                                <!-- Row 2 -->
-                                                                                <Button Grid.Row="2"
-                                                                                        Grid.Column="0"
-                                                                                        Text="4"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="4"/>
-
-                                                                                <Button Grid.Row="2"
-                                                                                        Grid.Column="2"
-                                                                                        Text="5"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="5"/>
-
-                                                                                <Button Grid.Row="2"
-                                                                                        Grid.Column="4"
-                                                                                        Text="6"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="6"/>
-
-                                                                                <!-- Row 3 -->
-                                                                                <Button Grid.Row="4"
-                                                                                        Grid.Column="0"
-                                                                                        Text="7"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="7"/>
-
-                                                                                <Button Grid.Row="4"
-                                                                                        Grid.Column="2"
-                                                                                        Text="8"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="8"/>
-
-                                                                                <Button Grid.Row="4"
-                                                                                        Grid.Column="4"
-                                                                                        Text="9"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="9"/>
-
-                                                                                <!-- Row 4 -->
-                                                                                <Button Grid.Row="6"
-                                                                                        Grid.Column="0"
-                                                                                        Text="0"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="0"/>
-
-                                                                                <Button Grid.Row="6"
-                                                                                        Grid.Column="2"
-                                                                                        Text="00"
-                                                                                        BackgroundColor="{Binding ButtonBackgroundColor}"
-                                                                                        TextColor="{Binding ButtonTextColor}"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="00"/>
-
-                                                                                <Button Grid.Row="6"
-                                                                                        Grid.Column="4"
-                                                                                        Text="Clear"
-                                                                                        BackgroundColor="#EF4444"
-                                                                                        TextColor="White"
-                                                                                        Command="{Binding AddToCashCommand}"
-                                                                                        CommandParameter="Clear"/>
-
-                                                                        </Grid>
-
-                                                                </Grid>
-
-                                                        </VerticalStackLayout>
-
-                                                        <!-- Mobile Money Payment -->
-                                                        <VerticalStackLayout Spacing="24"
-                                                                             HorizontalOptions="Center"
-                                                                             VerticalOptions="Center"
-                                                                             IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=MoMo}">
-
-                                                                <Label Text="📱"
-                                                                       FontSize="64"
-                                                                       TextColor="#3B82F6"
-                                                                       HorizontalOptions="Center"/>
-
-                                                                <Label Text="Mobile Money Payment"
-                                                                       FontSize="20"
-                                                                       FontAttributes="Bold"
-                                                                       TextColor="#3B82F6"
-                                                                       HorizontalOptions="Center"/>
-
-                                                                <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
-                                                                       FontSize="28"
-                                                                       FontAttributes="Bold"
-                                                                       TextColor="#3B82F6"
-                                                                       HorizontalOptions="Center"/>
-
-                                                                <Label Text="This feature requires external payment device integration."
-                                                                       FontSize="14"
-                                                                       TextColor="{Binding SubtitleColor}"
-                                                                       HorizontalOptions="Center"
-                                                                       VerticalTextAlignment="Center"/>
-
-                                                        </VerticalStackLayout>
-
-                                                        <!-- Card Payment -->
-                                                        <VerticalStackLayout Spacing="24"
-                                                                             HorizontalOptions="Center"
-                                                                             VerticalOptions="Center"
-                                                                             IsVisible="{Binding SelectedMethod, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Card}">
-
-                                                                <Label Text="💳"
-                                                                       FontSize="64"
-                                                                       TextColor="#F59E0B"
-                                                                       HorizontalOptions="Center"/>
-
-                                                                <Label Text="Card Payment"
-                                                                       FontSize="20"
-                                                                       FontAttributes="Bold"
-                                                                       TextColor="#F59E0B"
-                                                                       HorizontalOptions="Center"/>
-
-                                                                <Label Text="{Binding Total, StringFormat='{0:N0} RWF'}"
-                                                                       FontSize="28"
-                                                                       FontAttributes="Bold"
-                                                                       TextColor="#F59E0B"
-                                                                       HorizontalOptions="Center"/>
-
-                                                                <Label Text="This feature requires external card reader integration."
-                                                                       FontSize="14"
-                                                                       TextColor="{Binding SubtitleColor}"
-                                                                       HorizontalOptions="Center"
-                                                                       VerticalTextAlignment="Center"/>
-
-                                                        </VerticalStackLayout>
-                                                </ContentView>
                                         </VerticalStackLayout>
                                 </VerticalStackLayout>
 
@@ -706,7 +430,7 @@
 
                                         <!-- Cancel/Back to Methods Button -->
                                         <Button Grid.Column="0"
-                                                Text="Back to Methods"
+                                                Text="{Binding BackToMethodsLabel}"
                                                 BackgroundColor="Transparent"
                                                 TextColor="#6B7280"
                                                 FontSize="14"
