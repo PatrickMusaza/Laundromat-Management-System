@@ -18,8 +18,8 @@ namespace LaundromatManagementSystem.Entities
         [MaxLength(50)]
         public string Type { get; set; } = string.Empty;
 
-        // Change from decimal to double for SQLite compatibility
-        public double Price { get; set; } // Changed from decimal
+        // Change from decimal to decimal for SQLite compatibility
+        public decimal Price { get; set; } // Changed from decimal
 
         [MaxLength(10)]
         public string Icon { get; set; } = string.Empty;

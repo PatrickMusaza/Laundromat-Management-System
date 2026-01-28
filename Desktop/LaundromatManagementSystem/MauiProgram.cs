@@ -41,7 +41,7 @@ public static class MauiProgram
 		services.AddDbContext<AppDbContext>(options =>
 		{
 			string databasePath = GetDatabasePath();
-			var connectionString = $"Data Source={databasePath};Password=SecurePassword123!";
+			var connectionString = $"Data Source={databasePath};";
 			options.UseSqlite(connectionString);
 		});
 

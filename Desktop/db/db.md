@@ -372,7 +372,6 @@ namespace LaundromatManagementSystem.Data
             var connectionString = new SqliteConnectionStringBuilder
             {
                 DataSource = dbPath,
-                Password = "SecurePassword123!", // Add password for encryption
                 Mode = SqliteOpenMode.ReadWriteCreate,
                 Cache = SqliteCacheMode.Shared
             }.ToString();

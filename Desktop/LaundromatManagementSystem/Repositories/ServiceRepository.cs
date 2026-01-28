@@ -13,33 +13,26 @@ namespace LaundromatManagementSystem.Repositories
             _context = context;
         }
 
-        public ServiceRepository()
-        {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlite("Data Source=laundromat.db;Password=SecurePassword123!")
-                .Options;
-            _context = new AppDbContext(options);
-        }
-
         public async Task SeedDatabaseAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            
-            // Check if database is empty and seed if needed
+
             if (!await _context.Services.AnyAsync())
             {
-                // Database will be seeded from OnModelCreating
                 await _context.SaveChangesAsync();
             }
         }
 
         public async Task<List<Service>> GetServicesByCategoryAsync(string category, string languageCode = "EN")
         {
-            return await _context.Services
+            // Fix: Load all services first, then order in memory
+            var services = await _context.Services
                 .Include(s => s.Category)
                 .Where(s => s.Type.ToLower() == category.ToLower() && s.IsAvailable)
-                .OrderBy(s => s.Price)
-                .ToListAsync();
+                .ToListAsync(); // Remove OrderBy from SQL query
+
+            // Order in memory after loading
+            return services.OrderBy(s => s.Price).ToList();
         }
 
         public async Task<Service?> GetServiceByIdAsync(int id)
@@ -51,11 +44,27 @@ namespace LaundromatManagementSystem.Repositories
 
         public async Task<List<Service>> GetAllServicesAsync()
         {
-            return await _context.Services
+            // Fix: Load all services first, then order in memory
+            var services = await _context.Services
                 .Include(s => s.Category)
                 .Where(s => s.IsAvailable)
+                .ToListAsync();
+
+            // Order in memory
+            return services
                 .OrderBy(s => s.Type)
                 .ThenBy(s => s.Price)
+                .ToList();
+        }
+
+        // Alternative solution: Use double instead of decimal for ordering
+        public async Task<List<Service>> GetServicesByCategoryAsync_Alternative(string category, string languageCode = "EN")
+        {
+            // Convert decimal to double for ordering in SQL
+            return await _context.Services
+                .Include(s => s.Category)
+                .Where(s => s.Type.ToLower() == category.ToLower() && s.IsAvailable)
+                .OrderBy(s => (double)s.Price) // Cast to double for SQLite
                 .ToListAsync();
         }
 
@@ -63,7 +72,7 @@ namespace LaundromatManagementSystem.Repositories
         {
             service.CreateDate = DateTime.UtcNow;
             service.UpdateDate = DateTime.UtcNow;
-            
+
             _context.Services.Add(service);
             await _context.SaveChangesAsync();
         }
@@ -80,7 +89,6 @@ namespace LaundromatManagementSystem.Repositories
             var service = await GetServiceByIdAsync(id);
             if (service != null)
             {
-                // Soft delete by marking as unavailable
                 service.IsAvailable = false;
                 service.UpdateDate = DateTime.UtcNow;
                 await UpdateServiceAsync(service);

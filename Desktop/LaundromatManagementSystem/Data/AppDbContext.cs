@@ -20,7 +20,7 @@ namespace LaundromatManagementSystem.Data
             string databasePath = GetDatabasePath();
 
             // Enable SQLite encryption with a password (optional but recommended)
-            var connectionString = $"Data Source={databasePath};Password=SecurePassword123!";
+            var connectionString = $"Data Source={databasePath};";
 
             optionsBuilder.UseSqlite(connectionString);
         }
@@ -67,7 +67,7 @@ namespace LaundromatManagementSystem.Data
                     NameRw = "Karaba y'amazi ashyushye",
                     NameFr = "Lavage à l'eau chaude",
                     Type = "washing",
-                    Price = 5000.00,
+                    Price = 5000,
                     Icon = "🔥",
                     Color = "#FEE2E2",
                     IsAvailable = true,
@@ -84,7 +84,7 @@ namespace LaundromatManagementSystem.Data
                     NameRw = "Karaba y'amazi konje",
                     NameFr = "Lavage à l'eau froide",
                     Type = "washing",
-                    Price = 3000.00,
+                    Price = 3000,
                     Icon = "💧",
                     Color = "#DBEAFE",
                     IsAvailable = true,
@@ -101,7 +101,7 @@ namespace LaundromatManagementSystem.Data
                     NameRw = "Umisha byihuse",
                     NameFr = "Séchage express",
                     Type = "drying",
-                    Price = 2500.00,
+                    Price = 2500,
                     Icon = "⚡",
                     Color = "#FEF3C7",
                     IsAvailable = true,
@@ -118,7 +118,7 @@ namespace LaundromatManagementSystem.Data
                     NameRw = "Detero ntarengwa",
                     NameFr = "Détergent premium",
                     Type = "addon",
-                    Price = 1000.00,
+                    Price = 1000,
                     Icon = "🌟",
                     Color = "#D1FAE5",
                     IsAvailable = true,

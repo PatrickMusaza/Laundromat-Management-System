@@ -19,7 +19,7 @@ namespace LaundromatManagementSystem.ViewModels
         private string _description;
 
         [ObservableProperty]
-        private double _price;
+        private decimal _price;
 
         [ObservableProperty]
         private string _icon;
