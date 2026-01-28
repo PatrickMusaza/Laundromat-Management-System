@@ -15,7 +15,7 @@ namespace LaundromatManagementSystem.Entities
         public string Type { get; set; } = string.Empty; // washing, drying, addon, package
 
         [MaxLength(50)]
-        public string Icon { get; set; } = string.Empty; // Icon for category
+        public string? Icon { get; set; } // Icon for category
 
         [MaxLength(20)]
         public string Color { get; set; } = string.Empty; // Color for category

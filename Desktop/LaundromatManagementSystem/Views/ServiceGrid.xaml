@@ -17,5 +17,233 @@
                            HeightRequest="50"
                            WidthRequest="50"/>
 
+        <!-- Dynamic Category Tabs -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Categories}"
+                        SelectionMode="None"
+                        HorizontalScrollBarVisibility="Never"
+                        Margin="0,0,0,24"
+                        HeightRequest="70">
+
+            <!-- Horizontal Layout -->
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal"
+                                   ItemSpacing="12"/>
+            </CollectionView.ItemsLayout>
+
+            <!-- Item Template -->
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:CategoryViewModel">
+                    <!-- Border stretches dynamically -->
+                    <Border
+                        BackgroundColor="{Binding ButtonBackground}"
+                        Stroke="{Binding ButtonBorder}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
+                        VerticalOptions="Fill"
+                        HorizontalOptions="Fill"
+                        MinimumWidthRequest="180">
+
+                        <!-- Grid layout inside the Border -->
+                        <Grid ColumnDefinitions="Auto,*"
+                              ColumnSpacing="8"
+                              Padding="12"
+                              VerticalOptions="Center"
+                              HorizontalOptions="Center">
+
+                            <!-- Category Icon -->
+                            <Label Grid.Column="0"
+                                   Text="{Binding Icon}"
+                                   FontSize="20"
+                                   TextColor="{Binding IconColor}"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"/>
+
+                            <!-- Category Name -->
+                            <Label Grid.Column="1"
+                                   Text="{Binding Name}"
+                                   FontSize="12"
+                                   FontAttributes="Bold"
+                                   TextColor="{Binding ButtonTextColor}"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Start"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="1"/>
+                        </Grid>
+
+                        <!-- Tap Gesture -->
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding SelectCommand}"
+                                CommandParameter="{Binding Type}"/>
+                        </Border.GestureRecognizers>
+
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+
+        <!-- Services Grid -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Services}"
+                        SelectionMode="None">
+
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="3"
+                                 HorizontalItemSpacing="24"
+                                 VerticalItemSpacing="24"/>
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="vm:ServiceViewModel">
+
+                    <Frame
+                        BackgroundColor="{Binding ServiceBackgroundColor}"
+                        BorderColor="{Binding ServiceBorderColor}"
+                        CornerRadius="16"
+                        Padding="20"
+                        Margin="10"
+                        HeightRequest="330"
+                        HasShadow="True">
+
+                        <!-- MAUI Shadow -->
+                        <Frame.Shadow>
+                            <Shadow
+                                Brush="{Binding ShadowColor}"
+                                Offset="4,4"
+                                Radius="10"/>
+                        </Frame.Shadow>
+
+                        <!-- Hover / Visual States (Scale only) -->
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+
+                                <VisualState x:Name="Normal">
+                                    <VisualState.Setters>
+                                        <Setter Property="Scale"
+                                                Value="1"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Property="Scale"
+                                                Value="1.05"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <!-- Content -->
+                        <VerticalStackLayout Spacing="16">
+
+                            <!-- Icon -->
+                            <Border
+                                BackgroundColor="{Binding IconBackgroundColor}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 44"
+                                WidthRequest="88"
+                                HeightRequest="88"
+                                HorizontalOptions="Center">
+
+                                <Label
+                                    Text="{Binding Icon}"
+                                    FontSize="48"
+                                    TextColor="{Binding IconColor}"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+                            </Border>
+
+                            <!-- Name -->
+                            <Label
+                                Text="{Binding Name}"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                TextColor="{Binding TextColor}"
+                                HorizontalTextAlignment="Center"/>
+
+                            <!-- Description -->
+                            <Label
+                                Text="{Binding Description}"
+                                FontSize="12"
+                                TextColor="{Binding DescriptionColor}"
+                                HorizontalTextAlignment="Center"
+                                IsVisible="{Binding HasDescription}"/>
+
+                            <!-- Price -->
+                            <Border
+                                BackgroundColor="{Binding PriceBackgroundColor}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 8"
+                                Padding="16,12">
+
+                                <VerticalStackLayout Spacing="4">
+
+                                    <Label
+                                        FontSize="24"
+                                        FontAttributes="Bold"
+                                        HorizontalOptions="Center"
+                                        TextColor="White"
+                                        Text="{Binding Price, StringFormat='{0:N0}'}">
+
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                TargetType="Label"
+                                                Binding="{Binding Price}"
+                                                Value="0">
+                                                <Setter Property="Text"
+                                                        Value="Free"/>
+                                                <Setter Property="TextColor"
+                                                        Value="#10B981"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                    <Label
+                                        FontSize="12"
+                                        HorizontalOptions="Center"
+                                        Text="RWF"
+                                        TextColor="White">
+
+                                        <Label.Triggers>
+                                            <DataTrigger
+                                                TargetType="Label"
+                                                Binding="{Binding Price}"
+                                                Value="0">
+                                                <Setter Property="Text"
+                                                        Value="Complimentary"/>
+                                                <Setter Property="TextColor"
+                                                        Value="#10B981"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- CTA -->
+                            <Label
+                                Text="{Binding TapToAddText}"
+                                FontSize="12"
+                                TextColor="{Binding TapToAddColor}"
+                                HorizontalOptions="Center"/>
+
+                        </VerticalStackLayout>
+
+                        <!-- Tap -->
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding AddToCartCommand}"/>
+                        </Frame.GestureRecognizers>
+
+                    </Frame>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
     </Grid>
 </ContentView>
