@@ -35,10 +35,6 @@ namespace LaundromatManagementSystem.Data
                 entity.HasIndex(e => e.Type);
                 entity.HasIndex(e => e.IsAvailable);
                 entity.HasIndex(e => e.ServiceCategoryId);
-
-                // Configure decimal precision
-                entity.Property(e => e.Price)
-                    .HasPrecision(18, 2);
             });
 
             // Configure ServiceCategory entity
@@ -71,7 +67,7 @@ namespace LaundromatManagementSystem.Data
                     NameRw = "Karaba y'amazi ashyushye",
                     NameFr = "Lavage à l'eau chaude",
                     Type = "washing",
-                    Price = 5000,
+                    Price = 5000.00,
                     Icon = "🔥",
                     Color = "#FEE2E2",
                     IsAvailable = true,
@@ -88,7 +84,7 @@ namespace LaundromatManagementSystem.Data
                     NameRw = "Karaba y'amazi konje",
                     NameFr = "Lavage à l'eau froide",
                     Type = "washing",
-                    Price = 3000,
+                    Price = 3000.00,
                     Icon = "💧",
                     Color = "#DBEAFE",
                     IsAvailable = true,
@@ -105,7 +101,7 @@ namespace LaundromatManagementSystem.Data
                     NameRw = "Umisha byihuse",
                     NameFr = "Séchage express",
                     Type = "drying",
-                    Price = 2500,
+                    Price = 2500.00,
                     Icon = "⚡",
                     Color = "#FEF3C7",
                     IsAvailable = true,
@@ -122,7 +118,7 @@ namespace LaundromatManagementSystem.Data
                     NameRw = "Detero ntarengwa",
                     NameFr = "Détergent premium",
                     Type = "addon",
-                    Price = 1000,
+                    Price = 1000.00,
                     Icon = "🌟",
                     Color = "#D1FAE5",
                     IsAvailable = true,

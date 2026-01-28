@@ -16,16 +16,16 @@ namespace LaundromatManagementSystem.Entities
 
         [Required]
         [MaxLength(50)]
-        public string Type { get; set; } = string.Empty; // washing, drying, addon, package
+        public string Type { get; set; } = string.Empty;
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal Price { get; set; }
+        // Change from decimal to double for SQLite compatibility
+        public double Price { get; set; } // Changed from decimal
 
         [MaxLength(10)]
-        public string Icon { get; set; } = string.Empty; // emoji or icon code
+        public string Icon { get; set; } = string.Empty;
 
         [MaxLength(20)]
-        public string Color { get; set; } = string.Empty; // hex color
+        public string Color { get; set; } = string.Empty;
 
         public bool IsAvailable { get; set; } = true;
 

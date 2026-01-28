@@ -1,11 +1,11 @@
 ## **1. First, install required NuGet packages:**
 ```xml
 <!-- In your .csproj file -->
-<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
-<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0" />
-<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.0" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" />
+<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
 <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.0" />
-<PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
+<PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0" />
 ```
 
 ## **2. Models with EF Core**
@@ -372,7 +372,7 @@ namespace LaundromatManagementSystem.Data
             var connectionString = new SqliteConnectionStringBuilder
             {
                 DataSource = dbPath,
-                Password = "YourSecurePassword123!", // Add password for encryption
+                Password = "SecurePassword123!", // Add password for encryption
                 Mode = SqliteOpenMode.ReadWriteCreate,
                 Cache = SqliteCacheMode.Shared
             }.ToString();

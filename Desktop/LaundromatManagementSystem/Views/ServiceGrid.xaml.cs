@@ -21,9 +21,6 @@ namespace LaundromatManagementSystem.Views
         public static readonly BindableProperty CategoryChangedCommandProperty =
             BindableProperty.Create(nameof(CategoryChangedCommand), typeof(ICommand), typeof(ServiceGrid));
 
-        public static readonly BindableProperty AddToCartCommandProperty =
-            BindableProperty.Create(nameof(AddToCartCommand), typeof(ICommand), typeof(ServiceGrid));
-
         public string SelectedCategory
         {
             get => (string)GetValue(SelectedCategoryProperty);
@@ -48,12 +45,6 @@ namespace LaundromatManagementSystem.Views
             set => SetValue(CategoryChangedCommandProperty, value);
         }
 
-        public ICommand AddToCartCommand
-        {
-            get => (ICommand)GetValue(AddToCartCommandProperty);
-            set => SetValue(AddToCartCommandProperty, value);
-        }
-
         public ServiceGridViewModel ViewModel { get; private set; }
 
         public ServiceGrid()
@@ -61,26 +52,44 @@ namespace LaundromatManagementSystem.Views
             InitializeComponent();
         }
 
-        // protected override void OnBindingContextChanged()
-        // {
-        //     base.OnBindingContextChanged();
+        protected override void OnBindingContextChanged()
+        {
+            base.OnBindingContextChanged();
 
-        //     if (ViewModel != null)
-        //         return;
+            if (ViewModel != null)
+                return;
 
-        //     var serviceService = ServiceLocator.GetService<IServiceService>();
+            try
+            {
+                // Use dependency injection instead of ServiceLocator if possible
+                var serviceService = App.Current?.Handler?.MauiContext?.Services.GetService<IServiceService>();
 
-        //     ViewModel = new ServiceGridViewM odel(
-        //         serviceService,
-        //         CategoryChangedCommand
-        //     );
+                if (serviceService == null)
+                {
+                    // Fallback to ServiceLocator if DI is not set up
+                    serviceService = ServiceLocator.GetService<IServiceService>();
+                }
 
-        //     ViewModel.SelectedCategory = SelectedCategory;
-        //     ViewModel.Language = Language;
-        //     ViewModel.Theme = Theme;
+                ViewModel = new ServiceGridViewModel(
+                    serviceService,
+                    CategoryChangedCommand
+                );
 
-        //     BindingContext = ViewModel;
-        // }
+                ViewModel.SelectedCategory = SelectedCategory;
+                ViewModel.Language = Language;
+                ViewModel.Theme = Theme;
+
+                BindingContext = ViewModel;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing ServiceGrid: {ex.Message}");
+                Application.Current.MainPage.DisplayAlert("Error", "Failed to initialize service grid.", "OK").Wait();
+                // Initialize with empty viewmodel to prevent crash
+                ViewModel = new ServiceGridViewModel(null, CategoryChangedCommand);
+                BindingContext = ViewModel;
+            }
+        }
 
         private static void OnSelectedCategoryChanged(BindableObject bindable, object oldValue, object newValue)
         {
@@ -103,6 +112,17 @@ namespace LaundromatManagementSystem.Views
             if (bindable is ServiceGrid serviceGrid && newValue is Theme theme)
             {
                 serviceGrid.ViewModel.Theme = theme;
+            }
+        }
+
+        // Clean up resources when control is disposed
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+
+            if (Parent == null && ViewModel != null)
+            {
+                ViewModel.Cleanup();
             }
         }
     }

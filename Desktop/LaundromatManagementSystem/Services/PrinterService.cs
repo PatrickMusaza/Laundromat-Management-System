@@ -6,7 +6,6 @@ namespace LaundromatManagementSystem.Services
     public interface IPrinterService
     {
         Task<bool> PrintReceipt(ReceiptContent receipt);
-        Task<bool> TestPrinter();
         bool IsPrinterAvailable { get; }
     }
 
@@ -56,39 +55,6 @@ namespace LaundromatManagementSystem.Services
             {
                 Console.WriteLine($"Printer error: {ex.Message}");
                 throw;
-            }
-        }
-
-        public async Task<bool> TestPrinter()
-        {
-            try
-            {
-                var testReceipt = new ReceiptContent
-                {
-                    TransactionId = "TEST-001",
-                    Date = DateTime.Now,
-                    Cashier = "Test User",
-                    CustomerPhone = "+250 788 000 000",
-                    PaymentMethod = "Cash",
-                    Amount = 10000,
-                    Change = 0,
-                    Items = new List<CartItem>
-                    {
-                        new CartItem
-                        {
-                            Name = "Test Service",
-                            Quantity = 1,
-                            Price = 10000,
-                                
-                        }
-                    }
-                };
-
-                return await PrintReceipt(testReceipt);
-            }
-            catch
-            {
-                return false;
             }
         }
 

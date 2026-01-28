@@ -24,8 +24,7 @@
                     Padding="0">
                 <views:ServiceGrid
                     SelectedCategory="{Binding SelectedCategory}"
-                    CategoryChangedCommand="{Binding ChangeCategoryCommand}"
-                    AddToCartCommand="{Binding AddToCartCommand}"/>
+                    CategoryChangedCommand="{Binding ChangeCategoryCommand}"/>
             </Border>
 
             <!-- Right Panel - Shopping Cart -->

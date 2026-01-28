@@ -15,7 +15,7 @@ namespace LaundromatManagementSystem
             _serviceProvider = serviceProvider;
 
             // Initialize database
-            InitializeDatabase();
+            Task.Run(async () => await InitializeDatabase());
 
             //Configure services
             ConfigureServices();
@@ -38,7 +38,7 @@ namespace LaundromatManagementSystem
             Services = services.BuildServiceProvider();
         }
 
-        private async void InitializeDatabase()
+        private async Task InitializeDatabase()
         {
             try
             {

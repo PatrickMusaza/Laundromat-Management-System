@@ -10,7 +10,7 @@ namespace LaundromatManagementSystem.Models
         private string _id = string.Empty;
         private string _serviceId = string.Empty;
         private string _name = string.Empty;
-        private decimal _price;
+        private double _price;
         private int _quantity = 1;
         private ObservableCollection<ServiceAddon> _addons = new();
 
@@ -53,7 +53,7 @@ namespace LaundromatManagementSystem.Models
             }
         }
 
-        public decimal Price
+        public double Price
         {
             get => _price;
             set
@@ -92,7 +92,7 @@ namespace LaundromatManagementSystem.Models
             }
         }
 
-        public decimal TotalPrice => (Price + Addons.Sum(a => a.Price)) * Quantity;
+        public double TotalPrice => (Price + Addons.Sum(a => a.Price)) * Quantity;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

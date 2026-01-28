@@ -19,10 +19,13 @@ namespace LaundromatManagementSystem.ViewModels
         private string _description;
 
         [ObservableProperty]
-        private decimal _price;
+        private double _price;
 
         [ObservableProperty]
         private string _icon;
+
+        [ObservableProperty]
+        private string _hexColor;
 
         [ObservableProperty]
         private Theme _theme;
@@ -30,12 +33,10 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private Language _language;
 
-        private readonly Action<CartItem> _addToCart;
-
         public bool HasDescription => !string.IsNullOrEmpty(Description);
         public string PriceFormatted => Price == 0 ? "FREE" : Price.ToString("N0");
 
-        // Colors based on service type and theme
+        // Colors based on service type and theme - NOW USING DATABASE COLOR
         public Color IconBackgroundColor => GetIconBackgroundColor();
         public Color ShadowColor => GetShadowColor();
         public Color IconColor => GetIconColor();
@@ -56,6 +57,7 @@ namespace LaundromatManagementSystem.ViewModels
             Description = item.Description;
             Price = item.Price;
             Icon = item.Icon;
+            HexColor = item.Color; // Set color from database
 
             // Initialize from state service
             _theme = theme;
@@ -70,7 +72,7 @@ namespace LaundromatManagementSystem.ViewModels
                 Quantity = 1
             };
 
-            // Subscribe to state changes (if this service needs to update dynamically)
+            // Subscribe to state changes
             _stateService.PropertyChanged += OnStateChanged;
         }
 
@@ -119,7 +121,6 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void AddToCart()
         {
-
             if (_cartItem == null)
             {
                 return;
@@ -127,7 +128,6 @@ namespace LaundromatManagementSystem.ViewModels
 
             try
             {
-                // Use ApplicationStateService directly
                 var stateService = ApplicationStateService.Instance;
                 stateService.AddToCart(_cartItem);
 
@@ -142,7 +142,7 @@ namespace LaundromatManagementSystem.ViewModels
             }
             catch (Exception ex)
             {
-                Application.Current.MainPage.DisplayAlert("Error", $"DEBUG: Error adding to cart: {ex.Message}", "OK");
+                Application.Current.MainPage.DisplayAlert("Error", $"Error adding to cart: {ex.Message}", "OK");
             }
         }
 
@@ -189,8 +189,22 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(TapToAddText));
         }
 
+        // UPDATED: Use color from database instead of hardcoded mapping
         private Color GetIconBackgroundColor()
         {
+            if (!string.IsNullOrEmpty(HexColor))
+            {
+                try
+                {
+                    return Microsoft.Maui.Graphics.Color.FromArgb(HexColor);
+                }
+                catch
+                {
+                    // Fallback to hardcoded mapping if database color is invalid
+                }
+            }
+
+            // Fallback to icon-based colors if no database color
             return Icon switch
             {
                 "🔥" => Color.FromArgb("#FEE2E2"),  // Hot water

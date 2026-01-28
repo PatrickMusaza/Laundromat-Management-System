@@ -15,7 +15,9 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private string _selectedCategory = "washing";
 
-        // Keep settable properties for XAML binding compatibility
+        [ObservableProperty]
+        private bool _isLoading;
+
         [ObservableProperty]
         private Language _language;
 
@@ -25,13 +27,11 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private ObservableCollection<ServiceViewModel> _services = new();
 
-        private readonly Action<CartItem> _addToCart;
-
-        // Text properties
-        public string WashText => GetCategoryText("WASH");
-        public string DryText => GetCategoryText("DRY");
-        public string AddonText => GetCategoryText("ADD-ON");
-        public string PackageText => GetCategoryText("PACKAGE");
+        // Text properties - Now fetched from database
+        public string WashText => GetCategoryTranslation("washing");
+        public string DryText => GetCategoryTranslation("drying");
+        public string AddonText => GetCategoryTranslation("addon");
+        public string PackageText => GetCategoryTranslation("package");
 
         // Button colors based on selection and theme
         public Color WashButtonBackground => GetButtonBackground("washing");
@@ -51,12 +51,10 @@ namespace LaundromatManagementSystem.ViewModels
         public Color PackageButtonTextColor => GetButtonTextColor("package");
 
         public ICommand CategoryChangedCommand { get; }
-        public ICommand AddToCartCommand { get; }
 
         public ServiceGridViewModel(IServiceService serviceService,
                                    ICommand categoryChangedCommand)
         {
-
             _serviceService = serviceService;
             CategoryChangedCommand = categoryChangedCommand;
 
@@ -183,6 +181,8 @@ namespace LaundromatManagementSystem.ViewModels
 
         private async void LoadServices()
         {
+            IsLoading = true;
+
             try
             {
                 var serviceItems = await _serviceService.GetServicesByCategoryAsync(SelectedCategory, Language);
@@ -190,7 +190,11 @@ namespace LaundromatManagementSystem.ViewModels
 
                 foreach (var item in serviceItems)
                 {
-                    Services.Add(new ServiceViewModel(item, Theme, Language));
+                    // Only add available services
+                    if (item.IsAvailable)
+                    {
+                        Services.Add(new ServiceViewModel(item, Theme, Language));
+                    }
                 }
 
                 foreach (var service in Services)
@@ -201,37 +205,44 @@ namespace LaundromatManagementSystem.ViewModels
             }
             catch (Exception ex)
             {
-                // Handle database errors
-                Console.WriteLine($"Error loading services: {ex.Message}");
+                // Handle database errors gracefully
+                await Application.Current.MainPage.DisplayAlert("Error", $"Failed to load services: {ex.Message}", "OK");
 
-                // Fallback to dummy data if needed
-                Services.Clear();
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 
-        private string GetCategoryText(string categoryKey)
+        // UPDATED: Get category translations from database or fallback
+        private string GetCategoryTranslation(string category)
         {
+            // TODO: Fetch category translations from database
+            // For now, use hardcoded fallback until you add category translations to database
+
+            // You can add a CategoryTranslations table in database later
             var translations = new Dictionary<string, Dictionary<string, string>>
             {
-                ["WASH"] = new()
+                ["washing"] = new()
                 {
                     ["EN"] = "WASH",
                     ["RW"] = "KARABA",
                     ["FR"] = "LAVER"
                 },
-                ["DRY"] = new()
+                ["drying"] = new()
                 {
                     ["EN"] = "DRY",
                     ["RW"] = "UMISHA",
                     ["FR"] = "SÉCHER"
                 },
-                ["ADD-ON"] = new()
+                ["addon"] = new()
                 {
                     ["EN"] = "ADD-ON",
                     ["RW"] = "ONGERAHO",
                     ["FR"] = "SUPPLÉMENT"
                 },
-                ["PACKAGE"] = new()
+                ["package"] = new()
                 {
                     ["EN"] = "PACKAGE",
                     ["RW"] = "PAKI",
@@ -239,7 +250,17 @@ namespace LaundromatManagementSystem.ViewModels
                 }
             };
 
-            return translations[categoryKey][Language.ToString()];
+            if (translations.TryGetValue(category, out var categoryTranslations))
+            {
+                var languageKey = Language.ToString();
+                if (categoryTranslations.TryGetValue(languageKey, out var translation))
+                {
+                    return translation;
+                }
+            }
+
+            // Fallback to category name
+            return category.ToUpper();
         }
 
         private Color GetButtonBackground(string category)
@@ -285,6 +306,12 @@ namespace LaundromatManagementSystem.ViewModels
         public void Cleanup()
         {
             _stateService.PropertyChanged -= OnStateChanged;
+
+            // Clean up all service viewmodels
+            foreach (var service in Services)
+            {
+                service.Cleanup();
+            }
         }
     }
 }
