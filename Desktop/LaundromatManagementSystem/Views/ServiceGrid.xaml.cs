@@ -1,6 +1,7 @@
 using System.Windows.Input;
 using LaundromatManagementSystem.Services;
 using LaundromatManagementSystem.ViewModels;
+using LaundromatManagementSystem.Models;
 
 namespace LaundromatManagementSystem.Views
 {
@@ -45,49 +46,62 @@ namespace LaundromatManagementSystem.Views
             set => SetValue(CategoryChangedCommandProperty, value);
         }
 
-        public ServiceGridViewModel ViewModel { get; private set; }
+        private ServiceGridViewModel _viewModel;
 
         public ServiceGrid()
         {
             InitializeComponent();
+            InitializeViewModel();
         }
 
-        protected override void OnBindingContextChanged()
+        private void InitializeViewModel()
         {
-            base.OnBindingContextChanged();
-
-            if (ViewModel != null)
-                return;
-
             try
             {
-                // Use dependency injection instead of ServiceLocator if possible
-                var serviceService = App.Current?.Handler?.MauiContext?.Services.GetService<IServiceService>();
-
-                if (serviceService == null)
-                {
-                    // Fallback to ServiceLocator if DI is not set up
-                    serviceService = ServiceLocator.GetService<IServiceService>();
-                }
-
-                ViewModel = new ServiceGridViewModel(
+                var serviceService = GetServiceService();
+                
+                _viewModel = new ServiceGridViewModel(
                     serviceService,
                     CategoryChangedCommand
                 );
 
-                ViewModel.SelectedCategory = SelectedCategory;
-                ViewModel.Language = Language;
-                ViewModel.Theme = Theme;
+                _viewModel.SelectedCategory = SelectedCategory;
+                _viewModel.Language = Language;
+                _viewModel.Theme = Theme;
 
-                BindingContext = ViewModel;
+                BindingContext = _viewModel;
             }
             catch (Exception ex)
             {
+                // Create a fallback viewmodel
+                _viewModel = new ServiceGridViewModel(null, CategoryChangedCommand)
+                {
+                    SelectedCategory = SelectedCategory,
+                    Language = Language,
+                    Theme = Theme
+                };
+                BindingContext = _viewModel;
+                
                 Console.WriteLine($"Error initializing ServiceGrid: {ex.Message}");
-                Application.Current.MainPage.DisplayAlert("Error", "Failed to initialize service grid.", "OK").Wait();
-                // Initialize with empty viewmodel to prevent crash
-                ViewModel = new ServiceGridViewModel(null, CategoryChangedCommand);
-                BindingContext = ViewModel;
+            }
+        }
+
+        private IServiceService GetServiceService()
+        {
+            // Try to get from DI first
+            var service = App.Current?.Handler?.MauiContext?.Services.GetService<IServiceService>();
+            if (service != null)
+                return service;
+
+            // Fallback to ServiceLocator
+            try
+            {
+                return ServiceLocator.GetService<IServiceService>();
+            }
+            catch
+            {
+                // Create a mock service for design time
+                return new MockServiceService();
             }
         }
 
@@ -95,7 +109,7 @@ namespace LaundromatManagementSystem.Views
         {
             if (bindable is ServiceGrid serviceGrid && newValue is string category)
             {
-                serviceGrid.ViewModel.SelectedCategory = category;
+                serviceGrid._viewModel.SelectedCategory = category;
             }
         }
 
@@ -103,7 +117,7 @@ namespace LaundromatManagementSystem.Views
         {
             if (bindable is ServiceGrid serviceGrid && newValue is Language language)
             {
-                serviceGrid.ViewModel.Language = language;
+                serviceGrid._viewModel.Language = language;
             }
         }
 
@@ -111,19 +125,82 @@ namespace LaundromatManagementSystem.Views
         {
             if (bindable is ServiceGrid serviceGrid && newValue is Theme theme)
             {
-                serviceGrid.ViewModel.Theme = theme;
+                serviceGrid._viewModel.Theme = theme;
             }
         }
 
-        // Clean up resources when control is disposed
         protected override void OnParentChanged()
         {
             base.OnParentChanged();
 
-            if (Parent == null && ViewModel != null)
+            if (Parent == null && _viewModel != null)
             {
-                ViewModel.Cleanup();
+                _viewModel.Cleanup();
             }
+        }
+    }
+
+    // Mock service for design time or fallback
+    internal class MockServiceService : IServiceService
+    {
+        public Task<List<CategoryItem>> GetAllCategoriesAsync(Language language)
+        {
+            return Task.FromResult(new List<CategoryItem>
+            {
+                new CategoryItem { Id = 1, Type = "washing", Name = "WASH", Icon = "🧺", Color = "#3B82F6", IsActive = true },
+                new CategoryItem { Id = 2, Type = "drying", Name = "DRY", Icon = "☀️", Color = "#F59E0B", IsActive = true },
+                new CategoryItem { Id = 3, Type = "addon", Name = "ADD-ON", Icon = "➕", Color = "#10B981", IsActive = true },
+                new CategoryItem { Id = 4, Type = "package", Name = "PACKAGE", Icon = "📦", Color = "#8B5CF6", IsActive = true }
+            });
+        }
+
+        public Task<CategoryItem?> GetCategoryByTypeAsync(string type, Language language)
+        {
+            var categories = GetAllCategoriesAsync(language).Result;
+            return Task.FromResult(categories.FirstOrDefault(c => c.Type == type));
+        }
+
+        public Task<List<ServiceItem>> GetServicesByCategoryAsync(string category, Language language)
+        {
+            var services = new List<ServiceItem>();
+            
+            if (category == "washing")
+            {
+                services.Add(new ServiceItem
+                {
+                    Id = "1",
+                    Name = "Hot Water Wash",
+                    Description = "Complete wash with hot water",
+                    Price = 5000,
+                    Icon = "🔥",
+                    Color = "#FEE2E2",
+                    Category = "washing",
+                    IsAvailable = true
+                });
+                services.Add(new ServiceItem
+                {
+                    Id = "2",
+                    Name = "Cold Water Wash",
+                    Description = "Gentle wash with cold water",
+                    Price = 3000,
+                    Icon = "💧",
+                    Color = "#DBEAFE",
+                    Category = "washing",
+                    IsAvailable = true
+                });
+            }
+            
+            return Task.FromResult(services);
+        }
+
+        public Task<ServiceItem?> GetServiceByIdAsync(string id, Language language)
+        {
+            return Task.FromResult<ServiceItem?>(null);
+        }
+
+        public Task InitializeDatabaseAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 }

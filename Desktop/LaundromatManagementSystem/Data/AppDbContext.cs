@@ -51,10 +51,54 @@ namespace LaundromatManagementSystem.Data
         {
             // Seed Service Categories
             modelBuilder.Entity<ServiceCategory>().HasData(
-                new ServiceCategory { Id = 1, Type = "washing" },
-                new ServiceCategory { Id = 2, Type = "drying" },
-                new ServiceCategory { Id = 3, Type = "addon" },
-                new ServiceCategory { Id = 4, Type = "package" }
+                new ServiceCategory
+                {
+                    Id = 1,
+                    Type = "washing",
+                    Icon = "🧺",
+                    Color = "#3B82F6",
+                    NameEn = "WASH",
+                    NameRw = "KARABA",
+                    NameFr = "LAVER",
+                    SortOrder = 1,
+                    IsActive = true
+                },
+                new ServiceCategory
+                {
+                    Id = 2,
+                    Type = "drying",
+                    Icon = "☀️",
+                    Color = "#F59E0B",
+                    NameEn = "DRY",
+                    NameRw = "UMISHA",
+                    NameFr = "SÉCHER",
+                    SortOrder = 2,
+                    IsActive = true
+                },
+                new ServiceCategory
+                {
+                    Id = 3,
+                    Type = "addon",
+                    Icon = "➕",
+                    Color = "#10B981",
+                    NameEn = "ADD-ON",
+                    NameRw = "ONGERAHO",
+                    NameFr = "SUPPLÉMENT",
+                    SortOrder = 3,
+                    IsActive = true
+                },
+                new ServiceCategory
+                {
+                    Id = 4,
+                    Type = "package",
+                    Icon = "📦",
+                    Color = "#8B5CF6",
+                    NameEn = "PACKAGE",
+                    NameRw = "PAKI",
+                    NameFr = "FORFAIT",
+                    SortOrder = 4,
+                    IsActive = true
+                }
             );
 
             // Seed Services
@@ -89,7 +133,7 @@ namespace LaundromatManagementSystem.Data
                     Color = "#DBEAFE",
                     IsAvailable = true,
                     DescriptionEn = "Gentle wash with cold water",
-                    DescriptionRw = "Karaba buhoro buhoro hamwe n'amazi konje",
+                    DescriptionRw = "Karaba buhoro hamwe n'amazi konje",
                     DescriptionFr = "Lavage doux à l'eau froide",
                     ServiceCategoryId = 1
                 },

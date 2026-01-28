@@ -25,7 +25,7 @@ namespace LaundromatManagementSystem.ViewModels
         private string _icon;
 
         [ObservableProperty]
-        private string _hexColor;
+        private string _color;
 
         [ObservableProperty]
         private Theme _theme;
@@ -57,7 +57,7 @@ namespace LaundromatManagementSystem.ViewModels
             Description = item.Description;
             Price = item.Price;
             Icon = item.Icon;
-            HexColor = item.Color; // Set color from database
+            Color = item.Color; // Set color from database
 
             // Initialize from state service
             _theme = theme;
@@ -192,11 +192,11 @@ namespace LaundromatManagementSystem.ViewModels
         // UPDATED: Use color from database instead of hardcoded mapping
         private Color GetIconBackgroundColor()
         {
-            if (!string.IsNullOrEmpty(HexColor))
+            if (!string.IsNullOrEmpty(Color))
             {
                 try
                 {
-                    return Microsoft.Maui.Graphics.Color.FromArgb(HexColor);
+                    return Microsoft.Maui.Graphics.Color.FromArgb(Color);
                 }
                 catch
                 {
@@ -207,12 +207,12 @@ namespace LaundromatManagementSystem.ViewModels
             // Fallback to icon-based colors if no database color
             return Icon switch
             {
-                "🔥" => Color.FromArgb("#FEE2E2"),  // Hot water
-                "💧" => Color.FromArgb("#DBEAFE"),  // Cold water
-                "⚡" => Color.FromArgb("#FEF3C7"),  // Express wash
-                "🌀" => Color.FromArgb("#D1FAE5"),  // Dry cleaning
-                "👔" => Color.FromArgb("#E0E7FF"),  // Ironing
-                "⭐" => Color.FromArgb("#DCFCE7"),  // Package
+                "🔥" => Microsoft.Maui.Graphics.Color.FromArgb("#FEE2E2"),  // Hot water
+                "💧" => Microsoft.Maui.Graphics.Color.FromArgb("#DBEAFE"),  // Cold water
+                "⚡" => Microsoft.Maui.Graphics.Color.FromArgb("#FEF3C7"),  // Express wash
+                "🌀" => Microsoft.Maui.Graphics.Color.FromArgb("#D1FAE5"),  // Dry cleaning
+                "👔" => Microsoft.Maui.Graphics.Color.FromArgb("#E0E7FF"),  // Ironing
+                "⭐" => Microsoft.Maui.Graphics.Color.FromArgb("#DCFCE7"),  // Package
                 _ => Colors.White
             };
         }
@@ -221,9 +221,9 @@ namespace LaundromatManagementSystem.ViewModels
         {
             return Theme switch
             {
-                Theme.Dark => Color.FromArgb("#000000").WithAlpha(0.1f),
-                Theme.Gray => Color.FromArgb("#9CA3AF").WithAlpha(0.1f),
-                _ => Color.FromArgb("#000000").WithAlpha(0.1f)
+                Theme.Dark => Microsoft.Maui.Graphics.Color.FromArgb("#000000").WithAlpha(0.1f),
+                Theme.Gray => Microsoft.Maui.Graphics.Color.FromArgb("#9CA3AF").WithAlpha(0.1f),
+                _ => Microsoft.Maui.Graphics.Color.FromArgb("#000000").WithAlpha(0.1f)
             };
         }
 
@@ -231,12 +231,12 @@ namespace LaundromatManagementSystem.ViewModels
         {
             return Icon switch
             {
-                "🔥" => Color.FromArgb("#EF4444"),  // Red
-                "💧" => Color.FromArgb("#3B82F6"),  // Blue
-                "⚡" => Color.FromArgb("#F59E0B"),  // Amber
-                "🌀" => Color.FromArgb("#10B981"),  // Green
-                "👔" => Color.FromArgb("#6366F1"),  // Indigo
-                "⭐" => Color.FromArgb("#16A34A"),  // Green
+                "🔥" => Microsoft.Maui.Graphics.Color.FromArgb("#EF4444"),  // Red
+                "💧" => Microsoft.Maui.Graphics.Color.FromArgb("#3B82F6"),  // Blue
+                "⚡" => Microsoft.Maui.Graphics.Color.FromArgb("#F59E0B"),  // Amber
+                "🌀" => Microsoft.Maui.Graphics.Color.FromArgb("#10B981"),  // Green
+                "👔" => Microsoft.Maui.Graphics.Color.FromArgb("#6366F1"),  // Indigo
+                "⭐" => Microsoft.Maui.Graphics.Color.FromArgb("#16A34A"),  // Green
                 _ => Colors.Black
             };
         }
@@ -245,7 +245,7 @@ namespace LaundromatManagementSystem.ViewModels
         {
             return Theme switch
             {
-                Theme.Dark => Color.FromArgb("#1F2937"),
+                Theme.Dark => Microsoft.Maui.Graphics.Color.FromArgb("#1F2937"),
                 Theme.Gray => Colors.White,
                 _ => Colors.White
             };
@@ -255,9 +255,9 @@ namespace LaundromatManagementSystem.ViewModels
         {
             return Theme switch
             {
-                Theme.Dark => Color.FromArgb("#374151"),
-                Theme.Gray => Color.FromArgb("#D1D5DB"),
-                _ => Color.FromArgb("#E5E7EB")
+                Theme.Dark => Microsoft.Maui.Graphics.Color.FromArgb("#374151"),
+                Theme.Gray => Microsoft.Maui.Graphics.Color.FromArgb("#D1D5DB"),
+                _ => Microsoft.Maui.Graphics.Color.FromArgb("#E5E7EB")
             };
         }
 
@@ -266,7 +266,7 @@ namespace LaundromatManagementSystem.ViewModels
             return Theme switch
             {
                 Theme.Dark => Colors.White,
-                _ => Color.FromArgb("#111827")
+                _ => Microsoft.Maui.Graphics.Color.FromArgb("#111827")
             };
         }
 
@@ -274,23 +274,23 @@ namespace LaundromatManagementSystem.ViewModels
         {
             return Theme switch
             {
-                Theme.Dark => Color.FromArgb("#9CA3AF"),
-                _ => Color.FromArgb("#6B7280")
+                Theme.Dark => Microsoft.Maui.Graphics.Color.FromArgb("#9CA3AF"),
+                _ => Microsoft.Maui.Graphics.Color.FromArgb("#6B7280")
             };
         }
 
         private Color GetPriceBackgroundColor()
         {
-            return Price == 0 ? Color.FromArgb("#D1FAE5") :
-                   Color.FromArgb("#F59E0B");
+            return Price == 0 ? Microsoft.Maui.Graphics.Color.FromArgb("#D1FAE5") :
+                   Microsoft.Maui.Graphics.Color.FromArgb("#F59E0B");
         }
 
         private Color GetTapToAddColor()
         {
             return Theme switch
             {
-                Theme.Dark => Color.FromArgb("#9CA3AF"),
-                _ => Color.FromArgb("#6B7280")
+                Theme.Dark => Microsoft.Maui.Graphics.Color.FromArgb("#9CA3AF"),
+                _ => Microsoft.Maui.Graphics.Color.FromArgb("#6B7280")
             };
         }
 

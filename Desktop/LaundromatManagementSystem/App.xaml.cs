@@ -48,7 +48,7 @@ namespace LaundromatManagementSystem
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Database initialization error: {ex.Message}");
+                await Application.Current.MainPage.DisplayAlert("Database Error", $"An error occurred while initializing the database: {ex.Message}", "OK");
             }
         }
     }

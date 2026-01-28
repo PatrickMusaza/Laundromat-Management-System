@@ -1,6 +1,7 @@
 using LaundromatManagementSystem.Data;
 using LaundromatManagementSystem.Entities;
 using Microsoft.EntityFrameworkCore;
+using LaundromatManagementSystem.Models;
 
 namespace LaundromatManagementSystem.Repositories
 {
@@ -93,6 +94,28 @@ namespace LaundromatManagementSystem.Repositories
                 service.UpdateDate = DateTime.UtcNow;
                 await UpdateServiceAsync(service);
             }
+        }
+
+        public async Task<List<ServiceCategory>> GetAllCategoriesAsync()
+        {
+            return await _context.ServiceCategories
+                .Where(c => c.IsActive)
+                .OrderBy(c => c.SortOrder)
+                .ToListAsync();
+        }
+
+        public async Task<ServiceCategory?> GetCategoryByTypeAsync(string type)
+        {
+            return await _context.ServiceCategories
+                .FirstOrDefaultAsync(c => c.Type.ToLower() == type.ToLower() && c.IsActive);
+        }
+
+        public async Task<List<CategoryItem>> GetCategoryItemsAsync(Language language)
+        {
+            var categories = await GetAllCategoriesAsync();
+            return categories
+                .Select(c => CategoryItem.FromEntity(c, (Models.Language)language))
+                .ToList();
         }
     }
 }

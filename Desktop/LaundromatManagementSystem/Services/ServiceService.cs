@@ -35,5 +35,20 @@ namespace LaundromatManagementSystem.Services
             }
             return null;
         }
+
+        public async Task<List<CategoryItem>> GetAllCategoriesAsync(Language language)
+        {
+            return await _repository.GetCategoryItemsAsync(language);
+        }
+
+        public async Task<CategoryItem?> GetCategoryByTypeAsync(string type, Language language)
+        {
+            var category = await _repository.GetCategoryByTypeAsync(type);
+            if (category != null)
+            {
+                return CategoryItem.FromEntity(category, (Models.Language)language);
+            }
+            return null;
+        }
     }
 }

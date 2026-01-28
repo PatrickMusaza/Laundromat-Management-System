@@ -4,6 +4,7 @@ using LaundromatManagementSystem.Models;
 using LaundromatManagementSystem.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace LaundromatManagementSystem.ViewModels
 {
@@ -102,7 +103,7 @@ namespace LaundromatManagementSystem.ViewModels
         }
 
         [RelayCommand]
-        private void ProcessPayment()
+        private async Task ProcessPayment()
         {
             if (Cart.Count == 0) return;
 
@@ -110,19 +111,19 @@ namespace LaundromatManagementSystem.ViewModels
             _stateService.ShowPaymentModal = true;
             TransactionId = $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
 
-            Debug.WriteLine($"Payment modal shown via state service: {_stateService.ShowPaymentModal}");
+            await Application.Current.MainPage.DisplayAlert("Payment", "Proceed to payment modal.", "OK");
         }
 
         [RelayCommand]
-        private void ClosePaymentModal()
+        private async Task ClosePaymentModal()
         {
             // Close modal via state service
             _stateService.ShowPaymentModal = false;
-            Debug.WriteLine($"Payment modal closed via state service: {_stateService.ShowPaymentModal}");
+            await Application.Current.MainPage.DisplayAlert("Payment", "Payment modal closed.", "OK");
         }
 
         [RelayCommand]
-        private void CompletePayment((PaymentMethod paymentMethod, string customer) parameters)
+        private async Task CompletePayment((PaymentMethod paymentMethod, string customer) parameters)
         {
             var transaction = new Transaction
             {
@@ -135,7 +136,7 @@ namespace LaundromatManagementSystem.ViewModels
             };
 
             // TODO: Save transaction
-            Debug.WriteLine($"Transaction completed: {TransactionId}");
+            await Application.Current.MainPage.DisplayAlert("Payment Completed", $"Payment of {Total:N0} RWF received via {parameters.paymentMethod}.", "OK");
 
             // Clear cart
             _stateService.CartItems.Clear();
