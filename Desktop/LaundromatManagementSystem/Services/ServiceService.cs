@@ -20,7 +20,7 @@ namespace LaundromatManagementSystem.Services
         public async Task<List<ServiceItem>> GetServicesByCategoryAsync(string category, Language language)
         {
             var services = await _repository.GetServicesByCategoryAsync(category);
-            return services.Select(s => ServiceItem.FromEntity(s, language)).ToList();
+            return services.Select(s => ServiceItem.FromEntity(s, (Models.Language)language)).ToList();
         }
 
         public async Task<ServiceItem?> GetServiceByIdAsync(string id, Language language)
@@ -30,7 +30,7 @@ namespace LaundromatManagementSystem.Services
                 var service = await _repository.GetServiceByIdAsync(serviceId);
                 if (service != null)
                 {
-                    return ServiceItem.FromEntity(service, language);
+                    return ServiceItem.FromEntity(service, (Models.Language)language);
                 }
             }
             return null;

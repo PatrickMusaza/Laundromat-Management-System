@@ -61,26 +61,26 @@ namespace LaundromatManagementSystem.Views
             InitializeComponent();
         }
 
-        protected override void OnBindingContextChanged()
-        {
-            base.OnBindingContextChanged();
+        // protected override void OnBindingContextChanged()
+        // {
+        //     base.OnBindingContextChanged();
 
-            if (ViewModel != null)
-                return;
+        //     if (ViewModel != null)
+        //         return;
 
-            var serviceService = ServiceLocator.GetService<IServiceService>();
+        //     var serviceService = ServiceLocator.GetService<IServiceService>();
 
-            ViewModel = new ServiceGridViewModel(
-                serviceService,
-                CategoryChangedCommand
-            );
+        //     ViewModel = new ServiceGridViewM odel(
+        //         serviceService,
+        //         CategoryChangedCommand
+        //     );
 
-            ViewModel.SelectedCategory = SelectedCategory;
-            ViewModel.Language = Language;
-            ViewModel.Theme = Theme;
+        //     ViewModel.SelectedCategory = SelectedCategory;
+        //     ViewModel.Language = Language;
+        //     ViewModel.Theme = Theme;
 
-            BindingContext = ViewModel;
-        }
+        //     BindingContext = ViewModel;
+        // }
 
         private static void OnSelectedCategoryChanged(BindableObject bindable, object oldValue, object newValue)
         {

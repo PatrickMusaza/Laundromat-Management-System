@@ -1,12 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using LaundromatManagementSystem.Services;
+﻿using LaundromatManagementSystem.Services;
 using LaundromatManagementSystem.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LaundromatManagementSystem
 {
     public partial class App : Application
     {
         private readonly IServiceProvider _serviceProvider;
+        public static IServiceProvider Services { get; private set; }
 
         public App(IServiceProvider serviceProvider)
         {
@@ -47,7 +48,7 @@ namespace LaundromatManagementSystem
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Database initialization error: {ex.Message}");
+                Console.WriteLine($"Database initialization error: {ex.Message}");
             }
         }
     }

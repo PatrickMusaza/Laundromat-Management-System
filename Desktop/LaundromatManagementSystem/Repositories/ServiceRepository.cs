@@ -1,6 +1,5 @@
 using LaundromatManagementSystem.Data;
 using LaundromatManagementSystem.Entities;
-using LaundromatManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LaundromatManagementSystem.Repositories
@@ -12,6 +11,14 @@ namespace LaundromatManagementSystem.Repositories
         public ServiceRepository(AppDbContext context)
         {
             _context = context;
+        }
+
+        public ServiceRepository()
+        {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite("Data Source=laundromat.db;Password=SecurePassword123!")
+                .Options;
+            _context = new AppDbContext(options);
         }
 
         public async Task SeedDatabaseAsync()

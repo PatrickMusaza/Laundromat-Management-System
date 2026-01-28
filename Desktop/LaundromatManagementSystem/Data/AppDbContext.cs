@@ -20,7 +20,7 @@ namespace LaundromatManagementSystem.Data
             string databasePath = GetDatabasePath();
 
             // Enable SQLite encryption with a password (optional but recommended)
-            var connectionString = $"Data Source={databasePath};Password=YourSecurePassword123!";
+            var connectionString = $"Data Source={databasePath};Password=SecurePassword123!";
 
             optionsBuilder.UseSqlite(connectionString);
         }

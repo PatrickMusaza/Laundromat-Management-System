@@ -1,5 +1,6 @@
 using LaundromatManagementSystem.ViewModels;
 using LaundromatManagementSystem.Services;
+using LaundromatManagementSystem.Repositories;
 
 namespace LaundromatManagementSystem.Views
 {
@@ -11,7 +12,8 @@ namespace LaundromatManagementSystem.Views
 
             // Create ViewModel with dependencies
             var cartService = new CartService();
-            var serviceService = new ServiceService();
+            var repository = new ServiceRepository();
+            var serviceService = new ServiceService(repository);
             var viewModel = new DashboardViewModel(serviceService);
 
             BindingContext = viewModel;

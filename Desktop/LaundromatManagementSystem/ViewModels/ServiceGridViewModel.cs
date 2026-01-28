@@ -202,7 +202,7 @@ namespace LaundromatManagementSystem.ViewModels
             catch (Exception ex)
             {
                 // Handle database errors
-                Debug.WriteLine($"Error loading services: {ex.Message}");
+                Console.WriteLine($"Error loading services: {ex.Message}");
 
                 // Fallback to dummy data if needed
                 Services.Clear();
