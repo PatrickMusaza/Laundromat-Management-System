@@ -13,7 +13,7 @@ namespace LaundromatManagementSystem.ViewModels
         private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
 
         [ObservableProperty]
-        private string _selectedCategory = "washing";
+        private string _selectedCategory;
 
         [ObservableProperty]
         private Language _language;
@@ -47,6 +47,7 @@ namespace LaundromatManagementSystem.ViewModels
 
             // Load categories and services
             LoadCategories();
+            LoadServices();
         }
 
         // Override setters to update state service
