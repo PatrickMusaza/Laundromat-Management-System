@@ -396,8 +396,7 @@ namespace LaundromatManagementSystem.ViewModels
             if (!CanCompletePayment) return;
 
             // 1. Create pending transaction
-            var transactionId = string.Empty;
-            transactionId = await _transactionService.CreatePendingTransactionAsync(this);
+            var transactionId = await _transactionService.CreatePendingTransactionAsync(this);
 
             if (string.IsNullOrEmpty(transactionId))
             {

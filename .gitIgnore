@@ -16,3 +16,6 @@ obj/
 # Rider / JetBrains files
 .idea/
 *.iml
+
+#Web Node modules
+node_modules/
