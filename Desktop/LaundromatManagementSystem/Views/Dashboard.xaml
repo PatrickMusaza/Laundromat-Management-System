@@ -22,19 +22,14 @@
             <Border Grid.Column="0"
                     StrokeThickness="0"
                     Padding="0">
-                <views:ServiceGrid
-                    SelectedCategory="{Binding SelectedCategory}"
-                    CategoryChangedCommand="{Binding ChangeCategoryCommand}"/>
+                <views:ServiceGrid/>
             </Border>
 
             <!-- Right Panel - Shopping Cart -->
             <Border Grid.Column="1"
                     StrokeThickness="0"
                     Padding="0">
-                <views:ShoppingCart
-                    Subtotal="{Binding Subtotal}"
-                    Tax="{Binding Tax}"
-                    Total="{Binding Total}"/>
+                <views:ShoppingCart/>
             </Border>
 
         </Grid>
@@ -52,7 +47,8 @@
                 <views:PaymentModal
                     Total="{Binding Total}"
                     TransactionId="{Binding TransactionId}"
-                    CloseCommand="{Binding ClosePaymentModalCommand}"/>
+                    CloseCommand="{Binding ClosePaymentModalCommand}"
+                    PaymentCompleteCommand="{Binding CompletePaymentCommand}"/>
             </Border>
 
         </Border>

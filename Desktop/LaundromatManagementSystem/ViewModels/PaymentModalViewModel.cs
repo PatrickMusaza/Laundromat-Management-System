@@ -458,7 +458,7 @@ namespace LaundromatManagementSystem.ViewModels
             try
             {
                 // Generate new transaction ID
-                var newTransactionId = _stateService.GenerateTransactionId();
+                var newTransactionId = TransactionId;
                 TransactionId = newTransactionId;
 
                 // Get customer identifier
