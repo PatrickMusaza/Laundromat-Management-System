@@ -52,8 +52,7 @@
                 <views:PaymentModal
                     Total="{Binding Total}"
                     TransactionId="{Binding TransactionId}"
-                    CloseCommand="{Binding ClosePaymentModalCommand}"
-                    PaymentCompleteCommand="{Binding CompletePaymentCommand}"/>
+                    CloseCommand="{Binding ClosePaymentModalCommand}"/>
             </Border>
 
         </Border>

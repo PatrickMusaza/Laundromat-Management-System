@@ -7,6 +7,9 @@ namespace LaundromatManagementSystem.Data
     {
         public DbSet<ServiceCategory> ServiceCategories { get; set; }
         public DbSet<Service> Services { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<TransactionItem> TransactionItems { get; set; }
+        public DbSet<PaymentRecord> PaymentRecords { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -41,6 +44,31 @@ namespace LaundromatManagementSystem.Data
             modelBuilder.Entity<ServiceCategory>(entity =>
             {
                 entity.HasIndex(e => e.Type).IsUnique();
+            });
+
+            // Configure Transaction entity
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.HasIndex(e => e.TransactionId).IsUnique();
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => e.PaymentMethod);
+                entity.HasIndex(e => e.TransactionDate);
+            });
+
+            // Configure TransactionItem entity
+            modelBuilder.Entity<TransactionItem>(entity =>
+            {
+                entity.HasIndex(e => e.TransactionId);
+                entity.HasIndex(e => e.ServiceId);
+                entity.HasIndex(e => e.ServiceType);
+            });
+
+            // Configure PaymentRecord entity
+            modelBuilder.Entity<PaymentRecord>(entity =>
+            {
+                entity.HasIndex(e => e.TransactionId);
+                entity.HasIndex(e => e.Status);
+                entity.HasIndex(e => e.PaymentDate);
             });
 
             // Seed initial data

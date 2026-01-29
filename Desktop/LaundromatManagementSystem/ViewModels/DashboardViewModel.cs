@@ -3,8 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using LaundromatManagementSystem.Models;
 using LaundromatManagementSystem.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace LaundromatManagementSystem.ViewModels
 {
@@ -120,27 +118,6 @@ namespace LaundromatManagementSystem.ViewModels
             // Close modal via state service
             _stateService.ShowPaymentModal = false;
             await Application.Current.MainPage.DisplayAlert("Payment", "Payment modal closed.", "OK");
-        }
-
-        [RelayCommand]
-        private async Task CompletePayment((PaymentMethod paymentMethod, string customer) parameters)
-        {
-            var transaction = new Transaction
-            {
-                Id = TransactionId,
-                Timestamp = DateTime.UtcNow,
-                Amount = Total,
-                PaymentMethod = parameters.paymentMethod,
-                Items = new ObservableCollection<CartItem>(Cart),
-                Customer = parameters.customer
-            };
-
-            // TODO: Save transaction
-            await Application.Current.MainPage.DisplayAlert("Payment Completed", $"Payment of {Total:N0} RWF received via {parameters.paymentMethod}.", "OK");
-
-            // Clear cart
-            _stateService.CartItems.Clear();
-            RefreshCart();
         }
 
         private void OnCartUpdated(object? sender, EventArgs e) => RefreshCart();
