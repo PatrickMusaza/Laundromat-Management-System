@@ -47,13 +47,35 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private ObservableCollection<CartItem> _cartItems = new();
 
-        // Commands from parent
+        [ObservableProperty]
+        private decimal _subtotal;
+
+        [ObservableProperty]
+        private decimal _tax;
+
+        [ObservableProperty]
+        private decimal _grandTotal;
+
+        [ObservableProperty]
+        private bool _isCustomerInfoValid;
+
+        [ObservableProperty]
+        private string _customerValidationMessage = string.Empty;
+
+        [ObservableProperty]
+        private bool _showTinPurchaseCode;
+
+        [ObservableProperty]
+        private bool _isPhoneTabSelected = true;
+
+        [ObservableProperty]
+        private bool _isTinTabSelected = false;
+
         public ICommand CloseCommand { get; }
         public ICommand PaymentCompleteCommand { get; }
 
         public bool IsMethodSelected => !string.IsNullOrEmpty(SelectedMethod);
 
-        // Text properties
         public string Title => GetTranslation("title");
         public string TransactionLabel => GetTranslation("transaction");
         public string TotalLabel => GetTranslation("total");
@@ -82,48 +104,6 @@ namespace LaundromatManagementSystem.ViewModels
         public string ChangeMethodLabel => GetTranslation("changeMethod");
         public string ProcessButtonText => GetProcessingButtonText();
 
-        [ObservableProperty]
-        private decimal _subtotal;
-
-        [ObservableProperty]
-        private decimal _tax;
-
-        [ObservableProperty]
-        private decimal _grandTotal;
-
-        [ObservableProperty]
-        private bool _isCustomerInfoValid;
-
-        [ObservableProperty]
-        private string _customerValidationMessage = string.Empty;
-
-        [ObservableProperty]
-        private bool _showTinPurchaseCode;
-
-        [ObservableProperty]
-        private bool _isPhoneTabSelected = true;
-
-        [ObservableProperty]
-        private bool _isTinTabSelected = false;
-
-        // Theme colors 
-        public Color BackgroundColor => GetBackgroundColor();
-        public Color BorderColor => GetBorderColor();
-        public Color TitleColor => GetTitleColor();
-        public Color SubtitleColor => GetSubtitleColor();
-        public Color TextColor => GetTextColor();
-        public Color PlaceholderColor => GetPlaceholderColor();
-        public Color InputBorderColor => GetInputBorderColor();
-        public Color InputBackgroundColor => GetInputBackgroundColor();
-        public Color AmountBorderColor => GetAmountBorderColor();
-        public Color AmountBackgroundColor => GetAmountBackgroundColor();
-        public Color ButtonBackgroundColor => GetButtonBackgroundColor();
-        public Color ButtonTextColor => GetButtonTextColor();
-        public Color CancelButtonBackgroundColor => GetCancelButtonBackgroundColor();
-        public Color CancelButtonTextColor => GetCancelButtonTextColor();
-
-        private IPrinterService? _printerService;
-
         public string CustomerSummary
         {
             get
@@ -137,7 +117,6 @@ namespace LaundromatManagementSystem.ViewModels
             }
         }
 
-        // Computed properties
         public decimal Change
         {
             get
@@ -160,43 +139,50 @@ namespace LaundromatManagementSystem.ViewModels
                     return decimal.TryParse(CashReceived.Replace(",", "").Replace(".", ""),
                         NumberStyles.Number, CultureInfo.InvariantCulture, out decimal received) && received >= Total;
                 }
-                // For MoMo and Card, we just need a method selected and customer info valid
                 return !string.IsNullOrEmpty(SelectedMethod) && IsCustomerInfoValid;
             }
         }
+
+        public Color BackgroundColor => GetBackgroundColor();
+        public Color BorderColor => GetBorderColor();
+        public Color TitleColor => GetTitleColor();
+        public Color SubtitleColor => GetSubtitleColor();
+        public Color TextColor => GetTextColor();
+        public Color PlaceholderColor => GetPlaceholderColor();
+        public Color InputBorderColor => GetInputBorderColor();
+        public Color InputBackgroundColor => GetInputBackgroundColor();
+        public Color AmountBorderColor => GetAmountBorderColor();
+        public Color AmountBackgroundColor => GetAmountBackgroundColor();
+        public Color ButtonBackgroundColor => GetButtonBackgroundColor();
+        public Color ButtonTextColor => GetButtonTextColor();
+        public Color CancelButtonBackgroundColor => GetCancelButtonBackgroundColor();
+        public Color CancelButtonTextColor => GetCancelButtonTextColor();
+
+        private IPrinterService? _printerService;
 
         public PaymentModalViewModel(ICommand closeCommand, ICommand paymentCompleteCommand)
         {
             CloseCommand = closeCommand;
             PaymentCompleteCommand = paymentCompleteCommand;
 
-            // Initialize from state service
             _language = _stateService.CurrentLanguage;
             _theme = _stateService.CurrentTheme;
-
-            // Initialize transaction ID
             _transactionId = _stateService.GenerateTransactionId();
 
-            // Recalculate totals
             RecalculateTotals();
-
-            // Initialize cart items
             CartItems = new ObservableCollection<CartItem>(_stateService.CartItems);
 
-            // Subscribe to state changes
             _stateService.PropertyChanged += OnStateChanged;
 
             try
             {
                 _printerService = ServiceLocator.GetService<IPrinterService>();
             }
-            catch (Exception ex)
+            catch
             {
-                // Handle missing printer service
                 _printerService = null;
             }
 
-            // Subscribe to property changes for validation
             PropertyChanged += OnViewModelPropertyChanged;
         }
 
@@ -216,15 +202,6 @@ namespace LaundromatManagementSystem.ViewModels
             ValidateCustomerInfo();
         }
 
-        private void OnViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(CashReceived) || e.PropertyName == nameof(SelectedMethod))
-            {
-                OnPropertyChanged(nameof(Change));
-                OnPropertyChanged(nameof(CanCompletePayment));
-            }
-        }
-
         partial void OnLanguageChanged(Language value)
         {
             UpdateTextProperties();
@@ -233,6 +210,15 @@ namespace LaundromatManagementSystem.ViewModels
         partial void OnThemeChanged(Theme value)
         {
             UpdateThemeProperties();
+        }
+
+        private void OnViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CashReceived) || e.PropertyName == nameof(SelectedMethod))
+            {
+                OnPropertyChanged(nameof(Change));
+                OnPropertyChanged(nameof(CanCompletePayment));
+            }
         }
 
         [RelayCommand]
@@ -275,9 +261,8 @@ namespace LaundromatManagementSystem.ViewModels
         private void SelectPaymentMethod(string method)
         {
             SelectedMethod = method;
-            ShowPaymentMethods = true; // Hide payment method selection
+            ShowPaymentMethods = true;
 
-            // Auto-fill cash received with total for cash payments
             if (method == "Cash")
             {
                 CashReceived = Total.ToString("N0", CultureInfo.InvariantCulture);
@@ -326,7 +311,6 @@ namespace LaundromatManagementSystem.ViewModels
                 }
             }
 
-            // Format the number if it's a valid number
             if (long.TryParse(CashReceived.Replace(",", "").Replace(".", ""), out long value))
             {
                 CashReceived = value.ToString("N0", CultureInfo.InvariantCulture);
@@ -338,9 +322,7 @@ namespace LaundromatManagementSystem.ViewModels
 
         private bool ValidateCustomerInfo()
         {
-            // If both are empty
-            if (string.IsNullOrWhiteSpace(Customer) &&
-                string.IsNullOrWhiteSpace(TinNumber))
+            if (string.IsNullOrWhiteSpace(Customer) && string.IsNullOrWhiteSpace(TinNumber))
             {
                 CustomerValidationMessage = "Please provide either phone number or TIN";
                 IsCustomerInfoValid = false;
@@ -349,9 +331,7 @@ namespace LaundromatManagementSystem.ViewModels
                 return false;
             }
 
-            // If TIN is provided but purchase code is empty
-            if (!string.IsNullOrWhiteSpace(TinNumber) &&
-                string.IsNullOrWhiteSpace(PurchaseCode))
+            if (!string.IsNullOrWhiteSpace(TinNumber) && string.IsNullOrWhiteSpace(PurchaseCode))
             {
                 CustomerValidationMessage = "Purchase code is required for TIN";
                 IsCustomerInfoValid = false;
@@ -360,13 +340,9 @@ namespace LaundromatManagementSystem.ViewModels
                 return false;
             }
 
-            // Validate phone format (Rwandan format)
             if (!string.IsNullOrWhiteSpace(Customer))
             {
-                // Remove any spaces or special characters
                 var cleanPhone = Customer.Replace(" ", "").Replace("+", "").Replace("-", "");
-
-                // Check if it's a valid Rwandan phone number (10 digits starting with 250)
                 if (!long.TryParse(cleanPhone, out long phoneNumber) ||
                     (cleanPhone.Length != 12 && cleanPhone.Length != 10) ||
                     !cleanPhone.StartsWith("250"))
@@ -379,7 +355,6 @@ namespace LaundromatManagementSystem.ViewModels
                 }
             }
 
-            // If TIN is provided, validate it (should be 9 digits for Rwanda)
             if (!string.IsNullOrWhiteSpace(TinNumber))
             {
                 var cleanTin = TinNumber.Replace(" ", "").Replace("-", "");
@@ -392,7 +367,6 @@ namespace LaundromatManagementSystem.ViewModels
                     return false;
                 }
 
-                // Purchase code should not be empty
                 if (string.IsNullOrWhiteSpace(PurchaseCode))
                 {
                     CustomerValidationMessage = "Purchase code is required for TIN";
@@ -414,107 +388,51 @@ namespace LaundromatManagementSystem.ViewModels
         {
             if (!ValidateCustomerInfo())
             {
-                await Application.Current.MainPage.DisplayAlert(
-                    "Validation Error",
-                    CustomerValidationMessage,
-                    "OK");
+                await Application.Current.MainPage.DisplayAlert("Validation Error", CustomerValidationMessage, "OK");
                 return;
             }
 
             if (!CanCompletePayment) return;
 
-            if (SelectedMethod == "Cash")
+            var transactionId = await CreatePendingTransactionInDatabase();
+            if (string.IsNullOrEmpty(transactionId))
             {
-                var cashReceived = decimal.Parse(CashReceived.Replace(",", "").Replace(".", ""), CultureInfo.InvariantCulture);
-                var change = cashReceived - Total;
-
-                var confirm = await Application.Current.MainPage.DisplayAlert(
-                    "Confirm Cash Payment",
-                    $"Amount Due: {Total:N0} RWF\n" +
-                    $"Cash Received: {cashReceived:N0}\n" +
-                    $"Change Due: {change:N0} RWF\n\n" +
-                    "Do you want to proceed?",
-                    "Yes, Process",
-                    "Cancel");
-
-                if (!confirm) return;
+                await Application.Current.MainPage.DisplayAlert("Error", "Failed to create transaction. Please try again.", "OK");
+                return;
             }
-            else if (SelectedMethod == "MoMo" || SelectedMethod == "Card")
-            {
-                var confirm = await Application.Current.MainPage.DisplayAlert(
-                    "Confirm Payment",
-                    $"Amount: {Total:N0} RWF\n" +
-                    $"Method: {SelectedMethod}\n\n" +
-                    $"This is a simulation. Real {SelectedMethod} payment requires external device integration.\n\n" +
-                    "Continue with simulation?",
-                    "Yes, Simulate",
-                    "Cancel");
 
-                if (!confirm) return;
-            }
+            var confirmResult = await ShowPaymentConfirmation(transactionId);
+            if (!confirmResult) return;
 
             Processing = true;
 
             try
             {
-                // Generate new transaction ID
-                var newTransactionId = TransactionId;
-                TransactionId = newTransactionId;
+                var paymentResult = await ProcessPaymentSimulation(transactionId);
+                var success = await CompleteTransactionInDatabase(transactionId, paymentResult);
 
-                // Get customer identifier
-                var customerIdentifier = !string.IsNullOrWhiteSpace(Customer) ? Customer : $"TIN: {TinNumber}";
-
-                // Create payment result
-                var paymentResult = new PaymentResult
+                if (success)
                 {
-                    PaymentMethod = SelectedMethod switch
+                    await PrintReceipt(paymentResult);
+
+                    if (PaymentCompleteCommand?.CanExecute(paymentResult) == true)
                     {
-                        "Cash" => PaymentMethod.Cash,
-                        "MoMo" => PaymentMethod.MoMo,
-                        "Card" => PaymentMethod.Card,
-                        _ => PaymentMethod.Cash
-                    },
-                    Customer = customerIdentifier,
-                    Subtotal = Subtotal,
-                    Tax = Tax,
-                    GrandTotal = GrandTotal,
-                    Amount = Total,
-                    Change = Change,
-                    TransactionId = newTransactionId,
-                    Items = new List<CartItem>(CartItems)
-                };
+                        PaymentCompleteCommand.Execute(paymentResult);
+                    }
 
-                // Print receipt with all details
-                await PrintReceipt(paymentResult);
-
-                // Execute completion command
-                if (PaymentCompleteCommand?.CanExecute(paymentResult) == true)
-                {
-                    PaymentCompleteCommand.Execute(paymentResult);
+                    await ShowSuccessMessage(transactionId, paymentResult);
+                    Reset();
+                    ClearCart();
+                    ClosePaymentModal();
                 }
-
-                // Show success message
-                await Application.Current.MainPage.DisplayAlert(
-                    GetTranslation("success"),
-                    $"Transaction: {newTransactionId}\n" +
-                    $"Subtotal: {Subtotal:N0} RWF\n" +
-                    $"Tax: {Tax:N0} RWF\n" +
-                    $"Grand Total: {GrandTotal:N0} RWF\n" +
-                    $"Customer: {customerIdentifier}\n" +
-                    $"Payment Method: {SelectedMethod}\n" +
-                    $"{(SelectedMethod == "Cash" ? $"Cash Received: {CashReceived}\nChange: {Change:N0} RWF" : "")}\n\n",
-                    "OK");
-
-                // Close modal after successful payment
-                Reset();
-                ClearCart();
-                ClosePaymentModal();
-
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "Failed to complete transaction. Please check transaction status.", "OK");
+                }
             }
             catch (Exception ex)
             {
-                await Application.Current.MainPage.DisplayAlert("Error",
-                    $"Payment processing failed: {ex.Message}", "OK");
+                await Application.Current.MainPage.DisplayAlert("Error", $"Payment processing failed: {ex.Message}", "OK");
             }
             finally
             {
@@ -522,24 +440,151 @@ namespace LaundromatManagementSystem.ViewModels
             }
         }
 
+        private async Task<string> CreatePendingTransactionInDatabase()
+        {
+            try
+            {
+                var transactionModel = new TransactionModel
+                {
+                    TransactionId = TransactionId,
+                    Status = "pending",
+                    PaymentMethod = SelectedMethod,
+                    Subtotal = (double)Subtotal,
+                    TaxAmount = (double)Tax,
+                    TotalAmount = (double)GrandTotal,
+                    CashReceived = SelectedMethod == "Cash" ?
+                        double.Parse(CashReceived?.Replace(",", "").Replace(".", "") ?? "0") :
+                        null,
+                    ChangeAmount = SelectedMethod == "Cash" ? (double)Change : null,
+                    CustomerName = string.IsNullOrEmpty(Customer) ? "Walk-in Customer" : Customer,
+                    CustomerTin = TinNumber ?? "",
+                    CustomerPhone = Customer ?? "",
+                    TransactionDate = DateTime.UtcNow,
+                    Items = CartItems.Select(item => new TransactionItemModel
+                    {
+                        ServiceId = int.TryParse(item.ServiceId, out int serviceId) ? serviceId : 0,
+                        ServiceName = item.Name,
+                        UnitPrice = (double)item.Price,
+                        Quantity = item.Quantity,
+                        TotalPrice = (double)item.TotalPrice,
+                        ServiceType = item.ServiceType ?? "unknown",
+                        ServiceIcon = item.Icon ?? "🧺"
+                    }).ToList()
+                };
+
+                return await _stateService.CreatePendingTransactionAsync(transactionModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating transaction: {ex.Message}");
+                return _stateService.GenerateTransactionId();
+            }
+        }
+
+        private async Task<bool> ShowPaymentConfirmation(string transactionId)
+        {
+            if (SelectedMethod == "Cash")
+            {
+                var cashReceived = decimal.Parse(CashReceived.Replace(",", "").Replace(".", ""), CultureInfo.InvariantCulture);
+                var change = cashReceived - Total;
+
+                return await Application.Current.MainPage.DisplayAlert(
+                    "Confirm Cash Payment",
+                    $"Transaction: {transactionId}\n" +
+                    $"Amount Due: {Total:N0} RWF\n" +
+                    $"Cash Received: {cashReceived:N0}\n" +
+                    $"Change Due: {change:N0} RWF\n\n" +
+                    "Do you want to proceed?",
+                    "Yes, Process",
+                    "Cancel");
+            }
+            else if (SelectedMethod == "MoMo" || SelectedMethod == "Card")
+            {
+                return await Application.Current.MainPage.DisplayAlert(
+                    "Confirm Payment",
+                    $"Transaction: {transactionId}\n" +
+                    $"Amount: {Total:N0} RWF\n" +
+                    $"Method: {SelectedMethod}\n\n" +
+                    $"This is a simulation. Real {SelectedMethod} payment requires external device integration.\n\n" +
+                    "Continue with simulation?",
+                    "Yes, Simulate",
+                    "Cancel");
+            }
+
+            return false;
+        }
+
+        private async Task<PaymentResult> ProcessPaymentSimulation(string transactionId)
+        {
+            await Task.Delay(500);
+
+            return new PaymentResult
+            {
+                PaymentMethod = SelectedMethod switch
+                {
+                    "Cash" => PaymentMethod.Cash,
+                    "MoMo" => PaymentMethod.MoMo,
+                    "Card" => PaymentMethod.Card,
+                    _ => PaymentMethod.Cash
+                },
+                Customer = !string.IsNullOrWhiteSpace(Customer) ? Customer : $"TIN: {TinNumber}",
+                CustomerName = string.IsNullOrEmpty(Customer) ? "Walk-in Customer" : Customer,
+                CustomerTin = TinNumber ?? "",
+                CustomerPhone = Customer,
+                Subtotal = (double)Subtotal,
+                Tax = (double)Tax,
+                GrandTotal = (double)GrandTotal,
+                Amount = (double)Total,
+                Change = (double)Change,
+                CashReceived = SelectedMethod == "Cash" ?
+                    double.Parse(CashReceived?.Replace(",", "").Replace(".", "") ?? "0") : 0,
+                TransactionId = transactionId,
+                Items = new List<CartItem>(CartItems),
+                PaymentDate = DateTime.UtcNow
+            };
+        }
+
+        private async Task<bool> CompleteTransactionInDatabase(string transactionId, PaymentResult paymentResult)
+        {
+            try
+            {
+                return await _stateService.CompleteTransactionAsync(transactionId, paymentResult);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error completing transaction: {ex.Message}");
+                return false;
+            }
+        }
+
+        private async Task ShowSuccessMessage(string transactionId, PaymentResult paymentResult)
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                GetTranslation("success"),
+                $"Transaction: {transactionId}\n" +
+                $"Status: Completed\n" +
+                $"Subtotal: {Subtotal:N0} RWF\n" +
+                $"Tax: {Tax:N0} RWF\n" +
+                $"Grand Total: {GrandTotal:N0} RWF\n" +
+                $"Customer: {paymentResult.Customer}\n" +
+                $"Payment Method: {SelectedMethod}\n" +
+                $"{(SelectedMethod == "Cash" ? $"Cash Received: {CashReceived}\nChange: {Change:N0} RWF" : "")}\n\n" +
+                $"Saved to database successfully!",
+                "OK");
+        }
+
         private void RecalculateTotals()
         {
-            Subtotal = _stateService.CartTotal;
-            Tax = Subtotal * 0.1m; // 10% tax
+            Subtotal = (decimal)_stateService.CartTotal;
+            Tax = Subtotal * 0.1m;
             GrandTotal = Subtotal + Tax;
             Total = GrandTotal;
         }
 
-
         private void ClearCart()
         {
-            // Use the public method to clear cart
             _stateService.ClearCart();
-
-            // Update the local cart items
             CartItems.Clear();
-
-            // Recalculate totals
             RecalculateTotals();
 
             OnPropertyChanged(nameof(Total));
@@ -557,11 +602,11 @@ namespace LaundromatManagementSystem.ViewModels
                     TransactionId = paymentInfo.TransactionId,
                     CustomerPhone = paymentInfo.Customer,
                     PaymentMethod = paymentInfo.PaymentMethod.ToString(),
-                    Subtotal = paymentInfo.Subtotal,
-                    Tax = paymentInfo.Tax,
-                    GrandTotal = paymentInfo.GrandTotal,
-                    Amount = paymentInfo.Amount,
-                    Change = paymentInfo.Change,
+                    Subtotal = (decimal)paymentInfo.Subtotal,
+                    Tax = (decimal)paymentInfo.Tax,
+                    GrandTotal = (decimal)paymentInfo.GrandTotal,
+                    Amount = (decimal)paymentInfo.Amount,
+                    Change = (decimal)paymentInfo.Change,
                     Items = paymentInfo.Items,
                     Date = DateTime.Now,
                     Cashier = "System"
@@ -571,21 +616,10 @@ namespace LaundromatManagementSystem.ViewModels
                 {
                     await _printerService.PrintReceipt(receiptContent);
                 }
-                else
-                {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Printer Unavailable",
-                        "Receipt printing service is not available.",
-                        "OK");
-                }
             }
             catch (Exception ex)
             {
-                // Show warning but continue
-                await Application.Current.MainPage.DisplayAlert(
-                    "Print Warning",
-                    "Payment was successful but receipt printing failed. Transaction has been recorded.",
-                    "OK");
+                await Application.Current.MainPage.DisplayAlert("Print Warning", "Payment was successful but receipt printing failed. Transaction has been recorded.", "OK");
             }
         }
 
@@ -608,13 +642,9 @@ namespace LaundromatManagementSystem.ViewModels
         [RelayCommand]
         private void ClosePaymentModal()
         {
-            // Reset the modal state
             Reset();
-
-            // Update ApplicationStateService to close modal
             _stateService.ShowPaymentModal = false;
 
-            // Also execute the parent close command if provided
             if (CloseCommand?.CanExecute(null) == true)
             {
                 CloseCommand.Execute(null);
@@ -630,14 +660,11 @@ namespace LaundromatManagementSystem.ViewModels
             PurchaseCode = string.Empty;
             ShowTinPurchaseCode = false;
             ShowPaymentMethods = false;
-
             Processing = false;
             TransactionId = _stateService.GenerateTransactionId();
 
-            // Recalculate totals
             RecalculateTotals();
 
-            // Reset validation
             IsCustomerInfoValid = false;
             CustomerValidationMessage = string.Empty;
 
@@ -651,7 +678,6 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(SelectedMethodColor));
             OnPropertyChanged(nameof(CustomerSummary));
         }
-
 
         private string GetProcessingButtonText()
         {
@@ -687,10 +713,7 @@ namespace LaundromatManagementSystem.ViewModels
                         break;
 
                     case nameof(_stateService.CartItems):
-                        // Update local cart items when state service cart changes
                         CartItems = new ObservableCollection<CartItem>(_stateService.CartItems);
-
-                        // Recalculate totals
                         RecalculateTotals();
 
                         OnPropertyChanged(nameof(CartItems));
@@ -701,7 +724,6 @@ namespace LaundromatManagementSystem.ViewModels
                         break;
 
                     case nameof(_stateService.ShowPaymentModal):
-                        // If state service says modal should be closed, execute close
                         if (!_stateService.ShowPaymentModal && CloseCommand?.CanExecute(null) == true)
                         {
                             CloseCommand.Execute(null);
@@ -953,7 +975,7 @@ namespace LaundromatManagementSystem.ViewModels
                 ["continueToPayment"] = new()
                 {
                     [Language.EN] = "Continue to Payment →",
-                    [Language.RW] = "Komeza Kwishyura →",  
+                    [Language.RW] = "Komeza Kwishyura →",
                     [Language.FR] = "Continuer vers le Paiement →"
                 },
                 ["backToCustomerInfo"] = new()
@@ -1134,20 +1156,6 @@ namespace LaundromatManagementSystem.ViewModels
         {
             _stateService.PropertyChanged -= OnStateChanged;
             PropertyChanged -= OnViewModelPropertyChanged;
-        }
-
-        // Enhanced class for payment result
-        public class PaymentResult
-        {
-            public PaymentMethod PaymentMethod { get; set; }
-            public string Customer { get; set; } = string.Empty;
-            public decimal Subtotal { get; set; }
-            public decimal Tax { get; set; }
-            public decimal GrandTotal { get; set; }
-            public decimal Amount { get; set; }
-            public decimal Change { get; set; }
-            public string TransactionId { get; set; } = string.Empty;
-            public List<CartItem> Items { get; set; } = new();
         }
     }
 }

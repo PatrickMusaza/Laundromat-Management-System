@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using LaundromatManagementSystem.Repositories;
 using LaundromatManagementSystem.ViewModels;
 using LaundromatManagementSystem.Models;
@@ -11,19 +12,18 @@ public class ApplicationStateService : INotifyPropertyChanged
 {
     private static ApplicationStateService _instance;
     public static ApplicationStateService Instance => _instance ??= new ApplicationStateService();
-    private readonly ITransactionRepository _transactionRepository;
 
+    private ITransactionRepository _transactionRepository;
     private Theme _currentTheme = Theme.Light;
     private Language _currentLanguage = Language.EN;
     private ObservableCollection<CartItem> _cartItems = new();
-
     private bool _showPaymentModal;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
     public ApplicationStateService() { }
 
-    public ApplicationStateService(ITransactionRepository transactionRepository)
+    public void SetTransactionRepository(ITransactionRepository transactionRepository)
     {
         _transactionRepository = transactionRepository;
     }
@@ -37,7 +37,6 @@ public class ApplicationStateService : INotifyPropertyChanged
             {
                 _currentTheme = value;
                 OnPropertyChanged();
-                // Notify all subscribers
                 ThemeChanged?.Invoke(this, value);
             }
         }
@@ -52,7 +51,6 @@ public class ApplicationStateService : INotifyPropertyChanged
             {
                 _currentLanguage = value;
                 OnPropertyChanged();
-                // Notify all subscribers
                 LanguageChanged?.Invoke(this, value);
             }
         }
@@ -70,14 +68,13 @@ public class ApplicationStateService : INotifyPropertyChanged
         }
     }
 
-    public decimal CartTotal => CartItems.Sum(item => item.TotalPrice);
+    public double CartTotal => CartItems.Sum(item => item.TotalPrice);
     public int ItemCount => CartItems.Sum(item => item.Quantity);
 
     public event EventHandler<Theme> ThemeChanged;
     public event EventHandler<Language> LanguageChanged;
     public event EventHandler CartUpdated;
 
-    // Add this public method to clear cart from external classes
     public void ClearCart()
     {
         _cartItems.Clear();
@@ -102,11 +99,8 @@ public class ApplicationStateService : INotifyPropertyChanged
                 ServiceId = item.ServiceId,
                 Name = item.Name,
                 Price = item.Price,
-                Quantity = 1,
-                Addons = new ObservableCollection<ServiceAddon>(
-                    item.Addons ?? new ObservableCollection<ServiceAddon>())
+                Quantity = 1
             };
-
             CartItems.Add(newItem);
         }
 
@@ -150,22 +144,6 @@ public class ApplicationStateService : INotifyPropertyChanged
         }
     }
 
-    public void NotifyCartItemChanged(CartItem item)
-    {
-        // This will trigger the INotifyPropertyChanged on the item
-        var index = CartItems.IndexOf(item);
-        if (index >= 0)
-        {
-            // Replacing the item at the same index triggers collection change
-            CartItems[index] = item;
-
-            // Also notify totals changed
-            OnPropertyChanged(nameof(CartTotal));
-            OnPropertyChanged(nameof(ItemCount));
-            CartUpdated?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
     public bool ShowPaymentModal
     {
         get => _showPaymentModal;
@@ -191,7 +169,9 @@ public class ApplicationStateService : INotifyPropertyChanged
 
     public string GenerateTransactionId()
     {
-        return $"T-{DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()[^6..]}";
+        var timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        var random = new Random().Next(1000, 9999);
+        return $"T-{timestamp.ToString()[^6..]}-{random}";
     }
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -203,21 +183,18 @@ public class ApplicationStateService : INotifyPropertyChanged
     {
         try
         {
-            // Generate transaction ID
             var transactionId = GenerateTransactionId();
-
-            // Convert cart items to transaction items
-            var transactionItems = CartItems.Select(item => new TransactionItemModel
+            var transactionItems = paymentViewModel.CartItems.Select(item => new TransactionItemModel
             {
-                ServiceId = int.Parse(item.ServiceId),
+                ServiceId = int.TryParse(item.ServiceId, out int serviceId) ? serviceId : 0,
                 ServiceName = item.Name,
                 UnitPrice = (double)item.Price,
                 Quantity = item.Quantity,
                 TotalPrice = (double)item.TotalPrice,
                 ServiceType = item.ServiceType ?? "unknown",
+                ServiceIcon = item.Icon ?? "🧺"
             }).ToList();
 
-            // Create transaction model
             var transactionModel = new TransactionModel
             {
                 TransactionId = transactionId,
@@ -227,24 +204,21 @@ public class ApplicationStateService : INotifyPropertyChanged
                 TaxAmount = (double)paymentViewModel.Tax,
                 TotalAmount = (double)paymentViewModel.GrandTotal,
                 CashReceived = paymentViewModel.SelectedMethod == "Cash" ?
-                    double.Parse(paymentViewModel.CashReceived?.Replace(",", "").Replace(".", "") ?? "0") :
-                    null,
+                    double.Parse(paymentViewModel.CashReceived?.Replace(",", "").Replace(".", "") ?? "0") : null,
                 ChangeAmount = paymentViewModel.SelectedMethod == "Cash" ? (double)paymentViewModel.Change : null,
-                CustomerName = "Walk-in Customer",
+                CustomerName = string.IsNullOrEmpty(paymentViewModel.Customer) ? "Walk-in Customer" : paymentViewModel.Customer,
                 CustomerTin = paymentViewModel.TinNumber ?? "",
                 CustomerPhone = paymentViewModel.Customer ?? "",
                 TransactionDate = DateTime.UtcNow,
                 Items = transactionItems
             };
 
-            // Save to database if repository is available
             if (_transactionRepository != null)
             {
                 await _transactionRepository.CreatePendingTransactionAsync(transactionModel);
             }
             else
             {
-                // Fallback: store in memory or local storage
                 await SaveTransactionToLocalStorage(transactionModel);
             }
 
@@ -253,7 +227,7 @@ public class ApplicationStateService : INotifyPropertyChanged
         catch (Exception ex)
         {
             Console.WriteLine($"Error creating pending transaction: {ex.Message}");
-            return GenerateTransactionId(); // Still generate ID even if save fails
+            return GenerateTransactionId();
         }
     }
 
@@ -263,7 +237,6 @@ public class ApplicationStateService : INotifyPropertyChanged
         {
             if (_transactionRepository != null)
             {
-                // Get transaction from database
                 var transaction = await _transactionRepository.GetTransactionByIdAsync(transactionId);
                 if (transaction != null)
                 {
@@ -272,7 +245,6 @@ public class ApplicationStateService : INotifyPropertyChanged
                 }
             }
 
-            // Fallback: update local storage
             await UpdateLocalTransactionStatus(transactionId, "completed", paymentResult);
             return true;
         }
@@ -285,15 +257,52 @@ public class ApplicationStateService : INotifyPropertyChanged
 
     private async Task SaveTransactionToLocalStorage(TransactionModel transaction)
     {
-        // Save to local storage or file
-        // Implementation depends on your storage strategy
-        await Task.CompletedTask;
+        try
+        {
+            var localTransactions = await GetLocalTransactionsAsync();
+            localTransactions.Add(transaction);
+            var json = JsonSerializer.Serialize(localTransactions);
+            await SecureStorage.Default.SetAsync("pending_transactions", json);
+        }
+        catch
+        {
+            // Ignore errors in local storage
+        }
     }
 
     private async Task UpdateLocalTransactionStatus(string transactionId, string status, PaymentResult paymentResult)
     {
-        // Update local storage
-        await Task.CompletedTask;
+        try
+        {
+            var localTransactions = await GetLocalTransactionsAsync();
+            var transaction = localTransactions.FirstOrDefault(t => t.TransactionId == transactionId);
+            if (transaction != null)
+            {
+                transaction.Status = status;
+                var json = JsonSerializer.Serialize(localTransactions);
+                await SecureStorage.Default.SetAsync("pending_transactions", json);
+            }
+        }
+        catch
+        {
+            // Ignore errors
+        }
     }
 
+    private async Task<List<TransactionModel>> GetLocalTransactionsAsync()
+    {
+        try
+        {
+            var json = await SecureStorage.Default.GetAsync("pending_transactions");
+            if (!string.IsNullOrEmpty(json))
+            {
+                return JsonSerializer.Deserialize<List<TransactionModel>>(json) ?? new List<TransactionModel>();
+            }
+        }
+        catch
+        {
+            // Ignore errors
+        }
+        return new List<TransactionModel>();
+    }
 }

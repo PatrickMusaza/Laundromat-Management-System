@@ -47,6 +47,7 @@ public static class MauiProgram
 
 		// Register repositories
 		services.AddScoped<IServiceRepository, ServiceRepository>();
+		services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 		// Register services
 		services.AddScoped<IServiceService, ServiceService>();
@@ -54,6 +55,7 @@ public static class MauiProgram
 		// Register ViewModels
 		services.AddTransient<ViewModels.ServiceGridViewModel>();
 		services.AddTransient<ViewModels.ServiceViewModel>();
+		services.AddTransient<ViewModels.PaymentModalViewModel>();
 
 		// Other services...
 		services.AddSingleton<ApplicationStateService>();

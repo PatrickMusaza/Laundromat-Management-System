@@ -61,5 +61,4 @@ namespace LaundromatManagementSystem
     // Enums matching appearance and usage in the application
     public enum Theme { Light, Gray, Dark }
     public enum Language { EN, RW, FR }
-    public enum PaymentMethod { Cash, MoMo, Card }
 }
