@@ -9,6 +9,7 @@ namespace LaundromatManagementSystem.Models
     {
         private string _id = string.Empty;
         private string _serviceId = string.Empty;
+        private string _serviceType;
         private string _name = string.Empty;
         private decimal _price;
         private int _quantity = 1;
@@ -35,6 +36,19 @@ namespace LaundromatManagementSystem.Models
                 if (_serviceId != value)
                 {
                     _serviceId = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string ServiceType
+        {
+            get => _serviceType;
+            set
+            {
+                if (_serviceType != value)
+                {
+                    _serviceType = value;
                     OnPropertyChanged();
                 }
             }

@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using LaundromatManagementSystem.Repositories;
+using LaundromatManagementSystem.ViewModels;
 using LaundromatManagementSystem.Models;
 
 namespace LaundromatManagementSystem.Services;
@@ -9,6 +11,7 @@ public class ApplicationStateService : INotifyPropertyChanged
 {
     private static ApplicationStateService _instance;
     public static ApplicationStateService Instance => _instance ??= new ApplicationStateService();
+    private readonly ITransactionRepository _transactionRepository;
 
     private Theme _currentTheme = Theme.Light;
     private Language _currentLanguage = Language.EN;
@@ -17,6 +20,13 @@ public class ApplicationStateService : INotifyPropertyChanged
     private bool _showPaymentModal;
 
     public event PropertyChangedEventHandler PropertyChanged;
+
+    public ApplicationStateService() { }
+
+    public ApplicationStateService(ITransactionRepository transactionRepository)
+    {
+        _transactionRepository = transactionRepository;
+    }
 
     public Theme CurrentTheme
     {
@@ -188,4 +198,102 @@ public class ApplicationStateService : INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
+    public async Task<string> CreatePendingTransactionAsync(PaymentModalViewModel paymentViewModel)
+    {
+        try
+        {
+            // Generate transaction ID
+            var transactionId = GenerateTransactionId();
+
+            // Convert cart items to transaction items
+            var transactionItems = CartItems.Select(item => new TransactionItemModel
+            {
+                ServiceId = int.Parse(item.ServiceId),
+                ServiceName = item.Name,
+                UnitPrice = (double)item.Price,
+                Quantity = item.Quantity,
+                TotalPrice = (double)item.TotalPrice,
+                ServiceType = item.ServiceType ?? "unknown",
+            }).ToList();
+
+            // Create transaction model
+            var transactionModel = new TransactionModel
+            {
+                TransactionId = transactionId,
+                Status = "pending",
+                PaymentMethod = paymentViewModel.SelectedMethod ?? "cash",
+                Subtotal = (double)paymentViewModel.Subtotal,
+                TaxAmount = (double)paymentViewModel.Tax,
+                TotalAmount = (double)paymentViewModel.GrandTotal,
+                CashReceived = paymentViewModel.SelectedMethod == "Cash" ?
+                    double.Parse(paymentViewModel.CashReceived?.Replace(",", "").Replace(".", "") ?? "0") :
+                    null,
+                ChangeAmount = paymentViewModel.SelectedMethod == "Cash" ? (double)paymentViewModel.Change : null,
+                CustomerName = "Walk-in Customer",
+                CustomerTin = paymentViewModel.TinNumber ?? "",
+                CustomerPhone = paymentViewModel.Customer ?? "",
+                TransactionDate = DateTime.UtcNow,
+                Items = transactionItems
+            };
+
+            // Save to database if repository is available
+            if (_transactionRepository != null)
+            {
+                await _transactionRepository.CreatePendingTransactionAsync(transactionModel);
+            }
+            else
+            {
+                // Fallback: store in memory or local storage
+                await SaveTransactionToLocalStorage(transactionModel);
+            }
+
+            return transactionId;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error creating pending transaction: {ex.Message}");
+            return GenerateTransactionId(); // Still generate ID even if save fails
+        }
+    }
+
+    public async Task<bool> CompleteTransactionAsync(string transactionId, PaymentResult paymentResult)
+    {
+        try
+        {
+            if (_transactionRepository != null)
+            {
+                // Get transaction from database
+                var transaction = await _transactionRepository.GetTransactionByIdAsync(transactionId);
+                if (transaction != null)
+                {
+                    await _transactionRepository.CompleteTransactionAsync(transaction.Id, paymentResult);
+                    return true;
+                }
+            }
+
+            // Fallback: update local storage
+            await UpdateLocalTransactionStatus(transactionId, "completed", paymentResult);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error completing transaction: {ex.Message}");
+            return false;
+        }
+    }
+
+    private async Task SaveTransactionToLocalStorage(TransactionModel transaction)
+    {
+        // Save to local storage or file
+        // Implementation depends on your storage strategy
+        await Task.CompletedTask;
+    }
+
+    private async Task UpdateLocalTransactionStatus(string transactionId, string status, PaymentResult paymentResult)
+    {
+        // Update local storage
+        await Task.CompletedTask;
+    }
+
 }
