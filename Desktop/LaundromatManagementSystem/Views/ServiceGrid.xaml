@@ -27,8 +27,8 @@
 
             <!-- Horizontal Layout -->
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Horizontal"
-                                   ItemSpacing="12"/>
+                <GridItemsLayout Orientation="Horizontal"
+                                 HorizontalItemSpacing="12"/>
             </CollectionView.ItemsLayout>
 
             <!-- Item Template -->
