@@ -11,6 +11,7 @@ namespace LaundromatManagementSystem.ViewModels
     public partial class PaymentModalViewModel : ObservableObject
     {
         private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
+        private readonly ITransactionService _transactionService;
 
         [ObservableProperty]
         private decimal _total;
@@ -394,13 +395,17 @@ namespace LaundromatManagementSystem.ViewModels
 
             if (!CanCompletePayment) return;
 
-            var transactionId = await CreatePendingTransactionInDatabase();
+            // 1. Create pending transaction
+            var transactionId = string.Empty;
+            transactionId = await _transactionService.CreatePendingTransactionAsync(this);
+
             if (string.IsNullOrEmpty(transactionId))
             {
                 await Application.Current.MainPage.DisplayAlert("Error", "Failed to create transaction. Please try again.", "OK");
                 return;
             }
 
+            // 2. Show payment confirmation
             var confirmResult = await ShowPaymentConfirmation(transactionId);
             if (!confirmResult) return;
 
@@ -408,8 +413,12 @@ namespace LaundromatManagementSystem.ViewModels
 
             try
             {
+                // 3. Process payment (simulated)
                 var paymentResult = await ProcessPaymentSimulation(transactionId);
-                var success = await CompleteTransactionInDatabase(transactionId, paymentResult);
+
+
+                // 4. Complete transaction in database
+                var success = await _transactionService.CompleteTransactionAsync(transactionId, paymentResult);
 
                 if (success)
                 {
@@ -437,47 +446,6 @@ namespace LaundromatManagementSystem.ViewModels
             finally
             {
                 Processing = false;
-            }
-        }
-
-        private async Task<string> CreatePendingTransactionInDatabase()
-        {
-            try
-            {
-                var transactionModel = new TransactionModel
-                {
-                    TransactionId = TransactionId,
-                    Status = "pending",
-                    PaymentMethod = SelectedMethod,
-                    Subtotal = (double)Subtotal,
-                    TaxAmount = (double)Tax,
-                    TotalAmount = (double)GrandTotal,
-                    CashReceived = SelectedMethod == "Cash" ?
-                        double.Parse(CashReceived?.Replace(",", "").Replace(".", "") ?? "0") :
-                        null,
-                    ChangeAmount = SelectedMethod == "Cash" ? (double)Change : null,
-                    CustomerName = string.IsNullOrEmpty(Customer) ? "Walk-in Customer" : Customer,
-                    CustomerTin = TinNumber ?? "",
-                    CustomerPhone = Customer ?? "",
-                    TransactionDate = DateTime.UtcNow,
-                    Items = CartItems.Select(item => new TransactionItemModel
-                    {
-                        ServiceId = int.TryParse(item.ServiceId, out int serviceId) ? serviceId : 0,
-                        ServiceName = item.Name,
-                        UnitPrice = (double)item.Price,
-                        Quantity = item.Quantity,
-                        TotalPrice = (double)item.TotalPrice,
-                        ServiceType = item.ServiceType ?? "unknown",
-                        ServiceIcon = item.Icon ?? "🧺"
-                    }).ToList()
-                };
-
-                return await _stateService.CreatePendingTransactionAsync(transactionModel);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error creating transaction: {ex.Message}");
-                return _stateService.GenerateTransactionId();
             }
         }
 
@@ -542,19 +510,6 @@ namespace LaundromatManagementSystem.ViewModels
                 Items = new List<CartItem>(CartItems),
                 PaymentDate = DateTime.UtcNow
             };
-        }
-
-        private async Task<bool> CompleteTransactionInDatabase(string transactionId, PaymentResult paymentResult)
-        {
-            try
-            {
-                return await _stateService.CompleteTransactionAsync(transactionId, paymentResult);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error completing transaction: {ex.Message}");
-                return false;
-            }
         }
 
         private async Task ShowSuccessMessage(string transactionId, PaymentResult paymentResult)

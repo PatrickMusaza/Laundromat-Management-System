@@ -11,6 +11,7 @@ interface DashboardProps {
   onLanguageChange: (lang: "EN" | "RW" | "FR") => void;
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
+  onLoginClick: () => void;
 }
 
 export default function Dashboard({
@@ -19,6 +20,7 @@ export default function Dashboard({
   onLanguageChange,
   theme,
   onThemeChange,
+  onLoginClick,
 }: DashboardProps) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showPayment, setShowPayment] = useState(false);
@@ -101,6 +103,7 @@ export default function Dashboard({
         onLanguageChange={onLanguageChange}
         theme={theme}
         onThemeChange={onThemeChange}
+        onLoginClick={onLoginClick}
       />
 
       <div className="flex flex-1 gap-6 overflow-hidden p-6">

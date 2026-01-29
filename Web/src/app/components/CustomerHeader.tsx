@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Theme } from "../App";
-import { Languages, Palette, Sun, Cloud, Moon } from "lucide-react";
+import { Languages, Palette, Sun, Cloud, Moon, Lock } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   Popover,
@@ -13,6 +13,7 @@ interface CustomerHeaderProps {
   onLanguageChange: (lang: "EN" | "RW" | "FR") => void;
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
+  onLoginClick: () => void;
 }
 
 const translations = {
@@ -50,6 +51,7 @@ export default function CustomerHeader({
   onLanguageChange,
   theme,
   onThemeChange,
+  onLoginClick,
 }: CustomerHeaderProps) {
   const [languageOpen, setLanguageOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
@@ -84,6 +86,25 @@ export default function CustomerHeader({
 
         {/* Controls */}
         <div className="flex items-center gap-4">
+          {/* Login Button */}
+          <Button
+            variant="outline"
+            className={`h-14 gap-3 border-2 px-6 ${
+              theme === "dark"
+                ? "border-[#374151] bg-[#374151] text-white hover:bg-[#4B5563]"
+                : theme === "gray"
+                ? "border-[#D1D5DB] bg-[#F3F4F6] hover:bg-[#E5E7EB]"
+                : "border-[#E5E7EB] bg-white hover:bg-[#F9FAFB]"
+            }`}
+            onClick={onLoginClick}
+          >
+            <Lock className="h-6 w-6" />
+            <div className="flex flex-col items-start">
+              <span className="text-xs">Admin</span>
+              <span className="font-semibold">Login</span>
+            </div>
+          </Button>
+
           {/* Language Selector */}
           <Popover open={languageOpen} onOpenChange={setLanguageOpen}>
             <PopoverTrigger asChild>

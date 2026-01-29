@@ -271,6 +271,28 @@ export default function ShoppingCart({
             </div>
           </div>
 
+          {/* Payment Methods 
+          <div className="mb-4">
+            <p
+              className={`mb-2 ${
+                theme === "dark" ? "text-[#9CA3AF]" : "text-[#6B7280]"
+              }`}
+            >
+              {t.payment}:
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="flex h-16 items-center justify-center rounded-lg border-2 border-[#10B981] bg-[#D1FAE5] text-[#10B981]">
+                {t.cash}
+              </div>
+              <div className="flex h-16 items-center justify-center rounded-lg border-2 border-[#3B82F6] bg-[#DBEAFE] text-[#3B82F6]">
+                {t.momo}
+              </div>
+              <div className="flex h-16 items-center justify-center rounded-lg border-2 border-[#F59E0B] bg-[#FEF3C7] text-[#F59E0B]">
+                {t.card}
+              </div>
+            </div>
+          </div>*/}
+
           {/* Process Payment Button */}
           <Button
             onClick={onProcessPayment}
