@@ -5,17 +5,13 @@ using LaundromatManagementSystem.Services;
 using System.Globalization;
 using System.Collections.ObjectModel;
 using LaundromatManagementSystem.Models;
+using System.Diagnostics;
 
 namespace LaundromatManagementSystem.ViewModels
 {
     public partial class PaymentModalViewModel : ObservableObject
     {
-        private readonly ApplicationStateService _stateService;
-        private readonly ITransactionService _transactionService;
-        private readonly IServiceService _serviceService;
-
-        [ObservableProperty]
-        private ObservableCollection<CartItem> _cartItems = new();
+        private readonly ApplicationStateService _stateService = ApplicationStateService.Instance;
 
         [ObservableProperty]
         private decimal _total;
@@ -49,9 +45,12 @@ namespace LaundromatManagementSystem.ViewModels
         [ObservableProperty]
         private Theme _theme;
 
+        [ObservableProperty]
+        private ObservableCollection<CartItem> _cartItems = new();
+
         // Commands from parent
-        public ICommand CloseCommand { get; set; }
-        public ICommand PaymentCompleteCommand { get; set; }
+        public ICommand CloseCommand { get; }
+        public ICommand PaymentCompleteCommand { get; }
 
         public bool IsMethodSelected => !string.IsNullOrEmpty(SelectedMethod);
 
@@ -167,18 +166,12 @@ namespace LaundromatManagementSystem.ViewModels
             }
         }
 
-        public PaymentModalViewModel(
-            ApplicationStateService stateService,
-            ITransactionService transactionService,
-            IServiceService serviceService,
-            ICommand closeCommand = null,
-            ICommand paymentCompleteCommand = null)
+        private readonly ITransactionService _transactionService;
+
+        public PaymentModalViewModel(ICommand closeCommand, ICommand paymentCompleteCommand)
         {
             CloseCommand = closeCommand;
             PaymentCompleteCommand = paymentCompleteCommand;
-            _stateService = stateService;
-            _transactionService = transactionService;
-            _serviceService = serviceService;
 
             // Initialize from state service
             _language = _stateService.CurrentLanguage;
@@ -186,6 +179,11 @@ namespace LaundromatManagementSystem.ViewModels
 
             // Initialize transaction ID
             _transactionId = _stateService.GenerateTransactionId();
+
+            // Get services from ServiceLocator
+            _transactionService = ServiceLocator.GetService<ITransactionService>();
+
+            System.Diagnostics.Debug.WriteLine($"WARNING: TransactionService not found in ServiceLocator or = {_transactionService}");
 
             // Recalculate totals
             RecalculateTotals();
@@ -496,6 +494,7 @@ namespace LaundromatManagementSystem.ViewModels
 
                 // Create pending transaction in database
                 var createdTransactionId = await _transactionService.CreatePendingTransactionAsync(this);
+
                 if (!string.IsNullOrEmpty(createdTransactionId) && createdTransactionId != newTransactionId)
                 {
                     // Update with the actual transaction ID from database
@@ -557,6 +556,7 @@ namespace LaundromatManagementSystem.ViewModels
             GrandTotal = Subtotal + Tax;
             Total = GrandTotal;
         }
+
 
         private void ClearCart()
         {
@@ -678,6 +678,7 @@ namespace LaundromatManagementSystem.ViewModels
             OnPropertyChanged(nameof(SelectedMethodColor));
             OnPropertyChanged(nameof(CustomerSummary));
         }
+
 
         private string GetProcessingButtonText()
         {
@@ -1161,19 +1162,5 @@ namespace LaundromatManagementSystem.ViewModels
             _stateService.PropertyChanged -= OnStateChanged;
             PropertyChanged -= OnViewModelPropertyChanged;
         }
-
-        // Enhanced class for payment result
-        // public class PaymentResult
-        // {
-        //     public PaymentMethod PaymentMethod { get; set; }
-        //     public string Customer { get; set; } = string.Empty;
-        //     public decimal Subtotal { get; set; }
-        //     public decimal Tax { get; set; }
-        //     public decimal GrandTotal { get; set; }
-        //     public decimal Amount { get; set; }
-        //     public decimal Change { get; set; }
-        //     public string TransactionId { get; set; } = string.Empty;
-        //     public List<CartItem> Items { get; set; } = new();
-        // }
     }
 }

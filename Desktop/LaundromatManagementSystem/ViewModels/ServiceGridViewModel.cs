@@ -48,6 +48,7 @@ namespace LaundromatManagementSystem.ViewModels
             // Load categories and services
             LoadCategories();
             LoadServices();
+            LoadCategories();
         }
 
         // Override setters to update state service

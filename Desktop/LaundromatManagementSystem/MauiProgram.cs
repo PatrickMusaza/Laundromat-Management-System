@@ -4,7 +4,6 @@ using LaundromatManagementSystem.Repositories;
 using LaundromatManagementSystem.Services;
 using Microsoft.EntityFrameworkCore;
 using LaundromatManagementSystem.ViewModels;
-using System.Windows.Input;
 
 namespace LaundromatManagementSystem;
 
@@ -62,46 +61,10 @@ public static class MauiProgram
 		services.AddTransient<ServiceGridViewModel>();
 		services.AddTransient<ServiceViewModel>();
 		services.AddTransient<CategoryViewModel>();
-
-		// Note: We cannot register PaymentModalViewModel with DI because it needs ICommand parameters
-		// We'll create it manually or use a factory
-
 		services.AddTransient<DashboardViewModel>();
 
 		// Register state services
 		services.AddSingleton<ApplicationStateService>();
-
-		// Register ViewModel factory
-		services.AddTransient<PaymentModalViewModelFactory>();
-	}
-
-	// Add this factory class
-	public class PaymentModalViewModelFactory
-	{
-		private readonly ApplicationStateService _stateService;
-		private readonly ITransactionService _transactionService;
-		private readonly IServiceService _serviceService;
-
-		public PaymentModalViewModelFactory(
-			ApplicationStateService stateService,
-			ITransactionService transactionService,
-			IServiceService serviceService)
-		{
-			_stateService = stateService;
-			_transactionService = transactionService;
-			_serviceService = serviceService;
-		}
-
-		public PaymentModalViewModel Create(ICommand closeCommand = null, ICommand paymentCompleteCommand = null)
-		{
-			return new PaymentModalViewModel(
-				_stateService,
-				_transactionService,
-				_serviceService,
-				closeCommand,
-				paymentCompleteCommand
-			);
-		}
 	}
 
 	private static string GetDatabasePath()
