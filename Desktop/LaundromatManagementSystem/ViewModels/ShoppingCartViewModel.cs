@@ -3,8 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using LaundromatManagementSystem.Models;
 using LaundromatManagementSystem.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Windows.Input;
 
 namespace LaundromatManagementSystem.ViewModels
 {
@@ -152,7 +150,7 @@ namespace LaundromatManagementSystem.ViewModels
             {
                 async Task ConfirmAndRemove()
                 {
-                    bool confirm = await Application.Current.MainPage.DisplayAlert(     
+                    bool confirm = await Application.Current.MainPage.DisplayAlert(
                         GetTranslationDeletedItem("removeItem"),
                         GetTranslationDeletedItem("removeConfirm"),
                         GetTranslationDeletedItem("yes"),

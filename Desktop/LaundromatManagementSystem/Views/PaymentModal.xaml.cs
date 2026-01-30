@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using LaundromatManagementSystem.Services;
 using LaundromatManagementSystem.ViewModels;
 
 namespace LaundromatManagementSystem.Views
@@ -49,10 +50,24 @@ namespace LaundromatManagementSystem.Views
         {
             InitializeComponent();
 
-            ViewModel = new PaymentModalViewModel(
-                CloseCommand,
-                PaymentCompleteCommand
-            );
+            // Get the ViewModel from DI container
+            ViewModel = ServiceLocator.GetService<PaymentModalViewModel>();
+
+            if (ViewModel == null)
+            {
+                // Fallback: create manually with dependencies
+                var stateService = ServiceLocator.GetService<ApplicationStateService>();
+                var transactionService = ServiceLocator.GetService<ITransactionService>();
+                var serviceService = ServiceLocator.GetService<IServiceService>();
+
+                ViewModel = new PaymentModalViewModel(
+                    stateService,
+                    transactionService,
+                    serviceService,
+                    CloseCommand,
+                    PaymentCompleteCommand
+                );
+            }
 
             BindingContext = ViewModel;
 

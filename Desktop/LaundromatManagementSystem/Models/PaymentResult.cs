@@ -4,11 +4,11 @@ namespace LaundromatManagementSystem.Models
     {
         public PaymentMethod PaymentMethod { get; set; }
         public string Customer { get; set; } = string.Empty;
-        public double Subtotal { get; set; }
-        public double Tax { get; set; }
-        public double GrandTotal { get; set; }
-        public double Amount { get; set; }
-        public double Change { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal Tax { get; set; }
+        public decimal GrandTotal { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Change { get; set; }
         public string TransactionId { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
         public string CustomerTin { get; set; } = string.Empty;

@@ -174,7 +174,7 @@ namespace LaundromatManagementSystem.Repositories
             {
                 PaymentMethod = paymentResult.PaymentMethod.ToString(),
                 Status = "completed",
-                Amount = paymentResult.Amount,
+                Amount =(double) paymentResult.Amount,
                 ReferenceNumber = paymentResult.TransactionId,
                 PaymentDetails = $"Customer: {paymentResult.Customer}, Method: {paymentResult.PaymentMethod}",
                 PaymentDate = DateTime.UtcNow,
