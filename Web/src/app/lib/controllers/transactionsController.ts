@@ -7,7 +7,7 @@ import {
   TransactionItem,
   CreateTransactionItem,
   ApiResponse,
-} from "../types";
+} from "../type";
 
 export class TransactionsController {
   // GET all transactions

@@ -1,0 +1,169 @@
+{
+  "info": {
+    "name": "Laundromat API",
+    "description": "API collection for Laundromat backend (Express + SQLite)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "proxyUrl",
+      "value": "http://localhost:5173/api"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health (Direct)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Health (Via Proxy)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{proxyUrl}}/health",
+              "host": ["{{proxyUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Service Categories",
+      "item": [
+        {
+          "name": "Get Service Categories (Direct)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/service-categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["service-categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Service Categories (Via Proxy)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{proxyUrl}}/service-categories",
+              "host": ["{{proxyUrl}}"],
+              "path": ["service-categories"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Get Services (Direct)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/services",
+              "host": ["{{baseUrl}}"],
+              "path": ["services"]
+            }
+          }
+        },
+        {
+          "name": "Get Services (Via Proxy)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{proxyUrl}}/services",
+              "host": ["{{proxyUrl}}"],
+              "path": ["services"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Get Transactions (Direct)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions"]
+            }
+          }
+        },
+        {
+          "name": "Get Transactions (Via Proxy)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{proxyUrl}}/transactions",
+              "host": ["{{proxyUrl}}"],
+              "path": ["transactions"]
+            }
+          }
+        },
+        {
+          "name": "Create Transaction (Direct)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"TransactionId\": \"TXN-1001\",\n  \"Status\": \"completed\",\n  \"PaymentMethod\": \"cash\",\n  \"Subtotal\": 100,\n  \"TaxAmount\": 10,\n  \"TotalAmount\": 110,\n  \"CashReceived\": 120,\n  \"ChangeAmount\": 10,\n  \"CustomerName\": \"John Doe\",\n  \"CustomerTin\": \"123456\",\n  \"CustomerPhone\": \"555-1234\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions"]
+            }
+          }
+        },
+        {
+          "name": "Create Transaction (Via Proxy)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"TransactionId\": \"TXN-1002\",\n  \"Status\": \"completed\",\n  \"PaymentMethod\": \"card\",\n  \"Subtotal\": 200,\n  \"TaxAmount\": 20,\n  \"TotalAmount\": 220,\n  \"CustomerName\": \"Jane Smith\",\n  \"CustomerPhone\": \"555-5678\"\n}"
+            },
+            "url": {
+              "raw": "{{proxyUrl}}/transactions",
+              "host": ["{{proxyUrl}}"],
+              "path": ["transactions"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

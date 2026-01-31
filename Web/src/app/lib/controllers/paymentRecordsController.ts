@@ -5,7 +5,7 @@ import {
   CreatePaymentRecord,
   UpdatePaymentRecord,
   ApiResponse,
-} from "../types";
+} from "../type";
 
 export class PaymentRecordsController {
   // GET all payment records

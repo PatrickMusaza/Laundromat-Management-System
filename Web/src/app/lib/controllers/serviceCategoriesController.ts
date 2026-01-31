@@ -6,7 +6,7 @@ import {
   UpdateServiceCategory,
   ApiResponse,
   PaginatedResponse,
-} from "../types";
+} from "../type";
 
 export class ServiceCategoriesController {
   // GET all service categories

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getDatabase } from "../database";
-import { Service, CreateService, UpdateService, ApiResponse } from "../types";
+import { Service, CreateService, UpdateService, ApiResponse } from "../type";
 
 export class ServicesController {
   // GET all services
