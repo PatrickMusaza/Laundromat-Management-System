@@ -14,10 +14,11 @@ import {
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { DollarSign, Package, Users, TrendingUp } from "lucide-react";
+import { Theme } from "@/app/App";
 
 const COLORS = ["#1E3A8A", "#F59E0B", "#10B981", "#EF4444", "#8B5CF6"];
 
-export default function AdminDashboard() {
+export default function AdminDashboard({ theme }: { theme: Theme }) {
   const [monthlySales, setMonthlySales] = useState([
     { month: "Jan", sales: 45000 },
     { month: "Feb", sales: 52000 },
@@ -74,8 +75,8 @@ export default function AdminDashboard() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="mb-2">Dashboard</h1>
-        <p className="text-gray-600">Welcome back! Here's an overview of your laundromat business.</p>
+        <h1 className={`mb-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>Dashboard</h1>
+        <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Welcome back! Here's an overview of your laundromat business.</p>
       </div>
 
       {/* Stats Grid */}
@@ -83,12 +84,12 @@ export default function AdminDashboard() {
         {stats.map((stat, index) => {
           const Icon = stat.icon;
           return (
-            <Card key={index}>
+            <Card key={index} className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-600">{stat.title}</p>
-                    <h3 className="mt-1">{stat.value}</h3>
+                    <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>{stat.title}</p>
+                    <h3 className={`mt-1 ${theme === "dark" ? "text-white" : ""}`}>{stat.value}</h3>
                     <p className={`mt-1 text-sm ${stat.color}`}>{stat.change} from last month</p>
                   </div>
                   <div className={`rounded-full p-3 ${stat.bgColor}`}>
@@ -104,17 +105,21 @@ export default function AdminDashboard() {
       {/* Charts */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Monthly Sales Histogram */}
-        <Card>
+        <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
           <CardHeader>
-            <CardTitle>Monthly Sales</CardTitle>
+            <CardTitle className={theme === "dark" ? "text-white" : ""}>Monthly Sales</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={monthlySales}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke={theme === "dark" ? "#374151" : "#e5e7eb"} />
+                <XAxis dataKey="month" stroke={theme === "dark" ? "#9CA3AF" : "#6B7280"} />
+                <YAxis stroke={theme === "dark" ? "#9CA3AF" : "#6B7280"} />
+                <Tooltip contentStyle={{
+                  backgroundColor: theme === "dark" ? "#1F2937" : "#fff",
+                  border: `1px solid ${theme === "dark" ? "#374151" : "#e5e7eb"}`,
+                  color: theme === "dark" ? "#fff" : "#000"
+                }} />
                 <Legend />
                 <Bar dataKey="sales" fill="#1E3A8A" />
               </BarChart>
@@ -123,9 +128,9 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Top Services Pie Chart */}
-        <Card>
+        <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
           <CardHeader>
-            <CardTitle>Top Services</CardTitle>
+            <CardTitle className={theme === "dark" ? "text-white" : ""}>Top Services</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -144,7 +149,11 @@ export default function AdminDashboard() {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={{
+                  backgroundColor: theme === "dark" ? "#1F2937" : "#fff",
+                  border: `1px solid ${theme === "dark" ? "#374151" : "#e5e7eb"}`,
+                  color: theme === "dark" ? "#fff" : "#000"
+                }} />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
@@ -152,29 +161,29 @@ export default function AdminDashboard() {
       </div>
 
       {/* Recent Transactions */}
-      <Card>
+      <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
+          <CardTitle className={theme === "dark" ? "text-white" : ""}>Recent Transactions</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b">
-                  <th className="pb-3 text-left">Transaction ID</th>
-                  <th className="pb-3 text-left">Customer</th>
-                  <th className="pb-3 text-left">Amount</th>
-                  <th className="pb-3 text-left">Payment Method</th>
-                  <th className="pb-3 text-left">Status</th>
+                <tr className={`border-b ${theme === "dark" ? "border-gray-700" : ""}`}>
+                  <th className={`pb-3 text-left ${theme === "dark" ? "text-gray-300" : ""}`}>Transaction ID</th>
+                  <th className={`pb-3 text-left ${theme === "dark" ? "text-gray-300" : ""}`}>Customer</th>
+                  <th className={`pb-3 text-left ${theme === "dark" ? "text-gray-300" : ""}`}>Amount</th>
+                  <th className={`pb-3 text-left ${theme === "dark" ? "text-gray-300" : ""}`}>Payment Method</th>
+                  <th className={`pb-3 text-left ${theme === "dark" ? "text-gray-300" : ""}`}>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <tr key={i} className="border-b last:border-0">
-                    <td className="py-3">TXN-{String(i).padStart(6, "0")}</td>
-                    <td className="py-3">Customer {i}</td>
-                    <td className="py-3">RWF {(5000 + i * 1000).toLocaleString()}</td>
-                    <td className="py-3">{["Cash", "MoMo", "Card"][i % 3]}</td>
+                  <tr key={i} className={`border-b last:border-0 ${theme === "dark" ? "border-gray-700" : ""}`}>
+                    <td className={`py-3 ${theme === "dark" ? "text-gray-300" : ""}`}>TXN-{String(i).padStart(6, "0")}</td>
+                    <td className={`py-3 ${theme === "dark" ? "text-gray-300" : ""}`}>Customer {i}</td>
+                    <td className={`py-3 ${theme === "dark" ? "text-gray-300" : ""}`}>RWF {(5000 + i * 1000).toLocaleString()}</td>
+                    <td className={`py-3 ${theme === "dark" ? "text-gray-300" : ""}`}>{["Cash", "MoMo", "Card"][i % 3]}</td>
                     <td className="py-3">
                       <span className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs text-green-800">
                         Completed

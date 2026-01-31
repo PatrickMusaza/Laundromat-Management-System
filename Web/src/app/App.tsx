@@ -57,17 +57,19 @@ function App() {
 
   if (isAdmin) {
     return (
-      <div className="h-screen w-screen overflow-hidden bg-gray-100">
+      <div className={`h-screen w-screen overflow-hidden ${theme === "dark" ? "bg-[#111827]" : theme === "gray" ? "bg-[#E5E7EB]" : "bg-gray-100"}`}>
         <AdminLayout
           currentPage={adminPage}
           onPageChange={setAdminPage}
           onLogout={handleLogout}
+          theme={theme}
+          onThemeChange={setTheme}
         >
-          {adminPage === "dashboard" && <AdminDashboard />}
-          {adminPage === "services" && <ServicesPage />}
-          {adminPage === "reporting" && <ReportingPage />}
-          {adminPage === "users" && <UsersPage />}
-          {adminPage === "sales-history" && <SalesHistoryPage />}
+          {adminPage === "dashboard" && <AdminDashboard theme={theme} />}
+          {adminPage === "services" && <ServicesPage theme={theme} />}
+          {adminPage === "reporting" && <ReportingPage theme={theme} />}
+          {adminPage === "users" && <UsersPage theme={theme} />}
+          {adminPage === "sales-history" && <SalesHistoryPage theme={theme} />}
         </AdminLayout>
         <Toaster />
       </div>

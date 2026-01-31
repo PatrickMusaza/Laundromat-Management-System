@@ -10,8 +10,9 @@ import {
   SelectValue,
 } from "@/app/components/ui/select";
 import { Label } from "@/app/components/ui/label";
+import { Theme } from "@/app/App";
 
-export default function ReportingPage() {
+export default function ReportingPage({ theme }: { theme: Theme }) {
   const [reportType, setReportType] = useState("services");
   const [dateFilter, setDateFilter] = useState("today");
 
@@ -32,8 +33,8 @@ export default function ReportingPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="mb-2">Reporting</h1>
-          <p className="text-gray-600">Generate and export various reports</p>
+          <h1 className={`mb-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>Reporting</h1>
+          <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Generate and export various reports</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handlePrint}>
@@ -52,9 +53,9 @@ export default function ReportingPage() {
       </div>
 
       {/* Filters */}
-      <Card>
+      <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
         <CardHeader>
-          <CardTitle>Report Filters</CardTitle>
+          <CardTitle className={theme === "dark" ? "text-white" : ""}>Report Filters</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
@@ -103,9 +104,9 @@ export default function ReportingPage() {
       </Card>
 
       {/* Report Results */}
-      <Card>
+      <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
         <CardHeader>
-          <CardTitle>
+          <CardTitle className={theme === "dark" ? "text-white" : ""}>
             {reportType === "services" && "Services Report"}
             {reportType === "service-category" && "Service Category Report"}
             {reportType === "users" && "Users Report"}
@@ -119,31 +120,31 @@ export default function ReportingPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b">
-                  <th className="pb-3 text-left">Item</th>
-                  <th className="pb-3 text-right">Count</th>
-                  <th className="pb-3 text-right">Amount</th>
-                  <th className="pb-3 text-right">%</th>
+                <tr className={`border-b ${theme === "dark" ? "border-gray-700" : ""}`}>
+                  <th className={`pb-3 text-left ${theme === "dark" ? "text-gray-300" : ""}`}>Item</th>
+                  <th className={`pb-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>Count</th>
+                  <th className={`pb-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>Amount</th>
+                  <th className={`pb-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>%</th>
                 </tr>
               </thead>
               <tbody>
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <tr key={i} className="border-b">
-                    <td className="py-3">Item {i}</td>
-                    <td className="py-3 text-right">{i * 10}</td>
-                    <td className="py-3 text-right">
+                  <tr key={i} className={`border-b ${theme === "dark" ? "border-gray-700" : ""}`}>
+                    <td className={`py-3 ${theme === "dark" ? "text-gray-300" : ""}`}>Item {i}</td>
+                    <td className={`py-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>{i * 10}</td>
+                    <td className={`py-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>
                       RWF {(i * 10000).toLocaleString()}
                     </td>
-                    <td className="py-3 text-right">{i * 5}%</td>
+                    <td className={`py-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>{i * 5}%</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
-                <tr className="border-t-2 font-bold">
-                  <td className="pt-3">Total</td>
-                  <td className="pt-3 text-right">150</td>
-                  <td className="pt-3 text-right">RWF 150,000</td>
-                  <td className="pt-3 text-right">100%</td>
+                <tr className={`border-t-2 font-bold ${theme === "dark" ? "border-gray-600" : ""}`}>
+                  <td className={`pt-3 ${theme === "dark" ? "text-gray-300" : ""}`}>Total</td>
+                  <td className={`pt-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>150</td>
+                  <td className={`pt-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>RWF 150,000</td>
+                  <td className={`pt-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>100%</td>
                 </tr>
               </tfoot>
             </table>

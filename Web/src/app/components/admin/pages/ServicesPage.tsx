@@ -21,8 +21,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { api, ServiceCategory, Service } from "@/app/lib/api";
 import { toast } from "sonner";
+import { Theme } from "@/app/App";
 
-export default function ServicesPage() {
+export default function ServicesPage({ theme }: { theme: Theme }) {
   const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | null>(null);
@@ -82,8 +83,8 @@ export default function ServicesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="mb-2">Services Management</h1>
-          <p className="text-gray-600">Manage service categories and services</p>
+          <h1 className={`mb-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>Services Management</h1>
+          <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Manage service categories and services</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={loadData}>
@@ -103,9 +104,9 @@ export default function ServicesPage() {
 
       <div className="grid gap-6 md:grid-cols-[40%_60%]">
         {/* Left: Categories */}
-        <Card>
+        <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Categories</CardTitle>
+            <CardTitle className={theme === "dark" ? "text-white" : ""}>Categories</CardTitle>
             <Button
               size="sm"
               onClick={() => {
@@ -123,15 +124,17 @@ export default function ServicesPage() {
                 <div
                   key={category.Id}
                   onClick={() => setSelectedCategory(category)}
-                  className={`flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors hover:bg-gray-50 ${
+                  className={`flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors ${
+                    theme === "dark" ? "border-gray-700 hover:bg-gray-800" : "hover:bg-gray-50"
+                  } ${
                     selectedCategory?.Id === category.Id ? "border-blue-500 bg-blue-50" : ""
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{category.Icon}</span>
                     <div>
-                      <h3 className="font-semibold">{category.NameEn}</h3>
-                      <p className="text-sm text-gray-500">{category.Type}</p>
+                      <h3 className={`font-semibold ${theme === "dark" ? "text-white" : ""}`}>{category.NameEn}</h3>
+                      <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>{category.Type}</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -164,9 +167,9 @@ export default function ServicesPage() {
         </Card>
 
         {/* Right: Services */}
-        <Card>
+        <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>
+            <CardTitle className={theme === "dark" ? "text-white" : ""}>
               Services {selectedCategory && `- ${selectedCategory.NameEn}`}
             </CardTitle>
             <Button
@@ -183,26 +186,28 @@ export default function ServicesPage() {
           </CardHeader>
           <CardContent>
             {!selectedCategory ? (
-              <div className="py-12 text-center text-gray-500">
+              <div className={`py-12 text-center ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
                 Select a category to view services
               </div>
             ) : (
               <div className="space-y-2">
                 {filteredServices.length === 0 ? (
-                  <div className="py-12 text-center text-gray-500">
+                  <div className={`py-12 text-center ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
                     No services found for this category
                   </div>
                 ) : (
                   filteredServices.map((service) => (
                     <div
                       key={service.Id}
-                      className="flex items-center justify-between rounded-lg border p-4 hover:bg-gray-50"
+                      className={`flex items-center justify-between rounded-lg border p-4 ${
+                        theme === "dark" ? "border-gray-700 hover:bg-gray-800" : "hover:bg-gray-50"
+                      }`}
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">{service.Icon}</span>
                         <div>
-                          <h3 className="font-semibold">{service.NameEn}</h3>
-                          <p className="text-sm text-gray-500">{service.DescriptionEn}</p>
+                          <h3 className={`font-semibold ${theme === "dark" ? "text-white" : ""}`}>{service.NameEn}</h3>
+                          <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>{service.DescriptionEn}</p>
                           <p className="mt-1 font-semibold text-blue-600">
                             RWF {parseFloat(service.Price).toLocaleString()}
                           </p>
@@ -251,6 +256,7 @@ export default function ServicesPage() {
         onClose={() => setShowCategoryDialog(false)}
         category={editingCategory}
         onSave={loadData}
+        theme={theme}
       />
 
       {/* Service Dialog */}
@@ -261,6 +267,7 @@ export default function ServicesPage() {
         categories={categories}
         selectedCategoryId={selectedCategory?.Id}
         onSave={loadData}
+        theme={theme}
       />
     </div>
   );
@@ -272,11 +279,13 @@ function CategoryDialog({
   onClose,
   category,
   onSave,
+  theme,
 }: {
   open: boolean;
   onClose: () => void;
   category: ServiceCategory | null;
   onSave: () => void;
+  theme: Theme;
 }) {
   const [formData, setFormData] = useState({
     Type: "",
@@ -334,9 +343,9 @@ function CategoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className={`max-w-2xl ${theme === "dark" ? "border-gray-700 bg-[#1F2937] text-white" : ""}`}>
         <DialogHeader>
-          <DialogTitle>{category ? "Edit Category" : "Create Category"}</DialogTitle>
+          <DialogTitle className={theme === "dark" ? "text-white" : ""}>{category ? "Edit Category" : "Create Category"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
@@ -421,6 +430,7 @@ function ServiceDialog({
   categories,
   selectedCategoryId,
   onSave,
+  theme,
 }: {
   open: boolean;
   onClose: () => void;
@@ -428,6 +438,7 @@ function ServiceDialog({
   categories: ServiceCategory[];
   selectedCategoryId?: number;
   onSave: () => void;
+  theme: Theme;
 }) {
   const [formData, setFormData] = useState({
     Name: "",
@@ -489,9 +500,9 @@ function ServiceDialog({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className={`max-w-3xl max-h-[90vh] overflow-y-auto ${theme === "dark" ? "border-gray-700 bg-[#1F2937] text-white" : ""}`}>
         <DialogHeader>
-          <DialogTitle>{service ? "Edit Service" : "Create Service"}</DialogTitle>
+          <DialogTitle className={theme === "dark" ? "text-white" : ""}>{service ? "Edit Service" : "Create Service"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Tabs defaultValue="basic">

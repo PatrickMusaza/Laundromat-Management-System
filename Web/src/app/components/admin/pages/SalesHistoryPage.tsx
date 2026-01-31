@@ -19,8 +19,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/app/components/ui/dialog";
+import { Theme } from "@/app/App";
 
-export default function SalesHistoryPage() {
+export default function SalesHistoryPage({ theme }: { theme: Theme }) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
@@ -53,8 +54,8 @@ export default function SalesHistoryPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="mb-2">View Sales History</h1>
-          <p className="text-gray-600">View and manage all transactions</p>
+          <h1 className={`mb-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>View Sales History</h1>
+          <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>View and manage all transactions</p>
         </div>
         <Button variant="outline" onClick={loadTransactions}>
           <RefreshCw className="mr-2 h-4 w-4" />
@@ -63,10 +64,10 @@ export default function SalesHistoryPage() {
       </div>
 
       {/* Tabs Layout */}
-      <Card>
+      <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
         <CardContent className="p-0">
           <Tabs defaultValue="transactions" className="w-full">
-            <div className="border-b px-6 pt-6">
+            <div className={`border-b px-6 pt-6 ${theme === "dark" ? "border-gray-700" : ""}`}>
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
                 <TabsTrigger value="details">Transaction Details</TabsTrigger>
@@ -93,26 +94,26 @@ export default function SalesHistoryPage() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Transaction ID</TableHead>
-                      <TableHead>Customer</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Payment Method</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Actions</TableHead>
+                    <TableRow className={theme === "dark" ? "border-gray-700" : ""}>
+                      <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Transaction ID</TableHead>
+                      <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Customer</TableHead>
+                      <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Date</TableHead>
+                      <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Amount</TableHead>
+                      <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Payment Method</TableHead>
+                      <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Status</TableHead>
+                      <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {transactions.map((txn) => (
-                      <TableRow key={txn.Id}>
-                        <TableCell className="font-medium">{txn.TransactionId}</TableCell>
-                        <TableCell>{txn.CustomerName}</TableCell>
-                        <TableCell>
+                      <TableRow key={txn.Id} className={theme === "dark" ? "border-gray-700" : ""}>
+                        <TableCell className={`font-medium ${theme === "dark" ? "text-gray-300" : ""}`}>{txn.TransactionId}</TableCell>
+                        <TableCell className={theme === "dark" ? "text-gray-300" : ""}>{txn.CustomerName}</TableCell>
+                        <TableCell className={theme === "dark" ? "text-gray-300" : ""}>
                           {new Date(txn.TransactionDate).toLocaleDateString()}
                         </TableCell>
-                        <TableCell>RWF {txn.TotalAmount.toLocaleString()}</TableCell>
-                        <TableCell>{txn.PaymentMethod}</TableCell>
+                        <TableCell className={theme === "dark" ? "text-gray-300" : ""}>RWF {txn.TotalAmount.toLocaleString()}</TableCell>
+                        <TableCell className={theme === "dark" ? "text-gray-300" : ""}>{txn.PaymentMethod}</TableCell>
                         <TableCell>
                           <span
                             className={`inline-block rounded-full px-3 py-1 text-xs ${
@@ -153,60 +154,60 @@ export default function SalesHistoryPage() {
             <TabsContent value="details" className="p-6">
               {selectedTransaction ? (
                 <div className="space-y-4">
-                  <h3 className="font-semibold">Transaction Information</h3>
+                  <h3 className={`font-semibold ${theme === "dark" ? "text-white" : ""}`}>Transaction Information</h3>
                   <div className="grid gap-4 md:grid-cols-2">
                     <div>
-                      <Label className="text-gray-600">Transaction ID</Label>
-                      <p className="font-semibold">{selectedTransaction.TransactionId}</p>
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Transaction ID</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>{selectedTransaction.TransactionId}</p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Status</Label>
-                      <p className="font-semibold">{selectedTransaction.Status}</p>
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Status</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>{selectedTransaction.Status}</p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Customer Name</Label>
-                      <p className="font-semibold">{selectedTransaction.CustomerName}</p>
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Customer Name</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>{selectedTransaction.CustomerName}</p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Customer Phone</Label>
-                      <p className="font-semibold">{selectedTransaction.CustomerPhone}</p>
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Customer Phone</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>{selectedTransaction.CustomerPhone}</p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Customer TIN</Label>
-                      <p className="font-semibold">{selectedTransaction.CustomerTin}</p>
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Customer TIN</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>{selectedTransaction.CustomerTin}</p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Payment Method</Label>
-                      <p className="font-semibold">{selectedTransaction.PaymentMethod}</p>
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Payment Method</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>{selectedTransaction.PaymentMethod}</p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Subtotal</Label>
-                      <p className="font-semibold">
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Subtotal</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>
                         RWF {selectedTransaction.Subtotal.toLocaleString()}
                       </p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Tax Amount</Label>
-                      <p className="font-semibold">
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Tax Amount</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>
                         RWF {selectedTransaction.TaxAmount.toLocaleString()}
                       </p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Total Amount</Label>
-                      <p className="font-semibold">
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Total Amount</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>
                         RWF {selectedTransaction.TotalAmount.toLocaleString()}
                       </p>
                     </div>
                     <div>
-                      <Label className="text-gray-600">Transaction Date</Label>
-                      <p className="font-semibold">
+                      <Label className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Transaction Date</Label>
+                      <p className={`font-semibold ${theme === "dark" ? "text-gray-300" : ""}`}>
                         {new Date(selectedTransaction.TransactionDate).toLocaleString()}
                       </p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="py-12 text-center text-gray-500">
+                <div className={`py-12 text-center ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
                   Select a transaction to view details
                 </div>
               )}
@@ -216,35 +217,35 @@ export default function SalesHistoryPage() {
             <TabsContent value="items" className="p-6">
               {selectedTransaction ? (
                 <div className="space-y-4">
-                  <h3 className="font-semibold">Transaction Items</h3>
+                  <h3 className={`font-semibold ${theme === "dark" ? "text-white" : ""}`}>Transaction Items</h3>
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b">
-                          <th className="pb-3 text-left">Service</th>
-                          <th className="pb-3 text-right">Quantity</th>
-                          <th className="pb-3 text-right">Unit Price</th>
-                          <th className="pb-3 text-right">Total</th>
+                        <tr className={`border-b ${theme === "dark" ? "border-gray-700" : ""}`}>
+                          <th className={`pb-3 text-left ${theme === "dark" ? "text-gray-300" : ""}`}>Service</th>
+                          <th className={`pb-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>Quantity</th>
+                          <th className={`pb-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>Unit Price</th>
+                          <th className={`pb-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>Total</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="border-b">
-                          <td className="py-3">Sample Service</td>
-                          <td className="py-3 text-right">1</td>
-                          <td className="py-3 text-right">
+                        <tr className={`border-b ${theme === "dark" ? "border-gray-700" : ""}`}>
+                          <td className={`py-3 ${theme === "dark" ? "text-gray-300" : ""}`}>Sample Service</td>
+                          <td className={`py-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>1</td>
+                          <td className={`py-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>
                             RWF {selectedTransaction.Subtotal.toLocaleString()}
                           </td>
-                          <td className="py-3 text-right">
+                          <td className={`py-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>
                             RWF {selectedTransaction.Subtotal.toLocaleString()}
                           </td>
                         </tr>
                       </tbody>
                       <tfoot>
-                        <tr className="border-t-2 font-bold">
-                          <td className="pt-3" colSpan={3}>
+                        <tr className={`border-t-2 font-bold ${theme === "dark" ? "border-gray-600" : ""}`}>
+                          <td className={`pt-3 ${theme === "dark" ? "text-gray-300" : ""}`} colSpan={3}>
                             Total
                           </td>
-                          <td className="pt-3 text-right">
+                          <td className={`pt-3 text-right ${theme === "dark" ? "text-gray-300" : ""}`}>
                             RWF {selectedTransaction.TotalAmount.toLocaleString()}
                           </td>
                         </tr>
@@ -253,7 +254,7 @@ export default function SalesHistoryPage() {
                   </div>
                 </div>
               ) : (
-                <div className="py-12 text-center text-gray-500">
+                <div className={`py-12 text-center ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>
                   Select a transaction to view items
                 </div>
               )}

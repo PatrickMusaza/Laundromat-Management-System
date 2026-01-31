@@ -28,8 +28,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/ui/select";
+import { Theme } from "@/app/App";
 
-export default function UsersPage() {
+export default function UsersPage({ theme }: { theme: Theme }) {
   const [users, setUsers] = useState<User[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -82,8 +83,8 @@ export default function UsersPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="mb-2">Users Management</h1>
-          <p className="text-gray-600">Manage system users and their access levels</p>
+          <h1 className={`mb-2 ${theme === "dark" ? "text-white" : "text-gray-900"}`}>Users Management</h1>
+          <p className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>Manage system users and their access levels</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={loadUsers}>
@@ -103,28 +104,28 @@ export default function UsersPage() {
       </div>
 
       {/* Users Table */}
-      <Card>
+      <Card className={theme === "dark" ? "border-gray-700 bg-[#1F2937]" : theme === "gray" ? "bg-white" : ""}>
         <CardHeader>
-          <CardTitle>All Users</CardTitle>
+          <CardTitle className={theme === "dark" ? "text-white" : ""}>All Users</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Username</TableHead>
-                <TableHead>Full Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+              <TableRow className={theme === "dark" ? "border-gray-700" : ""}>
+                <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Username</TableHead>
+                <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Full Name</TableHead>
+                <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Email</TableHead>
+                <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Role</TableHead>
+                <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Status</TableHead>
+                <TableHead className={theme === "dark" ? "text-gray-300" : ""}>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">{user.username}</TableCell>
-                  <TableCell>{user.fullName}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                <TableRow key={user.id} className={theme === "dark" ? "border-gray-700" : ""}>
+                  <TableCell className={`font-medium ${theme === "dark" ? "text-gray-300" : ""}`}>{user.username}</TableCell>
+                  <TableCell className={theme === "dark" ? "text-gray-300" : ""}>{user.fullName}</TableCell>
+                  <TableCell className={theme === "dark" ? "text-gray-300" : ""}>{user.email}</TableCell>
                   <TableCell>
                     <span
                       className={`inline-block rounded-full px-3 py-1 text-xs ${
@@ -200,6 +201,7 @@ export default function UsersPage() {
         onClose={() => setShowDialog(false)}
         user={editingUser}
         onSave={loadUsers}
+        theme={theme}
       />
     </div>
   );
@@ -210,11 +212,13 @@ function UserDialog({
   onClose,
   user,
   onSave,
+  theme,
 }: {
   open: boolean;
   onClose: () => void;
   user: User | null;
   onSave: () => void;
+  theme: Theme;
 }) {
   const [formData, setFormData] = useState({
     username: "",
@@ -266,9 +270,9 @@ function UserDialog({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className={`max-w-md ${theme === "dark" ? "border-gray-700 bg-[#1F2937] text-white" : ""}`}>
         <DialogHeader>
-          <DialogTitle>{user ? "Edit User" : "Create User"}</DialogTitle>
+          <DialogTitle className={theme === "dark" ? "text-white" : ""}>{user ? "Edit User" : "Create User"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
