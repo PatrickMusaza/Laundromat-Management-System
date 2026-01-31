@@ -8,11 +8,13 @@ import { open } from "sqlite";
 import path from "path";
 import { fileURLToPath } from "url";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 // ===============================
 // ESM __dirname replacement
 // ===============================
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // ===============================
 // App setup
@@ -29,7 +31,11 @@ let db;
 // Database initialization
 // ===============================
 async function initializeDatabase() {
-  const dbPath = path.join(__dirname, "laundromat.db3");
+  const dbPath = process.env.LAUNDROMAT_DB_PATH;
+
+  if (!dbPath) {
+    throw new Error("LAUNDROMAT_DB_PATH is not set");
+  }
 
   db = await open({
     filename: dbPath,
