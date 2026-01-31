@@ -20,10 +20,10 @@ interface AdminLayoutProps {
 
 const menuItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "services", label: "Services", icon: Package },
-  { id: "reporting", label: "Reporting", icon: FileText },
-  { id: "users", label: "Users", icon: Users },
   { id: "sales-history", label: "View Sales History", icon: History },
+  { id: "services", label: "Services", icon: Package },
+  { id: "users", label: "Users", icon: Users },
+  { id: "reporting", label: "Reporting", icon: FileText },
 ];
 
 export default function AdminLayout({
